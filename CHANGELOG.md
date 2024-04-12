@@ -1,3 +1,6 @@
+# Version 2.12.3 : Piping
+Piping has been added to the calculator
+
 # Version 2.12.2 : Non interactive use
 Added non interactive use
 

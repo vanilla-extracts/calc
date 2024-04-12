@@ -1,6 +1,6 @@
 [package]
 name = "mini-calc"
-version = "2.12.2"
+version = "2.12.3"
 license = "GPL-3.0-or-later"
 description = "A fully-featured minimalistic configurable rust calculator"
 homepage = "https://calc.nwa2coco.fr"
@@ -22,7 +22,7 @@ linefeed = "0.6"
 confy = "0.5.1"
 gnuplot = "0.0.39"
 serde = { version = "1.0.192", features = ["derive"] }
-
+atty = "0.2"
 # Config for 'cargo dist'
 [workspace.metadata.dist]
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)

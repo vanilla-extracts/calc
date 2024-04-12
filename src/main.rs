@@ -16,6 +16,9 @@ use crate::interpreting::interpreter::interpret;
 use crate::lexing::lexer::lex;
 use crate::parsing::ast::{Ast, Parameters};
 use crate::parsing::parser::{init_calc_parser, CalcParser};
+use atty::Stream;
+use std::io;
+use std::io::BufRead;
 
 mod configuration;
 mod exact_math;
@@ -258,15 +261,23 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 
 fn main() {
     let mut args: Args = env::args();
-    if args.len() > 1 {
-        args.nth(0);
+
+    let version: String = "v2.12.3".to_string();
+    if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
-        args.for_each(|f| a.push(f));
+
+        if !atty::is(Stream::Stdin) {
+            let stdin = io::stdin();
+            for line in stdin.lock().lines() {
+                a.push(line.unwrap().to_string());
+            }
+        } else {
+            args.nth(0);
+            args.for_each(|f| a.push(f));
+        }
+
         let arg_final = a.join("");
-
-
         if arg_final == "-h" || arg_final == "--help" {
-
             println!("-----Help Calc-----");
             println!("");
             println!("mini-calc > launch the mini-calc REPL");
@@ -275,8 +286,12 @@ fn main() {
             println!("");
             println!("------Help Calc-----");
             exit(0);
-
         }
+
+        if arg_final == "-v" || arg_final == "--version" {
+            println!("Calc {version}");
+            exit(0);
+      }
 
         let lexed = lex(arg_final);
         let mut parser = init_calc_parser(&lexed);
@@ -317,7 +332,6 @@ fn main() {
     let style = &loaded.clone().prompt_style;
     let mut text = &loaded.clone().prompt;
     let mut verbose = false;
-    let version: String = "v2.12.2".to_string();
     interface.set_completer(Arc::new(CalcCompleter));
     interface
         .set_prompt(&format!(
