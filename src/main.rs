@@ -291,7 +291,7 @@ fn main() {
         if arg_final == "-v" || arg_final == "--version" {
             println!("Calc {version}");
             exit(0);
-        }
+      }
 
         let lexed = lex(arg_final);
         let mut parser = init_calc_parser(&lexed);
