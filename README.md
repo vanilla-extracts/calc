@@ -52,7 +52,7 @@ If you prefer a PDF, there is a [manual](https://calc.nwa2coco.fr/assets/manual.
 |-------------------------------------------------------------------------------------------------------------------------------------------------|:--------|:-------------------------|:--------------------------------------------|
 | [<img src="https://avatars.githubusercontent.com/u/17108449?v=4" style="border-radius: 50%;height:90pt;width:auto">](https://github.com/coco33920)        |Charlotte THOMAS          | Main developer/Maintener | [Main page](https://me.nwa2coco.fr)         | 
 | [<img src="https://avatars.githubusercontent.com/u/87855546?v=4" style="border-radius: 50%;height:90pt;width:auto">](https://github.com/leana8959)        |Léana 江                  | Help, cleanup            | [Website/Blog](https://earth2077.fr)        |
-
+| [<img src="https://avatars.githubusercontent.com/u/53050011?v=4" style="border-radius:50%;height:90pt;width:auto">](https://github.com/Sigmaficient)      |Sigmaficient              | Nixify                   | [Website](https://sigmanificient.github.io/)|
 
 ## TODO List
 
