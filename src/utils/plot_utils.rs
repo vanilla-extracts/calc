@@ -40,7 +40,6 @@ pub fn computes_lines(
     });
 
     z.for_each(|(x, y)| {
-        println!("x: {x}, y: {y}");
         if x < 100 && y < 30 {
             bitmap[y][x] = '+';
         }

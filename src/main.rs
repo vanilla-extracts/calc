@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::env::{self, Args};
 use std::f64::consts::{E, PI};
-use std::process::exit;
+use std::process::{exit, Command};
 use std::str::SplitWhitespace;
 use std::sync::Arc;
 
@@ -262,7 +262,7 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 fn main() {
     let mut args: Args = env::args();
 
-    let version: String = "v2.12.3".to_string();
+    let version: String = "v2.13.0".to_string();
     if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
 
@@ -291,7 +291,25 @@ fn main() {
         if arg_final == "-v" || arg_final == "--version" {
             println!("Calc {version}");
             exit(0);
-      }
+        }
+
+        if arg_final == "-u" || arg_final == "--update" {
+            if cfg!(target_os = "windows") {
+                Command::new("cmd")
+                    .args(["/C", "cargo install mini-calc --force"])
+                    .output()
+                    .expect("update failed")
+            } else {
+                Command::new("sh")
+                    .arg("-c")
+                    .arg("cargo install mini-calc --force")
+                    .output()
+                    .expect("update failed")
+            };
+            println!("mini-calc has been succesfully updated to the latest version");
+            exit(0);
+        }
+
 
         let lexed = lex(arg_final);
         let mut parser = init_calc_parser(&lexed);
