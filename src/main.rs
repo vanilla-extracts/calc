@@ -292,7 +292,7 @@ fn main() {
             println!("Calc {version}");
             exit(0);
         }
-<<<<<<< HEAD
+
 
         if arg_final == "-u" || arg_final == "--update" {
             if cfg!(target_os = "windows") {
@@ -311,8 +311,6 @@ fn main() {
             exit(0);
         }
 
-=======
->>>>>>> 36c2fc0 (bump to 2.12.4)
 
         let lexed = lex(arg_final);
         let mut parser = init_calc_parser(&lexed);
