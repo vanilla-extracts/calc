@@ -1,3 +1,6 @@
+# Version 2.13.0 : Update!
+You can upgrade the calculator with `mini-calc --update`
+
 # Version 2.12.4 : Fix bug
 Fix the bug where the calculated vectors for plotting appeared when plotting
 

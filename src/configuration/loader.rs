@@ -131,7 +131,7 @@ pub fn load_color(string: String) -> Color {
 
 pub fn replace_variable(str: String) -> String {
     str.replace("%author%", "Charlotte Thomas")
-        .replace("%version%", "v2.12.4")
+        .replace("%version%", "v2.13.0")
         .to_string()
 }
 
