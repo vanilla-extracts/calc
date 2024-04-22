@@ -1,3 +1,6 @@
+# Version 2.12.4 : Fix bug
+Fix the bug where the calculated vectors for plotting appeared when plotting
+
 # Version 2.12.3 : Piping
 Piping has been added to the calculator
 

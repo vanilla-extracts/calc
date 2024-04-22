@@ -1952,7 +1952,6 @@ pub fn plot_fn(
             _ => return Parameters::Null,
         }
     }
-    println!("{:?}/{:?}", &x, &y);
     let mut f: Figure = Figure::new();
     let _ = match mode.to_lowercase().as_str() {
         "marks" => f

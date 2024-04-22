@@ -262,7 +262,7 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 fn main() {
     let mut args: Args = env::args();
 
-    let version: String = "v2.12.3".to_string();
+    let version: String = "v2.12.4".to_string();
     if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
 
@@ -291,7 +291,7 @@ fn main() {
         if arg_final == "-v" || arg_final == "--version" {
             println!("Calc {version}");
             exit(0);
-      }
+        }
 
         let lexed = lex(arg_final);
         let mut parser = init_calc_parser(&lexed);
