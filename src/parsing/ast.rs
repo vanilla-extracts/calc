@@ -276,8 +276,8 @@ mod test {
         pub fn new(p: Parameters) -> Self {
             Ast::Node {
                 value: p,
-                left: Box::from(Nil),
-                right: Box::from(Nil),
+                left: Box::from(Ast::Nil),
+                right: Box::from(Ast::Nil),
             }
         }
     }
