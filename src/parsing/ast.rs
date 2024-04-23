@@ -247,16 +247,6 @@ pub fn token_to_parameter(token: Token) -> Parameters {
     }
 }
 
-impl Ast {
-    pub fn new(p: Parameters) -> Self {
-        Node {
-            value: p,
-            left: Box::from(Nil),
-            right: Box::from(Nil),
-        }
-    }
-}
-
 impl Parameters {
     pub fn abs(self, ram: Option<&HashMap<String, Parameters>>) -> Parameters {
         match self {
@@ -281,7 +271,16 @@ impl Parameters {
 #[cfg(test)]
 mod test {
     use crate::parsing::ast::{Ast, Parameters};
-
+    
+    impl Ast {
+        pub fn new(p: Parameters) -> Self {
+            Ast::Node {
+                value: p,
+                left: Box::from(Nil),
+                right: Box::from(Nil),
+            }
+        }
+    }
     #[test]
     pub fn test_new() {
         let expected = Ast::Node {

@@ -1,3 +1,7 @@
+# Version 2.13.1 : Bug fix
+Fix the issue of the function never used (moved implementation to the test
+module)
+
 # Version 2.13.0 : Update!
 You can upgrade the calculator with `mini-calc --update`
 
