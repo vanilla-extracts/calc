@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::exact_math::rationals::Rationals;
+use crate::exact_math::symbolic::*;
 use crate::interpreting::function::{
     add, and, assign, divide, equal, expo, greater, greater_or_equal, lesser, lesser_or_equal,
     minus, mult, not, or,
