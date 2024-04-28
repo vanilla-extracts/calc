@@ -89,6 +89,7 @@ pub fn interpret(
                     Parameters::InterpreterVector(Box::from(vec))
                 }
                 Parameters::InterpreterVector(a) => Parameters::InterpreterVector(a.clone()),
+                Parameters::Variable(ast, s) => Parameters::Null,
             };
             last.clone()
         }
