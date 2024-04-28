@@ -293,7 +293,6 @@ fn main() {
             exit(0);
         }
 
-
         if arg_final == "-u" || arg_final == "--update" {
             if cfg!(target_os = "windows") {
                 Command::new("cmd")
@@ -310,7 +309,6 @@ fn main() {
             println!("mini-calc has been succesfully updated to the latest version");
             exit(0);
         }
-
 
         let lexed = lex(arg_final);
         let mut parser = init_calc_parser(&lexed);

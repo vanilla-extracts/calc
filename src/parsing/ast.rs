@@ -32,6 +32,7 @@ pub enum Parameters {
     ExpoOperation,
     Vector(Box<Vec<Ast>>),
     InterpreterVector(Box<Vec<Parameters>>),
+    Variable(Box<Ast>,String),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -46,6 +47,33 @@ pub enum Ast {
         name: String,
         lst: Vec<Ast>,
     },
+}
+
+impl Ast {
+
+    fn simplify(&self) -> &Ast {
+
+        let (value,left,right) = match &self {
+
+            Nil => (Null,Box::from(Nil),Box::from(Nil)),
+            Ast::Call { name, lst } => (Null,Box::from(Nil),Box::from(Nil)),
+            Node { value, left, right } => {
+                (*value,*left,*right)
+            }
+            
+        };
+
+        match value {
+            Null | Int(_) | Str(_) | Float(_) | Bool(_) | Identifier(_) | Rational(_) => return self,
+            PlusOperation => {
+                match (left.simplify(),right.simplify()) {
+                    
+                }
+            }
+        };
+        
+    }
+
 }
 
 impl Display for Parameters {
@@ -74,6 +102,7 @@ impl Display for Parameters {
             InterpreterVector(a) => write!(f, "{:?}", a),
             Str(s) => write!(f, "{s}"),
             Rational(s) => write!(f, "{s}"),
+            Variable(d,s) => write!(f,"{d}{s}"),
         }
     }
 }
@@ -271,7 +300,7 @@ impl Parameters {
 #[cfg(test)]
 mod test {
     use crate::parsing::ast::{Ast, Parameters};
-    
+
     impl Ast {
         pub fn new(p: Parameters) -> Self {
             Ast::Node {
