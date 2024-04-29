@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::exact_math::rationals::Rationals;
+use crate::exact_math::symbolic::{self, size};
 use crate::parsing::ast::Parameters;
 use crate::parsing::ast::Parameters::Bool;
 use crate::utils::matrix_utils::mult_matrix;
@@ -201,16 +202,75 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
             None => Parameters::Null,
             Some(_) => apply_operator(Parameters::Identifier(s), Bool(b), ram, add),
         },
+
         (Parameters::Plus(s1, s2), Parameters::Identifier(s3)) => {
             let first = Parameters::Plus(
                 Box::from(add(*s1.clone(), Parameters::Identifier(s3.clone()), ram)),
                 s2.clone(),
             );
-            let _second = Parameters::Plus(
+            let second = Parameters::Plus(
                 s1.clone(),
                 Box::from(add(*s2.clone(), Parameters::Identifier(s3.clone()), ram)),
             );
-            first
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Identifier(s3), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Identifier(s3.clone()), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Identifier(s3.clone()), ram)),
+            );
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Int(i), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Int(i), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Int(i), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Plus(s1, s2), Parameters::Int(i)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Int(i), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Int(i), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
         }
         _ => Parameters::Identifier(
             "@Those two values are incompatible with the + operator".to_string(),
