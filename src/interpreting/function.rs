@@ -105,10 +105,7 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
                         Box::from(Parameters::Identifier(s2.clone())),
                     )
                 } else {
-                    Parameters::Mul(
-                        Box::from(Parameters::Int(2)),
-                        Box::from(Parameters::Identifier(s.clone())),
-                    )
+                    Parameters::Var(Box::from(Parameters::Int(2)), 1, s.clone())
                 }
             }
             Some(_) => apply_operator(

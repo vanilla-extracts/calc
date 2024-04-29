@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
+use std::str::Chars;
 
 use crate::exact_math::rationals::Rationals;
 use crate::lexing::token::{Operator, Token};
@@ -32,6 +33,7 @@ pub enum Parameters {
     ExpoOperation,
     Vector(Box<Vec<Ast>>),
     InterpreterVector(Box<Vec<Parameters>>),
+    Var(Box<Parameters>, i64, String),
     Plus(Box<Parameters>, Box<Parameters>),
     Mul(Box<Parameters>, Box<Parameters>),
 }
@@ -48,6 +50,38 @@ pub enum Ast {
         name: String,
         lst: Vec<Ast>,
     },
+}
+
+fn int_to_superscript_string(i: i64) -> String {
+    fn digit_to_superscript_char(i: &str) -> &str {
+        match i {
+            "0" => "⁰",
+            "1" => "¹",
+            "2" => "²",
+            "3" => "³",
+            "4" => "⁴",
+            "5" => "⁵",
+            "6" => "⁶",
+            "7" => "⁷",
+            "8" => "⁸",
+            "9" => "⁹",
+            _ => "",
+        }
+    }
+
+    let mut vec = vec![];
+    let string_int = i.to_string();
+    string_int
+        .split("")
+        .map(|x| digit_to_superscript_char(x))
+        .for_each(|f| vec.push(f));
+
+    let i = vec.join("");
+    if i == "0".to_string() || i == "¹".to_string() {
+        "".to_string()
+    } else {
+        i
+    }
 }
 
 impl Display for Parameters {
@@ -78,6 +112,7 @@ impl Display for Parameters {
             Rational(s) => write!(f, "{s}"),
             Plus(x, y) => write!(f, "({x}+{y})"),
             Mul(x, y) => write!(f, "({x}*{y})"),
+            Var(x, y, s) => write!(f, "{x}{s}{}", int_to_superscript_string(*y)),
         }
     }
 }
