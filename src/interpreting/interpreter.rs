@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use crate::exact_math::rationals::Rationals;
-use crate::exact_math::symbolic::*;
 use crate::interpreting::function::{
     add, and, assign, divide, equal, expo, greater, greater_or_equal, lesser, lesser_or_equal,
     minus, mult, not, or,
@@ -90,7 +89,8 @@ pub fn interpret(
                     Parameters::InterpreterVector(Box::from(vec))
                 }
                 Parameters::InterpreterVector(a) => Parameters::InterpreterVector(a.clone()),
-                Parameters::Variable(ast, s) => Parameters::Null,
+                Parameters::Plus(x, y) => Parameters::Plus(x.clone(), y.clone()),
+                Parameters::Mul(x, y) => Parameters::Mul(x.clone(), y.clone()),
             };
             last.clone()
         }

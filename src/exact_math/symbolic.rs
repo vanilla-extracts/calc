@@ -13,9 +13,23 @@ fn simplify(ast: &Ast) -> Ast {
         Null | Int(_) | Str(_) | Float(_) | Bool(_) | Identifier(_) | Rational(_) => {
             return ast.clone()
         }
-        PlusOperation => {}
+        PlusOperation => {
+            let (simplified_left, simplified_right) = (simplify(left), simplify(right));
+        }
         _ => (),
     };
 
     ast.clone()
 }
+
+/*
+*
+* 2+x+y+10+x = ((((2+x)+y)+10)+x)
+*
+*
+*
+*
+*
+*
+*
+*/

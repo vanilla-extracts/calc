@@ -32,7 +32,8 @@ pub enum Parameters {
     ExpoOperation,
     Vector(Box<Vec<Ast>>),
     InterpreterVector(Box<Vec<Parameters>>),
-    Variable(Box<Ast>, String),
+    Plus(Box<Parameters>, Box<Parameters>),
+    Mul(Box<Parameters>, Box<Parameters>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -75,7 +76,8 @@ impl Display for Parameters {
             InterpreterVector(a) => write!(f, "{:?}", a),
             Str(s) => write!(f, "{s}"),
             Rational(s) => write!(f, "{s}"),
-            Variable(d, s) => write!(f, "{d}{s}"),
+            Plus(x, y) => write!(f, "({x}+{y})"),
+            Mul(x, y) => write!(f, "({x}*{y})"),
         }
     }
 }
@@ -118,7 +120,7 @@ impl Parameters {
                         return self.to_string();
                     } else {
                         match ram.as_mut().unwrap().get(s) {
-                            None => "This variable is not initialized yet".to_string(),
+                            None => s.to_string(),
                             Some(t) => t.clone().pretty_print(
                                 Some(ram.as_mut().unwrap()),
                                 Some(function.as_mut().unwrap()),
