@@ -38,18 +38,18 @@ pub fn apply_operator_reverse(
     f: fn(Parameters, Parameters, Option<&HashMap<String, Parameters>>) -> Parameters,
 ) -> Parameters {
     let s = match value2 {
-        Parameters::Identifier(s) => s,
-        _ => "".to_string(),
+        Parameters::Identifier(ref s) => s,
+        _ => "",
     };
-    if s == "".to_string() {
+    if s == "" {
         return Parameters::Null;
     }
     match ram {
-        None => value,
+        None => f(value.clone(), value2.clone(), None),
         Some(i_ram) => {
-            let val3 = i_ram.get(&s);
+            let val3 = i_ram.get(s);
             match val3 {
-                None => value,
+                None => f(value.clone(), value2.clone(), None),
                 Some(val) => f(value.clone(), val.clone(), ram),
             }
         }
@@ -202,7 +202,24 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
             None => Parameters::Null,
             Some(_) => apply_operator(Parameters::Identifier(s), Bool(b), ram, add),
         },
+        (Parameters::Plus(s1, s2), Parameters::Plus(s3, s4)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), *s3.clone(), ram)),
+                Box::from(add(*s2.clone(), *s4.clone(), ram)),
+            );
+            let second = Parameters::Plus(
+                Box::from(add(*s1.clone(), *s4.clone(), ram)),
+                Box::from(add(*s2.clone(), *s3.clone(), ram)),
+            );
 
+            let (s1, s2) = (size(&first), size(&second));
+
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
         (Parameters::Plus(s1, s2), Parameters::Identifier(s3)) => {
             let first = Parameters::Plus(
                 Box::from(add(*s1.clone(), Parameters::Identifier(s3.clone()), ram)),
@@ -263,6 +280,149 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
             let second = Parameters::Plus(
                 s1.clone(),
                 Box::from(add(*s2.clone(), Parameters::Int(i), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Plus(s1, s2), Parameters::Float(f)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Float(f), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+        (Parameters::Plus(s1, s2), Parameters::Float(f)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Float(f), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Plus(s1, s2), Parameters::Float(f)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Float(f), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Plus(s1, s2), Parameters::Rational(r)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Rational(r.clone()), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Rational(r.clone()), ram)),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Rational(r), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(add(*s1.clone(), Parameters::Rational(r.clone()), ram)),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Parameters::Rational(r.clone()), ram)),
             );
 
             let (s1, s2) = (size(&first), size(&second));
