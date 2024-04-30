@@ -78,7 +78,7 @@ mod test {
 
         let _ = v
             .into_iter()
-            .map(|f| size(f))
+            .map(|f| size(&f))
             .zip(should)
             .for_each(|(x, y)| assert_eq!(x, y));
     }
@@ -93,7 +93,7 @@ mod test {
             )),
             Box::from(Parameters::Int(3)),
         );
-        let result = size(tree);
+        let result = size(&tree);
         assert_eq!(result, should);
     }
 }
