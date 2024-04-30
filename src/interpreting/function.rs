@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::exact_math::rationals::Rationals;
-use crate::exact_math::symbolic::{self, size};
+use crate::exact_math::symbolic::size;
 use crate::parsing::ast::Parameters;
 use crate::parsing::ast::Parameters::Bool;
 use crate::utils::matrix_utils::mult_matrix;
@@ -430,6 +430,39 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
                 second
             } else {
                 first
+            }
+        }
+
+        (Parameters::Var(x, y, z), Parameters::Var(x1, y1, z1)) => {
+            if z == z1 && y == y1 {
+                Parameters::Var(Box::from(add(*x.clone(), *x1.clone(), ram)), y, z)
+            } else {
+                Parameters::Plus(
+                    Box::from(Parameters::Var(x.clone(), y.clone(), z.clone())),
+                    Box::from(Parameters::Var(x1.clone(), y1.clone(), z1.clone())),
+                )
+            }
+        }
+
+        (Parameters::Var(x, y, z), Parameters::Identifier(s)) => {
+            if z == s && y == 1 {
+                Parameters::Var(Box::from(add(*x.clone(), Parameters::Int(1), ram)), y, z)
+            } else {
+                Parameters::Plus(
+                    Box::from(Parameters::Var(x.clone(), y.clone(), z.clone())),
+                    Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+                )
+            }
+        }
+
+        (Parameters::Identifier(s), Parameters::Var(x, y, z)) => {
+            if z == s && y == 1 {
+                Parameters::Var(Box::from(add(*x.clone(), Parameters::Int(1), ram)), y, z)
+            } else {
+                Parameters::Plus(
+                    Box::from(Parameters::Var(x.clone(), y.clone(), z.clone())),
+                    Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+                )
             }
         }
         _ => Parameters::Identifier(
