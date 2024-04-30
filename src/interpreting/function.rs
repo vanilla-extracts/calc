@@ -325,77 +325,6 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
                 first
             }
         }
-        (Parameters::Plus(s1, s2), Parameters::Float(f)) => {
-            let first = Parameters::Plus(
-                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
-                s2.clone(),
-            );
-            let second = Parameters::Plus(
-                s1.clone(),
-                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
-            );
-
-            let (s1, s2) = (size(&first), size(&second));
-            if s1 > s2 {
-                second
-            } else {
-                first
-            }
-        }
-
-        (Parameters::Float(f), Parameters::Plus(s1, s2)) => {
-            let first = Parameters::Plus(
-                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
-                s2.clone(),
-            );
-            let second = Parameters::Plus(
-                s1.clone(),
-                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
-            );
-
-            let (s1, s2) = (size(&first), size(&second));
-            if s1 > s2 {
-                second
-            } else {
-                first
-            }
-        }
-
-        (Parameters::Plus(s1, s2), Parameters::Float(f)) => {
-            let first = Parameters::Plus(
-                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
-                s2.clone(),
-            );
-            let second = Parameters::Plus(
-                s1.clone(),
-                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
-            );
-
-            let (s1, s2) = (size(&first), size(&second));
-            if s1 > s2 {
-                second
-            } else {
-                first
-            }
-        }
-
-        (Parameters::Float(f), Parameters::Plus(s1, s2)) => {
-            let first = Parameters::Plus(
-                Box::from(add(*s1.clone(), Parameters::Float(f), ram)),
-                s2.clone(),
-            );
-            let second = Parameters::Plus(
-                s1.clone(),
-                Box::from(add(*s2.clone(), Parameters::Float(f), ram)),
-            );
-
-            let (s1, s2) = (size(&first), size(&second));
-            if s1 > s2 {
-                second
-            } else {
-                first
-            }
-        }
 
         (Parameters::Plus(s1, s2), Parameters::Rational(r)) => {
             let first = Parameters::Plus(
@@ -567,9 +496,9 @@ pub fn minus(
         (Parameters::Identifier(s), Parameters::Identifier(s2)) => match ram {
             None => {
                 if s != s2 {
-                    Parameters::Minus(
+                    Parameters::Plus(
                         Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s)),
-                        Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s2)),
+                        Box::from(Parameters::Var(Box::from(Parameters::Int(-1)), 1, s2)),
                     )
                 } else {
                     Parameters::Int(0)
@@ -583,30 +512,30 @@ pub fn minus(
             ),
         },
         (Parameters::Identifier(s), Parameters::Int(i)) => match ram {
-            None => Parameters::Minus(
+            None => Parameters::Plus(
                 Box::from(Parameters::Identifier(s.clone())),
-                Box::from(Parameters::Int(i)),
+                Box::from(Parameters::Int(-i)),
             ),
             Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, minus),
         },
         (Parameters::Null, Parameters::Identifier(s)) => match ram {
-            None => Parameters::Minus(
+            None => Parameters::Plus(
                 Box::from(Parameters::Null),
-                Box::from(Parameters::Identifier(s)),
+                Box::from(Parameters::Var(Box::from(Parameters::Int(-1)), 1, s)),
             ),
             Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, minus),
         },
         (Parameters::Identifier(s), Parameters::Null) => match ram {
-            None => Parameters::Minus(
+            None => Parameters::Plus(
                 Box::from(Parameters::Null),
-                Box::from(Parameters::Identifier(s)),
+                Box::from(Parameters::Var(Box::from(Parameters::Int(-1)), 1, s)),
             ),
             Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, minus),
         },
         (Parameters::Rational(s), Parameters::Identifier(ss)) => match ram {
-            None => Parameters::Minus(
+            None => Parameters::Plus(
                 Box::from(Parameters::Rational(s.clone())),
-                Box::from(Parameters::Identifier(ss)),
+                Box::from(Parameters::Var(Box::from(Parameters::Int(-1)), 1, ss)),
             ),
             Some(_) => apply_operator_reverse(
                 Parameters::Rational(s.clone()),
@@ -616,9 +545,9 @@ pub fn minus(
             ),
         },
         (Parameters::Identifier(ss), Parameters::Rational(s)) => match ram {
-            None => Parameters::Minus(
-                Box::from(Parameters::Identifier(ss)),
-                Box::from(Parameters::Rational(s.clone())),
+            None => Parameters::Plus(
+                Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, ss)),
+                Box::from(Parameters::Rational(s.opposite())),
             ),
             Some(_) => apply_operator(
                 Parameters::Identifier(ss),
@@ -628,9 +557,9 @@ pub fn minus(
             ),
         },
         (Parameters::Int(i), Parameters::Identifier(s)) => match ram {
-            None => Parameters::Minus(
+            None => Parameters::Plus(
                 Box::from(Parameters::Int(i)),
-                Box::from(Parameters::Identifier(s)),
+                Box::from(Parameters::Var(Box::from(Parameters::Int(-1)), 1, s)),
             ),
             Some(_) => {
                 let v = apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, minus);
@@ -641,16 +570,16 @@ pub fn minus(
             }
         },
         (Parameters::Identifier(s), Parameters::Float(i)) => match ram {
-            None => Parameters::Minus(
-                Box::from(Parameters::Identifier(s)),
-                Box::from(Parameters::Float(i)),
+            None => Parameters::Plus(
+                Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s)),
+                Box::from(Parameters::Float(-i)),
             ),
             Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, minus),
         },
         (Parameters::Float(i), Parameters::Identifier(s)) => match ram {
-            None => Parameters::Minus(
+            None => Parameters::Plus(
                 Box::from(Parameters::Float(i)),
-                Box::from(Parameters::Identifier(s)),
+                Box::from(Parameters::Var(Box::from(Parameters::Int(-1)), 1, s)),
             ),
             Some(_) => {
                 let v = apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, minus);

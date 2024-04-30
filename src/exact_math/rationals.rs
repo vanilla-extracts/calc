@@ -32,6 +32,10 @@ impl Rationals {
         return self.over == 0;
     }
 
+    pub fn opposite(self) -> Self {
+        Rationals::new(self.under, -1 * self.over)
+    }
+
     pub fn reduce(self) -> Self {
         let minus;
         let i1;

@@ -34,7 +34,6 @@ pub enum Parameters {
     InterpreterVector(Box<Vec<Parameters>>),
     Var(Box<Parameters>, i64, String),
     Plus(Box<Parameters>, Box<Parameters>),
-    Minus(Box<Parameters>, Box<Parameters>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -110,7 +109,6 @@ impl Display for Parameters {
             Str(s) => write!(f, "{s}"),
             Rational(s) => write!(f, "{s}"),
             Plus(x, y) => write!(f, "({x}+{y})"),
-            Minus(x, y) => write!(f, "({x}-{y})"),
             Var(x, y, s) => write!(f, "{x}{s}{}", int_to_superscript_string(*y)),
         }
     }
@@ -161,6 +159,28 @@ impl Parameters {
                             ),
                         }
                     }
+                }
+            }
+
+            Var(x, y, z) => match **x {
+                Int(1) => format!("{}{}", z, int_to_superscript_string(*y)),
+                Int(-1) => format!("-{}{}", z, int_to_superscript_string(*y)),
+                _ => format!("{}", Var(x.clone(), y.clone(), z.clone())),
+            },
+
+            Plus(x, y) => {
+                let x_printed = x.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                let y_printed = y.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                if y_printed.chars().nth(0).unwrap() == '-' {
+                    format!("{}{}", x_printed, y_printed)
+                } else {
+                    format!("{}+{}", x_printed, y_printed)
                 }
             }
 
