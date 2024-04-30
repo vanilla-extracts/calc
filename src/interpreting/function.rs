@@ -465,6 +465,36 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
                 )
             }
         }
+
+        (Parameters::Int(i), Parameters::Var(x, y, z)) => Parameters::Plus(
+            Box::from(Parameters::Int(i)),
+            Box::from(Parameters::Var(x, y, z)),
+        ),
+
+        (Parameters::Var(x, y, z), Parameters::Int(i)) => Parameters::Plus(
+            Box::from(Parameters::Var(x, y, z)),
+            Box::from(Parameters::Int(i)),
+        ),
+
+        (Parameters::Float(f), Parameters::Var(x, y, z)) => Parameters::Plus(
+            Box::from(Parameters::Float(f)),
+            Box::from(Parameters::Var(x, y, z)),
+        ),
+
+        (Parameters::Var(x, y, z), Parameters::Float(f)) => Parameters::Plus(
+            Box::from(Parameters::Var(x, y, z)),
+            Box::from(Parameters::Float(f)),
+        ),
+
+        (Parameters::Rational(r), Parameters::Var(x, y, z)) => Parameters::Plus(
+            Box::from(Parameters::Rational(r.clone())),
+            Box::from(Parameters::Var(x, y, z)),
+        ),
+
+        (Parameters::Var(x, y, z), Parameters::Rational(r)) => Parameters::Plus(
+            Box::from(Parameters::Var(x, y, z)),
+            Box::from(Parameters::Rational(r.clone())),
+        ),
         _ => Parameters::Identifier(
             "@Those two values are incompatible with the + operator".to_string(),
         ),
