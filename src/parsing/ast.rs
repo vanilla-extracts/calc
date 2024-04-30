@@ -177,10 +177,15 @@ impl Parameters {
                     Some(ram.as_mut().unwrap()),
                     Some(function.as_mut().unwrap()),
                 );
-                if y_printed.chars().nth(0).unwrap() == '-' {
-                    format!("{}{}", x_printed, y_printed)
-                } else {
-                    format!("{}+{}", x_printed, y_printed)
+                match y_printed.chars().nth(0) {
+                    Some('-') => format!("{}{}", x_printed, y_printed),
+                    _ => {
+                        if y_printed == "0".to_string() {
+                            format!("{}", x_printed)
+                        } else {
+                            format!("{}+{}", x_printed, y_printed)
+                        }
+                    }
                 }
             }
 
