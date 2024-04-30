@@ -27,6 +27,7 @@ pub fn size(p: &Parameters) -> i32 {
         | Vector(_)
         | InterpreterVector(_) => 0,
         Plus(x, y) => 1 + size(x) + size(y),
+        Minus(x, y) => 1 + size(x) + size(y),
         Var(x, _, _) => 1 + size(x),
     }
 }

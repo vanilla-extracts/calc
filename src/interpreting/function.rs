@@ -564,70 +564,129 @@ pub fn minus(
         (Bool(b), Parameters::Null) => Bool(b),
         (Parameters::Null, Bool(b)) => Bool(b),
         (Bool(b), Bool(b2)) => Bool(b && b2),
-        (Parameters::Identifier(s), Parameters::Identifier(s2)) => apply_operator(
-            Parameters::Identifier(s),
-            Parameters::Identifier(s2),
-            ram,
-            minus,
-        ),
-        (Parameters::Identifier(s), Parameters::Int(i)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, minus)
-        }
-        (Parameters::Null, Parameters::Identifier(s)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Null, ram, minus)
-        }
-
-        (Parameters::Rational(s), Parameters::Identifier(ss)) => apply_operator_reverse(
-            Parameters::Rational(s.clone()),
-            Parameters::Identifier(ss.clone()),
-            ram,
-            minus,
-        ),
-        (Parameters::Identifier(ss), Parameters::Rational(s)) => apply_operator(
-            Parameters::Identifier(ss),
-            Parameters::Rational(s),
-            ram,
-            minus,
-        ),
-        (Parameters::Identifier(s), Parameters::Null) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Null, ram, minus)
-        }
-        (Parameters::Int(i), Parameters::Identifier(s)) => {
-            let v = apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, minus);
-            match v {
-                Parameters::Int(i) => Parameters::Int(-i),
-                _ => Parameters::Null,
+        (Parameters::Identifier(s), Parameters::Identifier(s2)) => match ram {
+            None => {
+                if s != s2 {
+                    Parameters::Minus(
+                        Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s)),
+                        Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s2)),
+                    )
+                } else {
+                    Parameters::Int(0)
+                }
             }
-        }
-        (Parameters::Identifier(s), Parameters::Float(i)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, minus)
-        }
-        (Parameters::Float(i), Parameters::Identifier(s)) => {
-            let v = apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, minus);
-            match v {
-                Parameters::Float(i) => Parameters::Float(-i),
-                _ => Parameters::Null,
+            Some(_) => apply_operator(
+                Parameters::Identifier(s),
+                Parameters::Identifier(s2),
+                ram,
+                minus,
+            ),
+        },
+        (Parameters::Identifier(s), Parameters::Int(i)) => match ram {
+            None => Parameters::Minus(
+                Box::from(Parameters::Identifier(s.clone())),
+                Box::from(Parameters::Int(i)),
+            ),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, minus),
+        },
+        (Parameters::Null, Parameters::Identifier(s)) => match ram {
+            None => Parameters::Minus(
+                Box::from(Parameters::Null),
+                Box::from(Parameters::Identifier(s)),
+            ),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, minus),
+        },
+        (Parameters::Identifier(s), Parameters::Null) => match ram {
+            None => Parameters::Minus(
+                Box::from(Parameters::Null),
+                Box::from(Parameters::Identifier(s)),
+            ),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, minus),
+        },
+        (Parameters::Rational(s), Parameters::Identifier(ss)) => match ram {
+            None => Parameters::Minus(
+                Box::from(Parameters::Rational(s.clone())),
+                Box::from(Parameters::Identifier(ss)),
+            ),
+            Some(_) => apply_operator_reverse(
+                Parameters::Rational(s.clone()),
+                Parameters::Identifier(ss.clone()),
+                ram,
+                minus,
+            ),
+        },
+        (Parameters::Identifier(ss), Parameters::Rational(s)) => match ram {
+            None => Parameters::Minus(
+                Box::from(Parameters::Identifier(ss)),
+                Box::from(Parameters::Rational(s.clone())),
+            ),
+            Some(_) => apply_operator(
+                Parameters::Identifier(ss),
+                Parameters::Rational(s),
+                ram,
+                minus,
+            ),
+        },
+        (Parameters::Int(i), Parameters::Identifier(s)) => match ram {
+            None => Parameters::Minus(
+                Box::from(Parameters::Int(i)),
+                Box::from(Parameters::Identifier(s)),
+            ),
+            Some(_) => {
+                let v = apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, minus);
+                match v {
+                    Parameters::Int(i) => Parameters::Int(-i),
+                    _ => Parameters::Null,
+                }
             }
-        }
+        },
+        (Parameters::Identifier(s), Parameters::Float(i)) => match ram {
+            None => Parameters::Minus(
+                Box::from(Parameters::Identifier(s)),
+                Box::from(Parameters::Float(i)),
+            ),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, minus),
+        },
+        (Parameters::Float(i), Parameters::Identifier(s)) => match ram {
+            None => Parameters::Minus(
+                Box::from(Parameters::Float(i)),
+                Box::from(Parameters::Identifier(s)),
+            ),
+            Some(_) => {
+                let v = apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, minus);
+                match v {
+                    Parameters::Float(i) => Parameters::Float(-i),
+                    _ => Parameters::Null,
+                }
+            }
+        },
 
-        (Parameters::InterpreterVector(vec), Parameters::Identifier(s)) => apply_operator_reverse(
-            Parameters::InterpreterVector(vec.clone()),
-            Parameters::Identifier(s),
-            ram,
-            minus,
-        ),
-        (Parameters::Identifier(s), Parameters::InterpreterVector(vec)) => apply_operator(
-            Parameters::Identifier(s),
-            Parameters::InterpreterVector(vec.clone()),
-            ram,
-            minus,
-        ),
-        (Bool(b), Parameters::Identifier(s)) => {
-            apply_operator_reverse(Bool(b), Parameters::Identifier(s), ram, minus)
-        }
-        (Parameters::Identifier(s), Bool(b)) => {
-            apply_operator(Parameters::Identifier(s), Bool(b), ram, minus)
-        }
+        (Parameters::InterpreterVector(vec), Parameters::Identifier(s)) => match ram {
+            None => Parameters::InterpreterVector(vec.clone()),
+            Some(_) => apply_operator_reverse(
+                Parameters::InterpreterVector(vec.clone()),
+                Parameters::Identifier(s),
+                ram,
+                minus,
+            ),
+        },
+        (Parameters::Identifier(s), Parameters::InterpreterVector(vec)) => match ram {
+            None => Parameters::InterpreterVector(vec.clone()),
+            Some(_) => apply_operator(
+                Parameters::Identifier(s),
+                Parameters::InterpreterVector(vec.clone()),
+                ram,
+                minus,
+            ),
+        },
+        (Bool(b), Parameters::Identifier(s)) => match ram {
+            None => Parameters::Bool(b),
+            Some(_) => apply_operator_reverse(Bool(b), Parameters::Identifier(s), ram, minus),
+        },
+        (Parameters::Identifier(s), Bool(b)) => match ram {
+            None => Parameters::Bool(b),
+            Some(_) => apply_operator(Parameters::Identifier(s), Bool(b), ram, minus),
+        },
         _ => Parameters::Identifier(
             "Those two values are incompatible with the - operator".to_string(),
         ),

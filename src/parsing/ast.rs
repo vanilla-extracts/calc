@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
-use std::str::Chars;
 
 use crate::exact_math::rationals::Rationals;
 use crate::lexing::token::{Operator, Token};
@@ -35,6 +34,7 @@ pub enum Parameters {
     InterpreterVector(Box<Vec<Parameters>>),
     Var(Box<Parameters>, i64, String),
     Plus(Box<Parameters>, Box<Parameters>),
+    Minus(Box<Parameters>, Box<Parameters>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -110,6 +110,7 @@ impl Display for Parameters {
             Str(s) => write!(f, "{s}"),
             Rational(s) => write!(f, "{s}"),
             Plus(x, y) => write!(f, "({x}+{y})"),
+            Minus(x, y) => write!(f, "({x}-{y})"),
             Var(x, y, s) => write!(f, "{x}{s}{}", int_to_superscript_string(*y)),
         }
     }
@@ -162,6 +163,7 @@ impl Parameters {
                     }
                 }
             }
+
             InterpreterVector(lst) => {
                 let mut vec = Vec::new();
 

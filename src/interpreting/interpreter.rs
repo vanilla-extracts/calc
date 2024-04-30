@@ -91,6 +91,7 @@ pub fn interpret(
                 Parameters::InterpreterVector(a) => Parameters::InterpreterVector(a.clone()),
                 Parameters::Var(x, y, z) => Parameters::Var(x.clone(), y.clone(), z.clone()),
                 Parameters::Plus(x, y) => add(*x.clone(), *y.clone(), Some(&ram)),
+                Parameters::Minus(x, y) => minus(*x.clone(), *y.clone(), Some(&ram)),
             };
             last.clone()
         }
