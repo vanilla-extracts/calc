@@ -34,6 +34,7 @@ pub enum Parameters {
     InterpreterVector(Box<Vec<Parameters>>),
     Var(Box<Parameters>, i64, String),
     Plus(Box<Parameters>, Box<Parameters>),
+    Mul(Box<Parameters>, Box<Parameters>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -109,6 +110,7 @@ impl Display for Parameters {
             Str(s) => write!(f, "{s}"),
             Rational(s) => write!(f, "{s}"),
             Plus(x, y) => write!(f, "({x}+{y})"),
+            Mul(x, y) => write!(f, "({x}*{y})"),
             Var(x, y, s) => write!(f, "{x}{s}{}", int_to_superscript_string(*y)),
         }
     }

@@ -28,11 +28,13 @@ pub fn size(p: &Parameters) -> i32 {
         | InterpreterVector(_) => 0,
         Plus(x, y) => 1 + size(x) + size(y),
         Var(x, _, _) => 1 + size(x),
+        Mul(x, y) => 1 + size(x) + size(y),
     }
 }
 
 #[cfg(test)]
 mod test {
+
     use crate::{
         exact_math::rationals::Rationals,
         parsing::ast::{
@@ -92,6 +94,26 @@ mod test {
             )),
             Box::from(Parameters::Int(3)),
         );
+        let result = size(&tree);
+        assert_eq!(result, should);
+    }
+    #[test]
+    fn test_size_mul() {
+        let should = 2;
+        let tree = Mul(
+            Box::from(Plus(
+                Box::from(Parameters::Int(1)),
+                Box::from(Parameters::Int(2)),
+            )),
+            Box::from(Parameters::Int(3)),
+        );
+        let result = size(&tree);
+        assert_eq!(result, should);
+    }
+    #[test]
+    fn test_size_var() {
+        let should = 1;
+        let tree = Var(Box::from(Parameters::Int(1)), 1, "s".to_string());
         let result = size(&tree);
         assert_eq!(result, should);
     }
