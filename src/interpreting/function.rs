@@ -986,61 +986,97 @@ pub fn mult(
         (Bool(b), Parameters::Null) => Bool(b),
         (Parameters::Null, Bool(b)) => Bool(b),
         (Bool(b), Bool(b2)) => Bool(b && b2),
-        (Parameters::Identifier(s), Parameters::Identifier(s2)) => apply_operator(
-            Parameters::Identifier(s),
-            Parameters::Identifier(s2),
-            ram,
-            mult,
-        ),
-        (Parameters::Identifier(s), Parameters::Int(i)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, mult)
-        }
+        (Parameters::Identifier(s), Parameters::Identifier(s2)) => match ram {
+            None => {
+                if s == s2 {
+                    Parameters::Var(Box::from(Parameters::Int(1)), 2, s.clone())
+                } else {
+                    Parameters::Mul(
+                        Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+                        Box::from(Parameters::Var(
+                            Box::from(Parameters::Int(1)),
+                            1,
+                            s2.clone(),
+                        )),
+                    )
+                }
+            }
+            Some(_) => apply_operator(
+                Parameters::Identifier(s),
+                Parameters::Identifier(s2),
+                ram,
+                mult,
+            ),
+        },
+        (Parameters::Identifier(s), Parameters::Int(i)) => match ram {
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, mult),
+            None => Parameters::Var(Box::from(Parameters::Int(i)), 1, s.clone()),
+        },
 
-        (Parameters::Rational(s), Parameters::Identifier(ss)) => apply_operator_reverse(
-            Parameters::Rational(s.clone()),
-            Parameters::Identifier(ss.clone()),
-            ram,
-            mult,
-        ),
-        (Parameters::Identifier(ss), Parameters::Rational(s)) => apply_operator(
-            Parameters::Identifier(ss),
-            Parameters::Rational(s),
-            ram,
-            mult,
-        ),
-        (Parameters::Int(i), Parameters::Identifier(s)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, mult)
-        }
-        (Parameters::Identifier(s), Parameters::InterpreterVector(vec)) => apply_operator(
-            Parameters::Identifier(s),
-            Parameters::InterpreterVector(vec.clone()),
-            ram,
-            mult,
-        ),
-        (Parameters::InterpreterVector(vec), Parameters::Identifier(s)) => apply_operator_reverse(
-            Parameters::InterpreterVector(vec.clone()),
-            Parameters::Identifier(s),
-            ram,
-            mult,
-        ),
-        (Parameters::Null, Parameters::Identifier(s)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Null, ram, mult)
-        }
-        (Parameters::Identifier(s), Parameters::Null) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Null, ram, mult)
-        }
-        (Parameters::Identifier(s), Parameters::Float(i)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, mult)
-        }
-        (Parameters::Float(i), Parameters::Identifier(s)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, mult)
-        }
-        (Bool(b), Parameters::Identifier(s)) => {
-            apply_operator_reverse(Bool(b), Parameters::Identifier(s), ram, mult)
-        }
-        (Parameters::Identifier(s), Bool(b)) => {
-            apply_operator(Parameters::Identifier(s), Bool(b), ram, mult)
-        }
+        (Parameters::Rational(s), Parameters::Identifier(ss)) => match ram {
+            None => Parameters::Var(Box::from(Parameters::Rational(s.clone())), 1, ss.clone()),
+            Some(_) => apply_operator_reverse(
+                Parameters::Rational(s.clone()),
+                Parameters::Identifier(ss.clone()),
+                ram,
+                mult,
+            ),
+        },
+        (Parameters::Identifier(ss), Parameters::Rational(s)) => match ram {
+            Some(_) => apply_operator(
+                Parameters::Identifier(ss),
+                Parameters::Rational(s),
+                ram,
+                mult,
+            ),
+            None => Parameters::Var(Box::from(Parameters::Rational(s.clone())), 1, ss.clone()),
+        },
+        (Parameters::Int(i), Parameters::Identifier(s)) => match ram {
+            None => Parameters::Var(Box::from(Parameters::Int(i)), 1, s.clone()),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, mult),
+        },
+        (Parameters::Identifier(s), Parameters::InterpreterVector(vec)) => match ram {
+            None => Parameters::InterpreterVector(vec.clone()),
+            Some(_) => apply_operator(
+                Parameters::Identifier(s),
+                Parameters::InterpreterVector(vec.clone()),
+                ram,
+                mult,
+            ),
+        },
+        (Parameters::InterpreterVector(vec), Parameters::Identifier(s)) => match ram {
+            None => Parameters::InterpreterVector(vec.clone()),
+            Some(_) => apply_operator_reverse(
+                Parameters::InterpreterVector(vec.clone()),
+                Parameters::Identifier(s),
+                ram,
+                mult,
+            ),
+        },
+        (Parameters::Null, Parameters::Identifier(s)) => match ram {
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, mult),
+            None => Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
+        },
+        (Parameters::Identifier(s), Parameters::Null) => match ram {
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, mult),
+            None => Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
+        },
+        (Parameters::Identifier(s), Parameters::Float(i)) => match ram {
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, mult),
+            None => Parameters::Var(Box::from(Parameters::Float(i)), 1, s.clone()),
+        },
+        (Parameters::Float(i), Parameters::Identifier(s)) => match ram {
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, mult),
+            None => Parameters::Var(Box::from(Parameters::Float(i)), 1, s.clone()),
+        },
+        (Bool(b), Parameters::Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Bool(b), Parameters::Identifier(s), ram, mult),
+            None => Parameters::Bool(b),
+        },
+        (Parameters::Identifier(s), Bool(b)) => match ram {
+            Some(_) => apply_operator(Parameters::Identifier(s), Bool(b), ram, mult),
+            None => Parameters::Bool(b),
+        },
         _ => Parameters::Identifier(
             "@Those two values are incompatible with the * operator".to_string(),
         ),
