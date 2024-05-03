@@ -225,8 +225,7 @@ pub fn lup_invert(
 mod test {
 
     use crate::{
-        interpreting::function::{greater, minus},
-        parsing::ast::Parameters,
+        functions::function::greater, functions::minus::minus, parsing::ast::Parameters,
         utils::matrix_utils::lup_determinant,
     };
 

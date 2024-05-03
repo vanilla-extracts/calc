@@ -555,7 +555,10 @@ pub fn or(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameters
 
 #[cfg(test)]
 mod test {
-    use crate::interpreting::function::{add, divide, minus, mult};
+    use crate::functions::add::add;
+    use crate::functions::divide::divide;
+    use crate::functions::minus::minus;
+    use crate::functions::mult::mult;
     use crate::parsing::ast::Parameters;
 
     #[test]
