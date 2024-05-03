@@ -1,10 +1,12 @@
 use std::collections::HashMap;
 
 use crate::exact_math::rationals::Rationals;
-use crate::interpreting::function::{
-    add, and, assign, divide, equal, expo, greater, greater_or_equal, lesser, lesser_or_equal,
-    minus, mult, not, or,
-};
+use crate::functions::add::add;
+use crate::functions::divide::divide;
+use crate::functions::expo::expo;
+use crate::functions::function::*;
+use crate::functions::minus::minus;
+use crate::functions::mult::mult;
 use crate::interpreting::stdlib::exec;
 use crate::parsing::ast::{Ast, Parameters};
 

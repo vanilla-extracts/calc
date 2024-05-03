@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use crate::{
-    interpreting::function::{add, divide, greater, minus, mult},
-    parsing::ast::Parameters,
+    functions::add::add, functions::divide::divide, functions::function::*,
+    functions::minus::minus, functions::mult::mult, parsing::ast::Parameters,
 };
 
 pub fn transpose<T>(matrix: Vec<Vec<T>>) -> Vec<Vec<T>> {

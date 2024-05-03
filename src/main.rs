@@ -22,6 +22,7 @@ use std::io::BufRead;
 
 mod configuration;
 mod exact_math;
+mod functions;
 mod interpreting;
 mod lexing;
 mod parsing;
