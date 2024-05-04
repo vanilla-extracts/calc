@@ -263,7 +263,7 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 fn main() {
     let mut args: Args = env::args();
 
-    let version: String = "v2.13.1".to_string();
+    let version: String = "v2.14.0".to_string();
     if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
 
