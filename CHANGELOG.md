@@ -1,3 +1,7 @@
+# Version 2.14.0 : Symbolic calculation!
+You can use the calculator to compute and simplify symbolic computation problems
+it's compatible with +,-,*,/,^.
+
 # Version 2.13.1 : Bug fix
 Fix the issue of the function never used (moved implementation to the test
 module)
