@@ -181,6 +181,7 @@ impl Parameters {
                 );
                 format!("{x_printed}*{y_printed}")
             }
+
             Plus(x, y) => {
                 let x_printed = x.pretty_print(
                     Some(ram.as_mut().unwrap()),
