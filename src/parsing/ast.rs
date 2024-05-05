@@ -170,6 +170,17 @@ impl Parameters {
                 _ => format!("{}", Var(x.clone(), y.clone(), z.clone())),
             },
 
+            Mul(x, y) => {
+                let x_printed = x.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                let y_printed = y.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                format!("{x_printed}*{y_printed}")
+            }
             Plus(x, y) => {
                 let x_printed = x.pretty_print(
                     Some(ram.as_mut().unwrap()),
@@ -190,7 +201,6 @@ impl Parameters {
                     }
                 }
             }
-
             InterpreterVector(lst) => {
                 let mut vec = Vec::new();
 

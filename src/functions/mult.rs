@@ -8,6 +8,8 @@ use crate::parsing::ast::Parameters::*;
 use crate::utils::matrix_utils::*;
 use std::collections::HashMap;
 
+use super::minus::minus;
+
 pub fn mult(
     i: Parameters,
     i2: Parameters,
@@ -217,6 +219,196 @@ pub fn mult(
             Some(_) => apply_operator(Parameters::Identifier(s), Bool(b), ram, mult),
             None => Parameters::Bool(b),
         },
+        (Parameters::Plus(s1, s2), Parameters::Plus(s3, s4)) => {
+            let first = Parameters::Plus(
+                Box::from(add(
+                    mult(*s1.clone(), *s3.clone(), ram),
+                    mult(*s2.clone(), *s3.clone(), ram),
+                    ram,
+                )),
+                Box::from(add(
+                    mult(*s1.clone(), *s4.clone(), ram),
+                    mult(*s2.clone(), *s4.clone(), ram),
+                    ram,
+                )),
+            );
+            let second = Parameters::Plus(
+                Box::from(add(
+                    mult(*s1.clone(), *s3.clone(), ram),
+                    mult(*s2.clone(), *s4.clone(), ram),
+                    ram,
+                )),
+                Box::from(add(
+                    mult(*s2.clone(), *s3.clone(), ram),
+                    mult(*s1.clone(), *s4.clone(), ram),
+                    ram,
+                )),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+        //(s1,s2)*s3 = (s1s3+s2s3)
+        (Parameters::Plus(s1, s2), Parameters::Identifier(s3)) => {
+            let first = Parameters::Plus(
+                Box::from(mult(
+                    *s1.clone(),
+                    Parameters::Var(Box::from(Parameters::Int(1)), 1, s3.clone()),
+                    ram,
+                )),
+                Box::from(mult(
+                    *s2.clone(),
+                    Parameters::Var(Box::from(Parameters::Int(1)), 1, s3.clone()),
+                    ram,
+                )),
+            );
+            first
+        }
+        (Parameters::Identifier(s3), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(mult(
+                    Parameters::Var(Box::new(Parameters::Int(1)), 1, s3.clone()),
+                    *s1.clone(),
+                    ram,
+                )),
+                Box::from(mult(
+                    Parameters::Var(Box::new(Parameters::Int(1)), 1, s3.clone()),
+                    *s2.clone(),
+                    ram,
+                )),
+            );
+            first
+        }
+
+        (Parameters::Int(i), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(mult(Parameters::Int(i), *s1.clone(), ram)),
+                Box::from(mult(Parameters::Int(i), *s2.clone(), ram)),
+            );
+            first
+        }
+
+        (Parameters::Plus(s1, s2), Parameters::Int(i)) => {
+            let first = Parameters::Plus(
+                Box::from(mult(*s1.clone(), Parameters::Int(i), ram)),
+                Box::from(mult(*s2.clone(), Parameters::Int(i), ram)),
+            );
+            first
+        }
+
+        (Parameters::Float(f), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(mult(Parameters::Float(f), *s1.clone(), ram)),
+                Box::from(mult(Parameters::Float(f), *s2.clone(), ram)),
+            );
+            first
+        }
+
+        (Parameters::Plus(s1, s2), Parameters::Float(f)) => {
+            let first = Parameters::Plus(
+                Box::from(mult(*s1.clone(), Parameters::Float(f), ram)),
+                Box::from(mult(*s2.clone(), Parameters::Float(f), ram)),
+            );
+            first
+        }
+        (Parameters::Rational(r), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(mult(Parameters::Rational(r.clone()), *s1.clone(), ram)),
+                Box::from(mult(Parameters::Rational(r.clone()), *s2.clone(), ram)),
+            );
+            first
+        }
+
+        (Parameters::Plus(s1, s2), Parameters::Rational(r)) => {
+            let first = Parameters::Plus(
+                Box::from(mult(*s1.clone(), Parameters::Rational(r.clone()), ram)),
+                Box::from(mult(*s2.clone(), Parameters::Rational(r.clone()), ram)),
+            );
+            first
+        }
+        //x*y : x==y : x^2 else x*y
+        (Parameters::Var(x, y, z), Parameters::Var(x1, y1, z1)) => {
+            if z == z1 {
+                Parameters::Var(Box::from(mult(*x.clone(), *x1.clone(), ram)), y + y1, z)
+            } else {
+                Parameters::Mul(
+                    Box::from(Parameters::Var(x.clone(), y.clone(), z.clone())),
+                    Box::from(Parameters::Var(
+                        Box::from(mult(Parameters::Int(1), *x1.clone(), ram)),
+                        y1.clone(),
+                        z1.clone(),
+                    )),
+                )
+            }
+        }
+
+        //2x*x
+        (Parameters::Var(x, y, z), Parameters::Identifier(s)) => {
+            if z == s {
+                Parameters::Var(Box::from(x.clone()), y + 1, z)
+            } else {
+                Parameters::Mul(
+                    Box::from(Parameters::Var(x.clone(), y.clone(), z.clone())),
+                    Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+                )
+            }
+        }
+
+        (Parameters::Identifier(s), Parameters::Var(x, y, z)) => {
+            if z == s {
+                Parameters::Var(Box::from(x.clone()), y + 1, z)
+            } else {
+                Parameters::Mul(
+                    Box::from(Parameters::Var(
+                        Box::from(mult(Parameters::Int(1), *x.clone(), ram)),
+                        y.clone(),
+                        z.clone(),
+                    )),
+                    Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+                )
+            }
+        }
+
+        (Parameters::Int(i), Parameters::Var(x, y, z)) => Parameters::Var(
+            Box::from(mult(*x.clone(), Parameters::Int(i), ram)),
+            y,
+            z.clone(),
+        ),
+
+        (Parameters::Var(x, y, z), Parameters::Int(i)) => Parameters::Var(
+            Box::from(mult(*x.clone(), Parameters::Int(i), ram)),
+            y,
+            z.clone(),
+        ),
+
+        (Parameters::Float(f), Parameters::Var(x, y, z)) => Parameters::Var(
+            Box::from(mult(Parameters::Float(f), *x.clone(), ram)),
+            y,
+            z.clone(),
+        ),
+
+        (Parameters::Var(x, y, z), Parameters::Float(f)) => Parameters::Var(
+            Box::from(mult(*x.clone(), Parameters::Float(f), ram)),
+            y,
+            z.clone(),
+        ),
+
+        (Parameters::Rational(r), Parameters::Var(x, y, z)) => Parameters::Var(
+            Box::from(mult(Parameters::Rational(r.clone()), *x.clone(), ram)),
+            y,
+            z.clone(),
+        ),
+
+        (Parameters::Var(x, y, z), Parameters::Rational(r)) => Parameters::Var(
+            Box::from(mult(*x.clone(), Parameters::Rational(r), ram)),
+            y,
+            z.clone(),
+        ),
         _ => Parameters::Identifier(
             "@Those two values are incompatible with the * operator".to_string(),
         ),
