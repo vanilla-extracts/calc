@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
 use crate::exact_math::rationals::Rationals;
-use crate::exact_math::symbolic::size;
+
 use crate::parsing::ast::Parameters;
 use crate::parsing::ast::Parameters::Bool;
-use crate::utils::matrix_utils::mult_matrix;
 
 pub fn apply_operator(
     value: Parameters,

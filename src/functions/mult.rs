@@ -8,8 +8,6 @@ use crate::parsing::ast::Parameters::*;
 use crate::utils::matrix_utils::*;
 use std::collections::HashMap;
 
-use super::minus::minus;
-
 pub fn mult(
     i: Parameters,
     i2: Parameters,
