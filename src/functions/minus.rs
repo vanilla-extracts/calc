@@ -352,6 +352,141 @@ pub fn minus(
             }
         }
 
+        (Parameters::Plus(s1, s2), Parameters::Var(x, y, z)) => {
+            let first = Parameters::Plus(
+                Box::from(minus(
+                    *s1.clone(),
+                    Parameters::Var(x.clone(), y, z.clone()),
+                    ram,
+                )),
+                s2.clone(),
+            );
+            let second = Parameters::Plus(
+                s1.clone(),
+                Box::from(minus(
+                    *s2.clone(),
+                    Parameters::Var(x.clone(), y, z.clone()),
+                    ram,
+                )),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        (Parameters::Var(x, y, z), Parameters::Plus(s1, s2)) => {
+            let first = Parameters::Plus(
+                Box::from(minus(
+                    Parameters::Var(x.clone(), y, z.clone()),
+                    *s1.clone(),
+                    ram,
+                )),
+                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+            );
+            let second = Parameters::Plus(
+                Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+                Box::from(minus(
+                    Parameters::Var(x.clone(), y, z.clone()),
+                    *s2.clone(),
+                    ram,
+                )),
+            );
+
+            let (s1, s2) = (size(&first), size(&second));
+
+            if s1 > s2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        //(x*y)+(a*b)
+        (Parameters::Mul(s1, s2), Parameters::Mul(s3, s4)) => Parameters::Plus(
+            Box::from(Parameters::Mul(s1.clone(), s2.clone())),
+            Box::from(Parameters::Mul(
+                Box::from(minus(Parameters::Int(0), *s3.clone(), ram)),
+                Box::from(minus(Parameters::Int(0), *s4.clone(), ram)),
+            )),
+        ),
+
+        (Parameters::Mul(s1, s2), Parameters::Identifier(s)) => Parameters::Plus(
+            Box::from(Parameters::Mul(s1.clone(), s2.clone())),
+            Box::from(Parameters::Var(
+                Box::from(Parameters::Int(-1)),
+                1,
+                s.clone(),
+            )),
+        ),
+
+        (Parameters::Identifier(s), Parameters::Mul(s1, s2)) => Parameters::Plus(
+            Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+            Box::from(Parameters::Mul(
+                Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+            )),
+        ),
+
+        (Parameters::Mul(s1, s2), Parameters::Int(i)) => Parameters::Plus(
+            Box::from(Parameters::Mul(s1.clone(), s2.clone())),
+            Box::from(Parameters::Int(-i)),
+        ),
+
+        (Parameters::Int(i), Parameters::Mul(s1, s2)) => Parameters::Plus(
+            Box::from(Parameters::Int(i)),
+            Box::from(Parameters::Mul(
+                Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+            )),
+        ),
+
+        (Parameters::Mul(s1, s2), Parameters::Float(f)) => Parameters::Plus(
+            Box::from(Parameters::Mul(s1.clone(), s2.clone())),
+            Box::from(Parameters::Float(-f)),
+        ),
+
+        (Parameters::Float(f), Parameters::Mul(s1, s2)) => Parameters::Plus(
+            Box::from(Parameters::Float(f)),
+            Box::from(Parameters::Mul(
+                Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+            )),
+        ),
+
+        (Parameters::Mul(s1, s2), Parameters::Rational(r)) => Parameters::Plus(
+            Box::from(Parameters::Mul(s1.clone(), s2.clone())),
+            Box::from(Parameters::Rational(r.opposite())),
+        ),
+
+        (Parameters::Rational(r), Parameters::Mul(s1, s2)) => Parameters::Plus(
+            Box::from(Parameters::Rational(r.clone())),
+            Box::from(Parameters::Mul(
+                Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+            )),
+        ),
+
+        (Parameters::Var(x, y, z), Parameters::Mul(s1, s2)) => Parameters::Plus(
+            Box::from(Parameters::Var(x.clone(), y, z.clone())),
+            Box::from(Parameters::Mul(
+                Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+            )),
+        ),
+
+        (Parameters::Mul(s1, s2), Parameters::Var(x, y, z)) => Parameters::Plus(
+            Box::from(Parameters::Mul(s1.clone(), s2.clone())),
+            Box::from(Parameters::Var(
+                Box::from(minus(Parameters::Int(0), *x.clone(), ram)),
+                y,
+                z.clone(),
+            )),
+        ),
+
         (Parameters::Var(x, y, z), Parameters::Var(x1, y1, z1)) => {
             if z == z1 && y == y1 {
                 Parameters::Var(Box::from(minus(*x.clone(), *x1.clone(), ram)), y, z)
