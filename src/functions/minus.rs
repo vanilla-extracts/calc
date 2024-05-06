@@ -405,12 +405,11 @@ pub fn minus(
             }
         }
 
-        //(x*y)+(a*b)
         (Parameters::Mul(s1, s2), Parameters::Mul(s3, s4)) => Parameters::Plus(
             Box::from(Parameters::Mul(s1.clone(), s2.clone())),
             Box::from(Parameters::Mul(
                 Box::from(minus(Parameters::Int(0), *s3.clone(), ram)),
-                Box::from(minus(Parameters::Int(0), *s4.clone(), ram)),
+                s4.clone(),
             )),
         ),
 
@@ -427,7 +426,7 @@ pub fn minus(
             Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
             Box::from(Parameters::Mul(
                 Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
-                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+                s2.clone(),
             )),
         ),
 
@@ -440,7 +439,7 @@ pub fn minus(
             Box::from(Parameters::Int(i)),
             Box::from(Parameters::Mul(
                 Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
-                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+                s2.clone(),
             )),
         ),
 
@@ -453,7 +452,7 @@ pub fn minus(
             Box::from(Parameters::Float(f)),
             Box::from(Parameters::Mul(
                 Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
-                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+                s2.clone(),
             )),
         ),
 
@@ -466,7 +465,7 @@ pub fn minus(
             Box::from(Parameters::Rational(r.clone())),
             Box::from(Parameters::Mul(
                 Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
-                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+                s2.clone(),
             )),
         ),
 
@@ -474,7 +473,7 @@ pub fn minus(
             Box::from(Parameters::Var(x.clone(), y, z.clone())),
             Box::from(Parameters::Mul(
                 Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
-                Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+                s2.clone(),
             )),
         ),
 
@@ -484,6 +483,22 @@ pub fn minus(
                 Box::from(minus(Parameters::Int(0), *x.clone(), ram)),
                 y,
                 z.clone(),
+            )),
+        ),
+
+        (Parameters::Mul(s1, s2), Parameters::Plus(s3, s4)) => Parameters::Plus(
+            Box::from(Parameters::Mul(s1.clone(), s2.clone())),
+            Box::from(Parameters::Plus(
+                Box::from(minus(Parameters::Int(0), *s3.clone(), ram)),
+                Box::from(minus(Parameters::Int(0), *s4.clone(), ram)),
+            )),
+        ),
+
+        (Parameters::Plus(s3, s4), Parameters::Mul(s1, s2)) => Parameters::Plus(
+            Box::from(Parameters::Plus(s3.clone(), s4.clone())),
+            Box::from(Parameters::Mul(
+                Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+                s2.clone(),
             )),
         ),
 

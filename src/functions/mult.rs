@@ -433,11 +433,7 @@ pub fn mult(
                 Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
                 ram,
             )),
-            Box::from(mult(
-                *s2.clone(),
-                Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
-                ram,
-            )),
+            s2.clone(),
         ),
 
         (Parameters::Identifier(s), Parameters::Mul(s1, s2)) => Parameters::Mul(
@@ -446,41 +442,47 @@ pub fn mult(
                 Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
                 ram,
             )),
-            Box::from(mult(
-                *s2.clone(),
-                Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
-                ram,
-            )),
+            s2.clone(),
         ),
 
         (Parameters::Mul(s1, s2), Parameters::Int(i)) => Parameters::Mul(
             Box::from(mult(*s1.clone(), Parameters::Int(i), ram)),
-            Box::from(mult(*s2.clone(), Parameters::Int(i), ram)),
+            s2.clone(),
         ),
 
         (Parameters::Int(i), Parameters::Mul(s1, s2)) => Parameters::Mul(
             Box::from(mult(*s1.clone(), Parameters::Int(i), ram)),
-            Box::from(mult(*s2.clone(), Parameters::Int(i), ram)),
+            s2.clone(),
         ),
 
         (Parameters::Mul(s1, s2), Parameters::Float(f)) => Parameters::Mul(
             Box::from(mult(*s1.clone(), Parameters::Float(f), ram)),
-            Box::from(mult(*s2.clone(), Parameters::Float(f), ram)),
+            s2.clone(),
         ),
 
         (Parameters::Float(f), Parameters::Mul(s1, s2)) => Parameters::Mul(
             Box::from(mult(*s1.clone(), Parameters::Float(f), ram)),
-            Box::from(mult(*s2.clone(), Parameters::Float(f), ram)),
+            s2.clone(),
         ),
 
         (Parameters::Mul(s1, s2), Parameters::Rational(r)) => Parameters::Mul(
             Box::from(mult(*s1.clone(), Parameters::Rational(r.clone()), ram)),
-            Box::from(mult(*s2.clone(), Parameters::Rational(r.clone()), ram)),
+            s2.clone(),
         ),
 
         (Parameters::Rational(r), Parameters::Mul(s1, s2)) => Parameters::Mul(
             Box::from(mult(*s1.clone(), Parameters::Rational(r.clone()), ram)),
-            Box::from(mult(*s2.clone(), Parameters::Rational(r.clone()), ram)),
+            s2.clone(),
+        ),
+        //(x*y)*(a+b) = x*y*a+x*y*b
+        (Parameters::Mul(s1, s2), Parameters::Plus(s3, s4)) => Parameters::Plus(
+            Box::from(mult(mult(*s1.clone(), *s3.clone(), ram), *s2.clone(), ram)),
+            Box::from(mult(mult(*s1.clone(), *s4.clone(), ram), *s2.clone(), ram)),
+        ),
+
+        (Parameters::Plus(s3, s4), Parameters::Mul(s1, s2)) => Parameters::Plus(
+            Box::from(mult(mult(*s1.clone(), *s3.clone(), ram), *s2.clone(), ram)),
+            Box::from(mult(mult(*s1.clone(), *s4.clone(), ram), *s2.clone(), ram)),
         ),
         //x*y : x==y : x^2 else x*y
         (Parameters::Var(x, y, z), Parameters::Var(x1, y1, z1)) => {
