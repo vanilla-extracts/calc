@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::fmt::{Display, Formatter};
+use std::fmt::{format, Display, Formatter};
 
 use crate::exact_math::rationals::Rationals;
 use crate::lexing::token::{Operator, Token};
@@ -167,6 +167,7 @@ impl Parameters {
             Var(x, y, z) => match **x {
                 Int(1) => format!("{}{}", z, int_to_superscript_string(*y)),
                 Int(-1) => format!("-{}{}", z, int_to_superscript_string(*y)),
+                Int(0) => format!("0"),
                 _ => format!("{}", Var(x.clone(), y.clone(), z.clone())),
             },
 
@@ -183,7 +184,7 @@ impl Parameters {
             }
 
             Plus(x, y) => {
-                let x_printed = x.pretty_print(
+                let mut x_printed = x.pretty_print(
                     Some(ram.as_mut().unwrap()),
                     Some(function.as_mut().unwrap()),
                 );
@@ -191,6 +192,9 @@ impl Parameters {
                     Some(ram.as_mut().unwrap()),
                     Some(function.as_mut().unwrap()),
                 );
+                if x_printed == "0" {
+                    x_printed = "".to_string()
+                }
                 match y_printed.chars().nth(0) {
                     Some('-') => format!("{}{}", x_printed, y_printed),
                     _ => {

@@ -355,6 +355,10 @@ pub fn mult(
             )),
         ),
 
+        (Parameters::Null, Parameters::Plus(s1, s2)) => Parameters::Plus(s1.clone(), s2.clone()),
+
+        (Parameters::Plus(s1, s2), Parameters::Null) => Parameters::Plus(s1.clone(), s2.clone()),
+
         (Parameters::Var(x, y, z), Parameters::Mul(s1, s2)) => {
             let first = Parameters::Mul(
                 Box::from(mult(
@@ -484,7 +488,11 @@ pub fn mult(
             Box::from(mult(mult(*s1.clone(), *s3.clone(), ram), *s2.clone(), ram)),
             Box::from(mult(mult(*s1.clone(), *s4.clone(), ram), *s2.clone(), ram)),
         ),
-        //x*y : x==y : x^2 else x*y
+
+        (Parameters::Null, Parameters::Mul(s1, s2)) => Parameters::Mul(s1.clone(), s2.clone()),
+
+        (Parameters::Mul(s1, s2), Parameters::Null) => Parameters::Mul(s1.clone(), s2.clone()),
+
         (Parameters::Var(x, y, z), Parameters::Var(x1, y1, z1)) => {
             if z == z1 {
                 Parameters::Var(Box::from(mult(*x.clone(), *x1.clone(), ram)), y + y1, z)

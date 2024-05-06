@@ -365,7 +365,10 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
             }
         }
 
-        //(x*y)+(a*b)
+        (Parameters::Plus(s1, s2), Parameters::Null) => Parameters::Plus(s1.clone(), s2.clone()),
+
+        (Parameters::Null, Parameters::Plus(s1, s2)) => Parameters::Plus(s1.clone(), s2.clone()),
+
         (Parameters::Mul(s1, s2), Parameters::Mul(s3, s4)) => Parameters::Plus(
             Box::from(Parameters::Mul(s1.clone(), s2.clone())),
             Box::from(Parameters::Mul(s3.clone(), s4.clone())),
@@ -430,6 +433,10 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
             Box::from(Parameters::Plus(s3.clone(), s4.clone())),
             Box::from(Parameters::Mul(s1.clone(), s2.clone())),
         ),
+
+        (Parameters::Null, Parameters::Mul(s1, s2)) => Parameters::Mul(s1.clone(), s2.clone()),
+
+        (Parameters::Mul(s1, s2), Parameters::Null) => Parameters::Mul(s1.clone(), s2.clone()),
 
         (Parameters::Var(x, y, z), Parameters::Var(x1, y1, z1)) => {
             if z == z1 && y == y1 {

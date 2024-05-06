@@ -22,9 +22,7 @@ pub fn minus(
             Parameters::Rational(Rationals::new(1, 0) - s)
         }
 
-        (Parameters::Null, Parameters::Rational(s)) => {
-            Parameters::Rational(Rationals::new(1, 0) - s)
-        }
+        (Parameters::Null, Parameters::Rational(s)) => Parameters::Rational(s.opposite()),
         (Parameters::Rational(s), Parameters::Rational(s2)) => Parameters::Rational(s - s2),
         (Parameters::Rational(s), Parameters::Int(i)) => {
             Parameters::Rational(s - Rationals::new(1, i))
@@ -92,21 +90,19 @@ pub fn minus(
                 Box::from(Parameters::Identifier(s.clone())),
                 Box::from(Parameters::Int(-i)),
             ),
-            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, minus),
+            Some(_) => {
+                apply_operator_reverse(Parameters::Int(i), Parameters::Identifier(s), ram, minus)
+            }
         },
         (Parameters::Null, Parameters::Identifier(s)) => match ram {
-            None => Parameters::Plus(
-                Box::from(Parameters::Null),
-                Box::from(Parameters::Var(Box::from(Parameters::Int(-1)), 1, s)),
-            ),
+            None => Parameters::Var(Box::from(Parameters::Int(-1)), 1, s),
             Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, minus),
         },
         (Parameters::Identifier(s), Parameters::Null) => match ram {
-            None => Parameters::Plus(
-                Box::from(Parameters::Null),
-                Box::from(Parameters::Var(Box::from(Parameters::Int(-1)), 1, s)),
-            ),
-            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, minus),
+            None => Parameters::Var(Box::from(Parameters::Int(-1)), 1, s),
+            Some(_) => {
+                apply_operator_reverse(Parameters::Identifier(s), Parameters::Null, ram, minus)
+            }
         },
         (Parameters::Rational(s), Parameters::Identifier(ss)) => match ram {
             None => Parameters::Plus(
@@ -141,7 +137,7 @@ pub fn minus(
                 let v = apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, minus);
                 match v {
                     Parameters::Int(i) => Parameters::Int(-i),
-                    _ => Parameters::Null,
+                    p => minus(Parameters::Int(0), p, None),
                 }
             }
         },
@@ -405,6 +401,16 @@ pub fn minus(
             }
         }
 
+        (Parameters::Null, Parameters::Plus(s1, s2)) => Parameters::Plus(
+            Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+            Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+        ),
+
+        (Parameters::Plus(s1, s2), Parameters::Null) => Parameters::Plus(
+            Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+            Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
+        ),
+
         (Parameters::Mul(s1, s2), Parameters::Mul(s3, s4)) => Parameters::Plus(
             Box::from(Parameters::Mul(s1.clone(), s2.clone())),
             Box::from(Parameters::Mul(
@@ -500,6 +506,16 @@ pub fn minus(
                 Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
                 s2.clone(),
             )),
+        ),
+
+        (Parameters::Null, Parameters::Mul(s1, s2)) => Parameters::Mul(
+            Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+            s2.clone(),
+        ),
+
+        (Parameters::Mul(s1, s2), Parameters::Null) => Parameters::Mul(
+            Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
+            s2.clone(),
         ),
 
         (Parameters::Var(x, y, z), Parameters::Var(x1, y1, z1)) => {
