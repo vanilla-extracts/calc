@@ -36,6 +36,13 @@ impl Rationals {
         Rationals::new(self.under, -1 * self.over)
     }
 
+    pub fn invert(self) -> Result<Rationals, Rationals> {
+        match self.over {
+            0 => Err(Rationals::new(0, 1)),
+            _ => Ok(Rationals::new(self.over, self.under).reduce()),
+        }
+    }
+
     pub fn reduce(self) -> Self {
         let minus;
         let i1;
