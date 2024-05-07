@@ -35,6 +35,7 @@ pub enum Parameters {
     Var(Box<Parameters>, i64, String),
     Plus(Box<Parameters>, Box<Parameters>),
     Mul(Box<Parameters>, Box<Parameters>),
+    Div(Box<Parameters>, Box<Parameters>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -112,6 +113,7 @@ impl Display for Parameters {
             Plus(x, y) => write!(f, "({x}+{y})"),
             Mul(x, y) => write!(f, "({x}*{y})"),
             Var(x, y, s) => write!(f, "{x}{s}{}", int_to_superscript_string(*y)),
+            Div(x, y) => write!(f, "({x}/{y})"),
         }
     }
 }

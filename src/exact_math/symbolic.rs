@@ -29,6 +29,7 @@ pub fn size(p: &Parameters) -> i32 {
         Plus(x, y) => 1 + size(x) + size(y),
         Var(x, _, _) => 1 + size(x),
         Mul(x, y) => 1 + size(x) + size(y),
+        Div(x, y) => 1 + size(x) + size(y),
     }
 }
 

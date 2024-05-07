@@ -94,6 +94,7 @@ pub fn interpret(
                 Parameters::Var(x, y, z) => Parameters::Var(x.clone(), y.clone(), z.clone()),
                 Parameters::Plus(x, y) => add(*x.clone(), *y.clone(), Some(&ram)),
                 Parameters::Mul(x, y) => mult(*x.clone(), *y.clone(), Some(&ram)),
+                Parameters::Div(x, y) => divide(*x.clone(), *y.clone(), Some(&ram)),
             };
             last.clone()
         }
