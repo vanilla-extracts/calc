@@ -50,25 +50,51 @@ pub fn divide(
         (Bool(b), Parameters::Null) => Bool(b),
         (Parameters::Null, Bool(b)) => Bool(b),
         (Bool(b), Bool(b2)) => Bool(b && b2),
-        (Parameters::Identifier(s), Parameters::Identifier(s2)) => apply_operator(
-            Parameters::Identifier(s),
-            Parameters::Identifier(s2),
-            ram,
-            divide,
-        ),
+        (Parameters::Identifier(s), Parameters::Identifier(s2)) => match ram {
+            Some(_) => apply_operator(
+                Parameters::Identifier(s),
+                Parameters::Identifier(s2),
+                ram,
+                divide,
+            ),
+            None => Parameters::Div(
+                Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+                Box::from(Parameters::Var(
+                    Box::from(Parameters::Int(1)),
+                    1,
+                    s2.clone(),
+                )),
+            ),
+        },
 
-        (Parameters::Rational(s), Parameters::Identifier(ss)) => apply_operator_reverse(
-            Parameters::Rational(s.clone()),
-            Parameters::Identifier(ss.clone()),
-            ram,
-            divide,
-        ),
-        (Parameters::Identifier(ss), Parameters::Rational(s)) => apply_operator(
-            Parameters::Identifier(ss),
-            Parameters::Rational(s),
-            ram,
-            divide,
-        ),
+        (Parameters::Rational(s), Parameters::Identifier(ss)) => match ram {
+            Some(_) => apply_operator_reverse(
+                Parameters::Rational(s.clone()),
+                Parameters::Identifier(ss.clone()),
+                ram,
+                divide,
+            ),
+            None => Parameters::Div(
+                Box::from(Parameters::Rational(s.clone())),
+                Box::from(Parameters::Var(
+                    Box::from(Parameters::Int(1)),
+                    1,
+                    ss.clone(),
+                )),
+            ),
+        },
+        (Parameters::Identifier(ss), Parameters::Rational(s)) => match ram {
+            Some(_) => apply_operator(
+                Parameters::Identifier(ss),
+                Parameters::Rational(s),
+                ram,
+                divide,
+            ),
+            None => match s.invert() {
+                Ok(r) => Parameters::Var(Box::from(Parameters::Rational(r)), 1, ss.clone()),
+                Err(_) => Parameters::Null,
+            },
+        },
 
         (Parameters::Identifier(s), Parameters::Int(i)) => {
             apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, divide)
