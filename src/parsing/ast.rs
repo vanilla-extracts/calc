@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::fmt::{Display, Formatter};
+use std::fmt::{format, Display, Formatter};
 
 use crate::exact_math::rationals::Rationals;
 use crate::lexing::token::{Operator, Token};
@@ -112,7 +112,7 @@ impl Display for Parameters {
             Rational(s) => write!(f, "{s}"),
             Plus(x, y) => write!(f, "({x}+{y})"),
             Mul(x, y) => write!(f, "({x}*{y})"),
-            Var(x, y, s) => write!(f, "{x}{s}{}", int_to_superscript_string(*y)),
+            Var(x, y, s) => write!(f, "({x}){s}{}", int_to_superscript_string(*y)),
             Div(x, y) => write!(f, "({x}/{y})"),
         }
     }
@@ -182,7 +182,7 @@ impl Parameters {
                     Some(ram.as_mut().unwrap()),
                     Some(function.as_mut().unwrap()),
                 );
-                format!("{x_printed}*{y_printed}")
+                format!("({x_printed}*{y_printed})")
             }
 
             Plus(x, y) => {
@@ -198,16 +198,30 @@ impl Parameters {
                     x_printed = "".to_string()
                 }
                 match y_printed.chars().nth(0) {
-                    Some('-') => format!("{}{}", x_printed, y_printed),
+                    Some('-') => format!("({}{})", x_printed, y_printed),
                     _ => {
                         if y_printed == "0".to_string() {
                             format!("{}", x_printed)
                         } else {
-                            format!("{}+{}", x_printed, y_printed)
+                            format!("({}+{})", x_printed, y_printed)
                         }
                     }
                 }
             }
+
+            Div(x, y) => {
+                let x_printed = x.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                let y_printed = y.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+
+                format!("({x_printed}/{y_printed})")
+            }
+
             InterpreterVector(lst) => {
                 let mut vec = Vec::new();
 

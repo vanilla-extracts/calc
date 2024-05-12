@@ -96,38 +96,76 @@ pub fn divide(
             },
         },
 
-        (Parameters::Identifier(s), Parameters::Int(i)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, divide)
-        }
-        (Parameters::Int(i), Parameters::Identifier(s)) => {
-            let v = apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, divide);
-            match v {
-                Parameters::Float(i) => Parameters::Float(1.0 / i),
-                _ => Parameters::Null,
+        (Parameters::Identifier(s), Parameters::Int(i)) => match ram {
+            None => Parameters::Var(
+                Box::new(Parameters::Rational(Rationals::new(i, 1))),
+                1,
+                s.clone(),
+            ),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Int(i), ram, divide),
+        },
+        (Parameters::Int(i), Parameters::Identifier(s)) => match ram {
+            None => Parameters::Div(
+                Box::from(Parameters::Int(i)),
+                Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+            ),
+            Some(_) => {
+                let v = apply_operator(
+                    Parameters::Identifier(s.clone()),
+                    Parameters::Int(i),
+                    ram,
+                    divide,
+                );
+                match v {
+                    Parameters::Float(i) => Parameters::Float(1.0 / i),
+                    _ => divide(Parameters::Int(i), Parameters::Identifier(s.clone()), None),
+                }
             }
-        }
-        (Parameters::Null, Parameters::Identifier(s)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Null, ram, divide)
-        }
-        (Parameters::Identifier(s), Parameters::Null) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Null, ram, divide)
-        }
-        (Parameters::Identifier(s), Parameters::Float(i)) => {
-            apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, divide)
-        }
-        (Parameters::Float(i), Parameters::Identifier(s)) => {
-            let v = apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, divide);
-            match v {
-                Parameters::Float(i) => Parameters::Float(1.0 / i),
-                _ => Parameters::Null,
+        },
+        (Parameters::Null, Parameters::Identifier(s)) => match ram {
+            None => Parameters::Div(
+                Box::new(Parameters::Int(1)),
+                Box::new(Parameters::Var(Box::new(Parameters::Int(1)), 1, s.clone())),
+            ),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, divide),
+        },
+        (Parameters::Identifier(s), Parameters::Null) => match ram {
+            None => Parameters::Div(
+                Box::new(Parameters::Int(1)),
+                Box::new(Parameters::Var(Box::new(Parameters::Int(1)), 1, s.clone())),
+            ),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Null, ram, divide),
+        },
+        (Parameters::Identifier(s), Parameters::Float(i)) => match ram {
+            None => Parameters::Var(
+                Box::from(Parameters::Rational(Rationals::rationalize(1.0 / i))),
+                1,
+                s.clone(),
+            ),
+            Some(_) => apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, divide),
+        },
+        (Parameters::Float(i), Parameters::Identifier(s)) => match ram {
+            None => Parameters::Div(
+                Box::from(Parameters::Rational(Rationals::rationalize(i))),
+                Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+            ),
+            Some(_) => {
+                let v =
+                    apply_operator(Parameters::Identifier(s), Parameters::Float(i), ram, divide);
+                match v {
+                    Parameters::Float(i) => Parameters::Float(1.0 / i),
+                    _ => Parameters::Null,
+                }
             }
-        }
-        (Bool(b), Parameters::Identifier(s)) => {
-            apply_operator_reverse(Bool(b), Parameters::Identifier(s), ram, divide)
-        }
-        (Parameters::Identifier(s), Bool(b)) => {
-            apply_operator(Parameters::Identifier(s), Bool(b), ram, divide)
-        }
+        },
+        (Bool(b), Parameters::Identifier(s)) => match ram {
+            None => Parameters::Bool(b),
+            Some(_) => apply_operator_reverse(Bool(b), Parameters::Identifier(s), ram, divide),
+        },
+        (Parameters::Identifier(s), Bool(b)) => match ram {
+            None => Parameters::Bool(b),
+            Some(_) => apply_operator(Parameters::Identifier(s), Bool(b), ram, divide),
+        },
         _ => Parameters::Identifier(
             "@Those two values are incompatible with the / operator".to_string(),
         ),
