@@ -182,7 +182,7 @@ impl Parameters {
                     Some(ram.as_mut().unwrap()),
                     Some(function.as_mut().unwrap()),
                 );
-                format!("(({x_printed})*({y_printed}))")
+                format!("({x_printed})*({y_printed})")
             }
 
             Plus(x, y) => {
@@ -203,7 +203,7 @@ impl Parameters {
                         if y_printed == "0".to_string() {
                             format!("{}", x_printed)
                         } else {
-                            format!("(({})+({}))", x_printed, y_printed)
+                            format!("({})+({})", x_printed, y_printed)
                         }
                     }
                 }
@@ -219,7 +219,7 @@ impl Parameters {
                     Some(function.as_mut().unwrap()),
                 );
 
-                format!("(({x_printed})/({y_printed}))")
+                format!("({x_printed})/({y_printed})")
             }
 
             InterpreterVector(lst) => {
