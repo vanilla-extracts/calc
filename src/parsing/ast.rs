@@ -110,10 +110,10 @@ impl Display for Parameters {
             InterpreterVector(a) => write!(f, "{:?}", a),
             Str(s) => write!(f, "{s}"),
             Rational(s) => write!(f, "{s}"),
-            Plus(x, y) => write!(f, "({x}+{y})"),
-            Mul(x, y) => write!(f, "({x}*{y})"),
+            Plus(x, y) => write!(f, "(({x})+({y}))"),
+            Mul(x, y) => write!(f, "(({x})*({y}))"),
             Var(x, y, s) => write!(f, "({x}){s}{}", int_to_superscript_string(*y)),
-            Div(x, y) => write!(f, "({x}/{y})"),
+            Div(x, y) => write!(f, "(({x})/({y}))"),
         }
     }
 }
@@ -182,7 +182,7 @@ impl Parameters {
                     Some(ram.as_mut().unwrap()),
                     Some(function.as_mut().unwrap()),
                 );
-                format!("({x_printed}*{y_printed})")
+                format!("(({x_printed})*({y_printed}))")
             }
 
             Plus(x, y) => {
@@ -203,7 +203,7 @@ impl Parameters {
                         if y_printed == "0".to_string() {
                             format!("{}", x_printed)
                         } else {
-                            format!("({}+{})", x_printed, y_printed)
+                            format!("(({})+({}))", x_printed, y_printed)
                         }
                     }
                 }
@@ -219,7 +219,7 @@ impl Parameters {
                     Some(function.as_mut().unwrap()),
                 );
 
-                format!("({x_printed}/{y_printed})")
+                format!("(({x_printed})/({y_printed}))")
             }
 
             InterpreterVector(lst) => {

@@ -75,9 +75,9 @@ pub fn divide(
                 divide,
             ),
             None => Parameters::Div(
-                Box::from(Parameters::Rational(s.clone())),
+                Box::from(Parameters::Int(s.over)),
                 Box::from(Parameters::Var(
-                    Box::from(Parameters::Int(1)),
+                    Box::from(Parameters::Int(s.under)),
                     1,
                     ss.clone(),
                 )),
@@ -146,8 +146,12 @@ pub fn divide(
         },
         (Parameters::Float(i), Parameters::Identifier(s)) => match ram {
             None => Parameters::Div(
-                Box::from(Parameters::Rational(Rationals::rationalize(i))),
-                Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
+                Box::from(Parameters::Int(Rationals::rationalize(i).over)),
+                Box::from(Parameters::Var(
+                    Box::from(Parameters::Int(Rationals::rationalize(i).under)),
+                    1,
+                    s.clone(),
+                )),
             ),
             Some(_) => {
                 let v =
