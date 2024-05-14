@@ -271,7 +271,7 @@ impl Parameters {
 #[cfg(test)]
 mod test {
     use crate::parsing::ast::{Ast, Parameters};
-    
+
     impl Ast {
         pub fn new(p: Parameters) -> Self {
             Ast::Node {
