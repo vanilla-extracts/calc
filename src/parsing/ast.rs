@@ -55,6 +55,7 @@ pub enum Ast {
 fn int_to_superscript_string(i: i64) -> String {
     fn digit_to_superscript_char(i: &str) -> &str {
         match i {
+            "-" => "⁻",
             "0" => "⁰",
             "1" => "¹",
             "2" => "²",
@@ -77,7 +78,9 @@ fn int_to_superscript_string(i: i64) -> String {
         .for_each(|f| vec.push(f));
 
     let i = vec.join("");
-    if i == "0".to_string() || i == "¹".to_string() {
+    if i == "⁰".to_string() {
+        "error".to_string()
+    } else if i == "¹" {
         "".to_string()
     } else {
         i
@@ -166,12 +169,31 @@ impl Parameters {
                 }
             }
 
-            Var(x, y, z) => match **x {
-                Int(1) => format!("{}{}", z, int_to_superscript_string(*y)),
-                Int(-1) => format!("-{}{}", z, int_to_superscript_string(*y)),
-                Int(0) => format!("0"),
-                _ => format!("{}", Var(x.clone(), y.clone(), z.clone())),
-            },
+            Var(x, y, z) => {
+                let l = int_to_superscript_string(*y);
+                if l == "error".to_string() {
+                    format!("{}", x.clone())
+                } else {
+                    match **x {
+                        Int(1) => format!("{}{}", z, int_to_superscript_string(*y)),
+                        Float(f) if f >= 1.0 - 1e10 && f <= 1.0 + 1e10 => {
+                            format!("{}{}", z, int_to_superscript_string(*y))
+                        }
+                        Rational(r) if r.clone() == Rationals::new(1, 1) => {
+                            format!("{}{}", z, int_to_superscript_string(*y))
+                        }
+                        Int(-1) => format!("-{}{}", z, int_to_superscript_string(*y)),
+                        Float(f) if f <= -1.0 - 1e10 && f >= -1.0 + 1e10 => {
+                            format!("-{}{}", z, int_to_superscript_string(*y))
+                        }
+                        Rational(r) if r.clone() == Rationals::new(-1, 1) => {
+                            format!("-{}{}", z, int_to_superscript_string(*y))
+                        }
+                        Int(0) => format!("0"),
+                        _ => format!("{}", Var(x.clone(), y.clone(), z.clone())),
+                    }
+                }
+            }
 
             Mul(x, y) => {
                 let x_printed = x.pretty_print(

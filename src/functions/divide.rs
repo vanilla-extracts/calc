@@ -60,13 +60,10 @@ pub fn divide(
                 ram,
                 divide,
             ),
-            None => Parameters::Div(
-                Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
-                Box::from(Parameters::Var(
-                    Box::from(Parameters::Int(1)),
-                    1,
-                    s2.clone(),
-                )),
+            None => divide(
+                Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
+                Parameters::Var(Box::from(Parameters::Int(1)), 1, s2.clone()),
+                ram,
             ),
         },
 
@@ -181,6 +178,7 @@ pub fn divide(
             );
             first
         }
+        //(x+y)/a = x/a + y/a
         (Parameters::Plus(s1, s2), Parameters::Identifier(s3)) => {
             let first = add(
                 divide(
@@ -197,6 +195,7 @@ pub fn divide(
             );
             first
         }
+
         (Parameters::Identifier(s3), Parameters::Plus(s1, s2)) => {
             let first = Parameters::Div(
                 Box::from(Parameters::Var(Box::new(Parameters::Int(1)), 1, s3.clone())),
@@ -268,7 +267,6 @@ pub fn divide(
 
         (Parameters::Plus(s1, s2), Parameters::Null) => add(*s1.clone(), *s2.clone(), ram),
 
-        //x/yz = x/y * 1/z | 1/y * x/z
         (Parameters::Var(x, y, z), Parameters::Mul(s1, s2)) => {
             let first = mult(
                 divide(Parameters::Var(x.clone(), y, z.clone()), *s1.clone(), ram),
@@ -290,7 +288,6 @@ pub fn divide(
             }
         }
 
-        //xy/z = x/z * y | y/z * x
         (Parameters::Mul(s1, s2), Parameters::Var(x, y, z)) => {
             let first = mult(
                 divide(*s1.clone(), Parameters::Var(x.clone(), y, z.clone()), ram),
@@ -311,7 +308,7 @@ pub fn divide(
                 first
             }
         }
-        //xy/ab = x/ab * y/1 | y/ab * x
+
         (Parameters::Mul(s1, s2), Parameters::Mul(s3, s4)) => {
             let first = mult(
                 divide(*s1.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
@@ -332,7 +329,6 @@ pub fn divide(
             }
         }
 
-        //xy/a = x/a * y | y/a * x
         (Parameters::Mul(s1, s2), Parameters::Identifier(s)) => {
             let first = mult(
                 divide(
@@ -361,6 +357,7 @@ pub fn divide(
                 first
             }
         }
+
         (Parameters::Identifier(s), Parameters::Mul(s1, s2)) => {
             let first = mult(
                 divide(
@@ -390,7 +387,6 @@ pub fn divide(
             }
         }
 
-        //(s1s2/a => s1/a * s2
         (Parameters::Mul(s1, s2), Parameters::Int(i)) => {
             let first = mult(
                 divide(*s1.clone(), Parameters::Int(i), ram),
@@ -412,7 +408,6 @@ pub fn divide(
             }
         }
 
-        //a/xy = a/x * 1/y | 1/x * a/y
         (Parameters::Int(i), Parameters::Mul(s1, s2)) => {
             let first = mult(
                 divide(Parameters::Int(i), *s1.clone(), ram),
@@ -420,7 +415,7 @@ pub fn divide(
                 ram,
             );
             let second = mult(
-                divide(Parameters::Int(i), *s1.clone(), ram),
+                divide(Parameters::Int(1), *s1.clone(), ram),
                 divide(Parameters::Int(i), *s2.clone(), ram),
                 ram,
             );
@@ -455,7 +450,6 @@ pub fn divide(
             }
         }
 
-        //a/xy = a/x * 1/y | 1/x * a/y
         (Parameters::Float(f), Parameters::Mul(s1, s2)) => {
             let first = mult(
                 divide(Parameters::Float(f), *s1.clone(), ram),
@@ -463,7 +457,7 @@ pub fn divide(
                 ram,
             );
             let second = mult(
-                divide(Parameters::Float(f), *s1.clone(), ram),
+                divide(Parameters::Int(1), *s1.clone(), ram),
                 divide(Parameters::Float(f), *s2.clone(), ram),
                 ram,
             );
@@ -498,7 +492,6 @@ pub fn divide(
             }
         }
 
-        //a/xy = a/x * 1/y | 1/x * a/y
         (Parameters::Rational(r), Parameters::Mul(s1, s2)) => {
             let first = mult(
                 divide(Parameters::Rational(r.clone()), *s1.clone(), ram),
@@ -506,7 +499,7 @@ pub fn divide(
                 ram,
             );
             let second = mult(
-                divide(Parameters::Rational(r.clone()), *s1.clone(), ram),
+                divide(Parameters::Int(1), *s1.clone(), ram),
                 divide(Parameters::Rational(r.clone()), *s2.clone(), ram),
                 ram,
             );
@@ -519,29 +512,51 @@ pub fn divide(
                 first
             }
         }
-        //(x*y)*(a+b) = x*y*a+x*y*b
-        (Parameters::Mul(s1, s2), Parameters::Plus(s3, s4)) => Parameters::Plus(
-            Box::from(mult(mult(*s1.clone(), *s3.clone(), ram), *s2.clone(), ram)),
-            Box::from(mult(mult(*s1.clone(), *s4.clone(), ram), *s2.clone(), ram)),
-        ),
 
-        (Parameters::Plus(s3, s4), Parameters::Mul(s1, s2)) => Parameters::Plus(
-            Box::from(mult(mult(*s1.clone(), *s3.clone(), ram), *s2.clone(), ram)),
-            Box::from(mult(mult(*s1.clone(), *s4.clone(), ram), *s2.clone(), ram)),
-        ),
+        //(xy)/(a+b) = x/(a+b) * y/1
+        (Parameters::Mul(s1, s2), Parameters::Plus(s3, s4)) => {
+            let first = mult(
+                divide(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
+                divide(Parameters::Int(1), *s2.clone(), ram),
+                ram,
+            );
+            let second = mult(
+                divide(Parameters::Int(1), *s1.clone(), ram),
+                divide(*s2.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
+                ram,
+            );
 
-        (Parameters::Null, Parameters::Mul(s1, s2)) => Parameters::Mul(s1.clone(), s2.clone()),
+            let (ss1, ss2) = (size(&first), size(&second));
 
-        (Parameters::Mul(s1, s2), Parameters::Null) => Parameters::Mul(s1.clone(), s2.clone()),
+            if ss1 > ss2 {
+                second
+            } else {
+                first
+            }
+        }
+
+        //(x+y)/ab = x/ab + y/ab
+        (Parameters::Plus(s3, s4), Parameters::Mul(s1, s2)) => {
+            let first = add(
+                divide(*s3.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
+                divide(*s4.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
+                ram,
+            );
+            first
+        }
+
+        (Parameters::Null, Parameters::Mul(s1, s2)) => mult(*s1.clone(), *s2.clone(), ram),
+
+        (Parameters::Mul(s1, s2), Parameters::Null) => mult(*s1.clone(), *s2.clone(), ram),
 
         (Parameters::Var(x, y, z), Parameters::Var(x1, y1, z1)) => {
             if z == z1 {
-                Parameters::Var(Box::from(mult(*x.clone(), *x1.clone(), ram)), y + y1, z)
+                Parameters::Var(Box::from(divide(*x.clone(), *x1.clone(), ram)), y - y1, z)
             } else {
-                Parameters::Mul(
+                Parameters::Div(
                     Box::from(Parameters::Var(x.clone(), y.clone(), z.clone())),
                     Box::from(Parameters::Var(
-                        Box::from(mult(Parameters::Int(1), *x1.clone(), ram)),
+                        Box::from(divide(Parameters::Int(1), *x1.clone(), ram)),
                         y1.clone(),
                         z1.clone(),
                     )),
@@ -552,9 +567,9 @@ pub fn divide(
         //2x*x
         (Parameters::Var(x, y, z), Parameters::Identifier(s)) => {
             if z == s {
-                Parameters::Var(Box::from(x.clone()), y + 1, z)
+                Parameters::Var(Box::from(x.clone()), y - 1, z)
             } else {
-                Parameters::Mul(
+                Parameters::Div(
                     Box::from(Parameters::Var(x.clone(), y.clone(), z.clone())),
                     Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
                 )
@@ -563,51 +578,55 @@ pub fn divide(
 
         (Parameters::Identifier(s), Parameters::Var(x, y, z)) => {
             if z == s {
-                Parameters::Var(Box::from(x.clone()), y + 1, z)
+                Parameters::Var(
+                    Box::from(divide(Parameters::Int(1), *x.clone(), ram)),
+                    1 - y,
+                    z,
+                )
             } else {
-                Parameters::Mul(
+                Parameters::Div(
+                    Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
                     Box::from(Parameters::Var(
                         Box::from(mult(Parameters::Int(1), *x.clone(), ram)),
                         y.clone(),
                         z.clone(),
                     )),
-                    Box::from(Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone())),
                 )
             }
         }
 
         (Parameters::Int(i), Parameters::Var(x, y, z)) => Parameters::Var(
-            Box::from(mult(*x.clone(), Parameters::Int(i), ram)),
-            y,
+            Box::from(divide(Parameters::Int(i), *x.clone(), ram)),
+            -y,
             z.clone(),
         ),
 
         (Parameters::Var(x, y, z), Parameters::Int(i)) => Parameters::Var(
-            Box::from(mult(*x.clone(), Parameters::Int(i), ram)),
+            Box::from(divide(*x.clone(), Parameters::Int(i), ram)),
             y,
             z.clone(),
         ),
 
         (Parameters::Float(f), Parameters::Var(x, y, z)) => Parameters::Var(
-            Box::from(mult(Parameters::Float(f), *x.clone(), ram)),
-            y,
+            Box::from(divide(Parameters::Float(f), *x.clone(), ram)),
+            -y,
             z.clone(),
         ),
 
         (Parameters::Var(x, y, z), Parameters::Float(f)) => Parameters::Var(
-            Box::from(mult(*x.clone(), Parameters::Float(f), ram)),
+            Box::from(divide(*x.clone(), Parameters::Float(f), ram)),
             y,
             z.clone(),
         ),
 
         (Parameters::Rational(r), Parameters::Var(x, y, z)) => Parameters::Var(
-            Box::from(mult(Parameters::Rational(r.clone()), *x.clone(), ram)),
-            y,
+            Box::from(divide(Parameters::Rational(r.clone()), *x.clone(), ram)),
+            -y,
             z.clone(),
         ),
 
         (Parameters::Var(x, y, z), Parameters::Rational(r)) => Parameters::Var(
-            Box::from(mult(*x.clone(), Parameters::Rational(r), ram)),
+            Box::from(divide(*x.clone(), Parameters::Rational(r.clone()), ram)),
             y,
             z.clone(),
         ),

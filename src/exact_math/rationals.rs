@@ -2,7 +2,7 @@ use std::{fmt::Display, ops};
 
 use crate::utils::integer_utils::gcd;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Rationals {
     pub under: i64,
     pub over: i64,
