@@ -2,6 +2,9 @@
 You can use the calculator to compute and simplify symbolic computation problems
 it's compatible with +,-,*,/,^.
 
+# Version 2.13.2 : Bug fix
+Fix #43 
+
 # Version 2.13.1 : Bug fix
 Fix the issue of the function never used (moved implementation to the test
 module)
