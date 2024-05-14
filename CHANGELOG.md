@@ -1,3 +1,6 @@
+# Version 2.13.2 : Bug fix
+Fix #43 
+
 # Version 2.13.1 : Bug fix
 Fix the issue of the function never used (moved implementation to the test
 module)

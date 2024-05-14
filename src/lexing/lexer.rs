@@ -115,7 +115,15 @@ pub fn lex(input: String) -> Vec<Token> {
 
     let length = input.len();
     while current_pos < input.len() {
-        let current_character: char = chars.get(current_pos).unwrap().to_ascii_lowercase();
+        let peeking_char = chars.get(current_pos);
+        let current_character: char;
+        match peeking_char {
+            None => {
+                current_pos += 1;
+                continue;
+            }
+            Some(t) => current_character = t.to_ascii_lowercase(),
+        }
         if !is_an_allowed_char(current_character) {
             current_pos += 1;
             continue;
