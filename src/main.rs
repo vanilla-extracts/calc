@@ -262,7 +262,7 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 fn main() {
     let mut args: Args = env::args();
 
-    let version: String = "v2.13.1".to_string();
+    let version: String = "v2.13.2".to_string();
     if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
 
@@ -293,7 +293,6 @@ fn main() {
             exit(0);
         }
 
-
         if arg_final == "-u" || arg_final == "--update" {
             if cfg!(target_os = "windows") {
                 Command::new("cmd")
@@ -310,7 +309,6 @@ fn main() {
             println!("mini-calc has been succesfully updated to the latest version");
             exit(0);
         }
-
 
         let lexed = lex(arg_final);
         let mut parser = init_calc_parser(&lexed);
