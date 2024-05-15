@@ -95,7 +95,7 @@ impl Rationals {
 
 impl Display for Rationals {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let fs = self.clone().reduce();
+        let fs = self.reduce();
         if fs.under == 1 {
             write!(f, "{}", fs.over)
         } else {
