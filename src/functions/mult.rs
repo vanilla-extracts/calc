@@ -478,7 +478,7 @@ pub fn mult(
             Box::from(mult(*s1.clone(), Parameters::Rational(r.clone()), ram)),
             s2.clone(),
         ),
-        //(x*y)*(a+b) = x*y*a+x*y*b
+
         (Parameters::Mul(s1, s2), Parameters::Plus(s3, s4)) => Parameters::Plus(
             Box::from(mult(mult(*s1.clone(), *s3.clone(), ram), *s2.clone(), ram)),
             Box::from(mult(mult(*s1.clone(), *s4.clone(), ram), *s2.clone(), ram)),
@@ -508,7 +508,6 @@ pub fn mult(
             }
         }
 
-        //2x*x
         (Parameters::Var(x, y, z), Parameters::Identifier(s)) => {
             if z == s {
                 Parameters::Var(Box::from(x.clone()), y + 1, z)

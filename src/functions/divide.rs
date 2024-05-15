@@ -178,7 +178,6 @@ pub fn divide(
             );
             first
         }
-        //(x+y)/a = x/a + y/a
         (Parameters::Plus(s1, s2), Parameters::Identifier(s3)) => {
             let first = add(
                 divide(
@@ -513,7 +512,6 @@ pub fn divide(
             }
         }
 
-        //(xy)/(a+b) = x/(a+b) * y/1
         (Parameters::Mul(s1, s2), Parameters::Plus(s3, s4)) => {
             let first = mult(
                 divide(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
@@ -535,7 +533,6 @@ pub fn divide(
             }
         }
 
-        //(x+y)/ab = x/ab + y/ab
         (Parameters::Plus(s3, s4), Parameters::Mul(s1, s2)) => {
             let first = add(
                 divide(*s3.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
@@ -564,7 +561,6 @@ pub fn divide(
             }
         }
 
-        //2x*x
         (Parameters::Var(x, y, z), Parameters::Identifier(s)) => {
             if z == s {
                 Parameters::Var(Box::from(x.clone()), y - 1, z)
@@ -917,7 +913,6 @@ pub fn divide(
             }
         }
 
-        //(xy)/(a+b) = x/(a+b) * y/1
         (Parameters::Div(s1, s2), Parameters::Plus(s3, s4)) => {
             let first = mult(
                 divide(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
@@ -939,7 +934,6 @@ pub fn divide(
             }
         }
 
-        //(x+y)/ab = x/ab + y/ab
         (Parameters::Plus(s3, s4), Parameters::Div(s1, s2)) => {
             let first = add(
                 divide(*s3.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
