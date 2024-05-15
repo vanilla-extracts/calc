@@ -743,39 +743,28 @@ pub fn divide(
             );
             first
         }
+
         (Parameters::Div(s1, s2), Parameters::Plus(s3, s4)) => {
-            let first = mult(
-                divide(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
-                divide(Parameters::Int(1), *s2.clone(), ram),
-                ram,
-            );
-            let second = mult(
-                divide(Parameters::Int(1), *s1.clone(), ram),
-                divide(*s2.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
-        }
-
-        (Parameters::Plus(s3, s4), Parameters::Div(s1, s2)) => {
-            let first = add(
-                divide(*s3.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
-                divide(*s4.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
+            let first = divide(
+                mult(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
+                *s2.clone(),
                 ram,
             );
             first
         }
 
-        (Parameters::Null, Parameters::Div(s1, s2)) => mult(*s1.clone(), *s2.clone(), ram),
+        (Parameters::Plus(s3, s4), Parameters::Div(s1, s2)) => {
+            let first = divide(
+                mult(*s2.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
+                *s1.clone(),
+                ram,
+            );
+            first
+        }
 
-        (Parameters::Div(s1, s2), Parameters::Null) => mult(*s1.clone(), *s2.clone(), ram),
+        (Parameters::Null, Parameters::Div(s1, s2)) => divide(*s1.clone(), *s2.clone(), ram),
+
+        (Parameters::Div(s1, s2), Parameters::Null) => divide(*s1.clone(), *s2.clone(), ram),
         _ => Parameters::Identifier(
             "@Those two values are incompatible with the / operator".to_string(),
         ),
