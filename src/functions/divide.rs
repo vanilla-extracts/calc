@@ -237,7 +237,7 @@ pub fn divide(
         }
         (Parameters::Rational(r), Parameters::Plus(s1, s2)) => {
             let first = Parameters::Div(
-                Box::from(Parameters::Rational(r.clone())),
+                Box::from(Parameters::Rational(r)),
                 Box::from(add(*s1.clone(), *s2.clone(), ram)),
             );
             first
@@ -245,8 +245,8 @@ pub fn divide(
 
         (Parameters::Plus(s1, s2), Parameters::Rational(r)) => {
             let first = add(
-                divide(*s1.clone(), Parameters::Rational(r.clone()), ram),
-                divide(*s2.clone(), Parameters::Rational(r.clone()), ram),
+                divide(*s1.clone(), Parameters::Rational(r), ram),
+                divide(*s2.clone(), Parameters::Rational(r), ram),
                 ram,
             );
             first
@@ -472,13 +472,13 @@ pub fn divide(
 
         (Parameters::Mul(s1, s2), Parameters::Rational(r)) => {
             let first = mult(
-                divide(*s1.clone(), Parameters::Rational(r.clone()), ram),
+                divide(*s1.clone(), Parameters::Rational(r), ram),
                 *s2.clone(),
                 ram,
             );
             let second = mult(
                 *s1.clone(),
-                divide(*s2.clone(), Parameters::Rational(r.clone()), ram),
+                divide(*s2.clone(), Parameters::Rational(r), ram),
                 ram,
             );
 
@@ -493,13 +493,13 @@ pub fn divide(
 
         (Parameters::Rational(r), Parameters::Mul(s1, s2)) => {
             let first = mult(
-                divide(Parameters::Rational(r.clone()), *s1.clone(), ram),
+                divide(Parameters::Rational(r), *s1.clone(), ram),
                 divide(Parameters::Int(1), *s2.clone(), ram),
                 ram,
             );
             let second = mult(
                 divide(Parameters::Int(1), *s1.clone(), ram),
-                divide(Parameters::Rational(r.clone()), *s2.clone(), ram),
+                divide(Parameters::Rational(r), *s2.clone(), ram),
                 ram,
             );
 
@@ -616,303 +616,133 @@ pub fn divide(
         ),
 
         (Parameters::Rational(r), Parameters::Var(x, y, z)) => Parameters::Var(
-            Box::from(divide(Parameters::Rational(r.clone()), *x.clone(), ram)),
+            Box::from(divide(Parameters::Rational(r), *x.clone(), ram)),
             -y,
             z.clone(),
         ),
 
         (Parameters::Var(x, y, z), Parameters::Rational(r)) => Parameters::Var(
-            Box::from(divide(*x.clone(), Parameters::Rational(r.clone()), ram)),
+            Box::from(divide(*x.clone(), Parameters::Rational(r), ram)),
             y,
             z.clone(),
         ),
 
         (Parameters::Var(x, y, z), Parameters::Div(s1, s2)) => {
-            let first = mult(
-                divide(Parameters::Var(x.clone(), y, z.clone()), *s1.clone(), ram),
-                divide(Parameters::Int(1), *s2.clone(), ram),
+            let first = divide(
+                mult(Parameters::Var(x.clone(), y, z.clone()), *s2.clone(), ram),
+                *s1.clone(),
                 ram,
             );
-            let second = mult(
-                divide(Parameters::Int(1), *s1.clone(), ram),
-                divide(Parameters::Var(x.clone(), y, z.clone()), *s2.clone(), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Div(s1, s2), Parameters::Var(x, y, z)) => {
-            let first = mult(
-                divide(*s1.clone(), Parameters::Var(x.clone(), y, z.clone()), ram),
-                *s2.clone(),
-                ram,
-            );
-            let second = mult(
+            let first = divide(
                 *s1.clone(),
-                divide(*s2.clone(), Parameters::Var(x.clone(), y, z.clone()), ram),
+                mult(*s2.clone(), Parameters::Var(x.clone(), y, z.clone()), ram),
                 ram,
             );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Mul(s1, s2), Parameters::Div(s3, s4)) => {
-            let first = mult(
-                divide(*s1.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
-                *s2.clone(),
+            let first = divide(
+                mult(*s4.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
+                *s3.clone(),
                 ram,
             );
-            let second = mult(
-                *s1.clone(),
-                divide(*s2.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Div(s1, s2), Parameters::Mul(s3, s4)) => {
-            let first = mult(
-                divide(*s1.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
-                *s2.clone(),
-                ram,
-            );
-            let second = mult(
+            let first = divide(
                 *s1.clone(),
-                divide(*s2.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
+                mult(*s2.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
                 ram,
             );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Div(s1, s2), Parameters::Div(s3, s4)) => {
-            let first = mult(
-                divide(*s1.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
-                *s2.clone(),
+            let first = divide(
+                mult(*s1.clone(), *s4.clone(), ram),
+                mult(*s2.clone(), *s3.clone(), ram),
                 ram,
             );
-            let second = mult(
-                *s1.clone(),
-                divide(*s2.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Div(s1, s2), Parameters::Identifier(s)) => {
-            let first = mult(
-                divide(
-                    *s1.clone(),
-                    Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
-                    ram,
-                ),
-                *s2.clone(),
-                ram,
-            );
-            let second = mult(
+            let first = divide(
                 *s1.clone(),
-                divide(
+                mult(
                     *s2.clone(),
                     Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
                     ram,
                 ),
                 ram,
             );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Identifier(s), Parameters::Div(s1, s2)) => {
-            let first = mult(
-                divide(
-                    Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
-                    *s1.clone(),
-                    ram,
-                ),
-                divide(Parameters::Int(1), *s2.clone(), ram),
-                ram,
-            );
-            let second = mult(
-                divide(Parameters::Int(1), *s1.clone(), ram),
-                divide(
+            let first = divide(
+                mult(
                     Parameters::Var(Box::from(Parameters::Int(1)), 1, s.clone()),
                     *s2.clone(),
                     ram,
                 ),
+                *s1.clone(),
                 ram,
             );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Div(s1, s2), Parameters::Int(i)) => {
-            let first = mult(
-                divide(*s1.clone(), Parameters::Int(i), ram),
-                *s2.clone(),
-                ram,
-            );
-            let second = mult(
-                *s1.clone(),
-                divide(*s2.clone(), Parameters::Int(i), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            let first = divide(mult(*s1.clone(), Parameters::Int(i), ram), *s2.clone(), ram);
+            first
         }
 
         (Parameters::Int(i), Parameters::Div(s1, s2)) => {
-            let first = mult(
-                divide(Parameters::Int(i), *s1.clone(), ram),
-                divide(Parameters::Int(1), *s2.clone(), ram),
-                ram,
-            );
-            let second = mult(
-                divide(Parameters::Int(1), *s1.clone(), ram),
-                divide(Parameters::Int(i), *s2.clone(), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            let first = divide(mult(Parameters::Int(i), *s2.clone(), ram), *s1.clone(), ram);
+            first
         }
 
         (Parameters::Div(s1, s2), Parameters::Float(f)) => {
-            let first = mult(
-                divide(*s1.clone(), Parameters::Float(f), ram),
+            let first = divide(
+                mult(*s1.clone(), Parameters::Float(f), ram),
                 *s2.clone(),
                 ram,
             );
-            let second = mult(
-                *s1.clone(),
-                divide(*s2.clone(), Parameters::Float(f), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Float(f), Parameters::Div(s1, s2)) => {
-            let first = mult(
-                divide(Parameters::Float(f), *s1.clone(), ram),
-                divide(Parameters::Int(1), *s2.clone(), ram),
+            let first = divide(
+                mult(Parameters::Float(f), *s2.clone(), ram),
+                *s1.clone(),
                 ram,
             );
-            let second = mult(
-                divide(Parameters::Int(1), *s1.clone(), ram),
-                divide(Parameters::Float(f), *s2.clone(), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Div(s1, s2), Parameters::Rational(r)) => {
-            let first = mult(
-                divide(*s1.clone(), Parameters::Rational(r.clone()), ram),
+            let first = divide(
+                mult(*s1.clone(), Parameters::Rational(r), ram),
                 *s2.clone(),
                 ram,
             );
-            let second = mult(
-                *s1.clone(),
-                divide(*s2.clone(), Parameters::Rational(r.clone()), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
 
         (Parameters::Rational(r), Parameters::Div(s1, s2)) => {
-            let first = mult(
-                divide(Parameters::Rational(r.clone()), *s1.clone(), ram),
-                divide(Parameters::Int(1), *s2.clone(), ram),
+            let first = divide(
+                mult(Parameters::Rational(r), *s2.clone(), ram),
+                *s1.clone(),
                 ram,
             );
-            let second = mult(
-                divide(Parameters::Int(1), *s1.clone(), ram),
-                divide(Parameters::Rational(r.clone()), *s2.clone(), ram),
-                ram,
-            );
-
-            let (ss1, ss2) = (size(&first), size(&second));
-
-            if ss1 > ss2 {
-                second
-            } else {
-                first
-            }
+            first
         }
-
         (Parameters::Div(s1, s2), Parameters::Plus(s3, s4)) => {
             let first = mult(
                 divide(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram),

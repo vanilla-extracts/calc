@@ -315,16 +315,16 @@ pub fn mult(
         }
         (Parameters::Rational(r), Parameters::Plus(s1, s2)) => {
             let first = Parameters::Plus(
-                Box::from(mult(Parameters::Rational(r.clone()), *s1.clone(), ram)),
-                Box::from(mult(Parameters::Rational(r.clone()), *s2.clone(), ram)),
+                Box::from(mult(Parameters::Rational(r), *s1.clone(), ram)),
+                Box::from(mult(Parameters::Rational(r), *s2.clone(), ram)),
             );
             first
         }
 
         (Parameters::Plus(s1, s2), Parameters::Rational(r)) => {
             let first = Parameters::Plus(
-                Box::from(mult(*s1.clone(), Parameters::Rational(r.clone()), ram)),
-                Box::from(mult(*s2.clone(), Parameters::Rational(r.clone()), ram)),
+                Box::from(mult(*s1.clone(), Parameters::Rational(r), ram)),
+                Box::from(mult(*s2.clone(), Parameters::Rational(r), ram)),
             );
             first
         }
@@ -470,12 +470,12 @@ pub fn mult(
         ),
 
         (Parameters::Mul(s1, s2), Parameters::Rational(r)) => Parameters::Mul(
-            Box::from(mult(*s1.clone(), Parameters::Rational(r.clone()), ram)),
+            Box::from(mult(*s1.clone(), Parameters::Rational(r), ram)),
             s2.clone(),
         ),
 
         (Parameters::Rational(r), Parameters::Mul(s1, s2)) => Parameters::Mul(
-            Box::from(mult(*s1.clone(), Parameters::Rational(r.clone()), ram)),
+            Box::from(mult(*s1.clone(), Parameters::Rational(r), ram)),
             s2.clone(),
         ),
 
@@ -559,7 +559,7 @@ pub fn mult(
         ),
 
         (Parameters::Rational(r), Parameters::Var(x, y, z)) => Parameters::Var(
-            Box::from(mult(Parameters::Rational(r.clone()), *x.clone(), ram)),
+            Box::from(mult(Parameters::Rational(r), *x.clone(), ram)),
             y,
             z.clone(),
         ),

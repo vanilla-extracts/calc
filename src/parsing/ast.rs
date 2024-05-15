@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::fmt::{format, Display, Formatter};
+use std::fmt::{Display, Formatter};
 
 use crate::exact_math::rationals::Rationals;
 use crate::lexing::token::{Operator, Token};

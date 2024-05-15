@@ -278,12 +278,12 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
 
         (Parameters::Plus(s1, s2), Parameters::Rational(r)) => {
             let first = Parameters::Plus(
-                Box::from(add(*s1.clone(), Parameters::Rational(r.clone()), ram)),
+                Box::from(add(*s1.clone(), Parameters::Rational(r), ram)),
                 s2.clone(),
             );
             let second = Parameters::Plus(
                 s1.clone(),
-                Box::from(add(*s2.clone(), Parameters::Rational(r.clone()), ram)),
+                Box::from(add(*s2.clone(), Parameters::Rational(r), ram)),
             );
 
             let (s1, s2) = (size(&first), size(&second));
@@ -296,12 +296,12 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
 
         (Parameters::Rational(r), Parameters::Plus(s1, s2)) => {
             let first = Parameters::Plus(
-                Box::from(add(*s1.clone(), Parameters::Rational(r.clone()), ram)),
+                Box::from(add(*s1.clone(), Parameters::Rational(r), ram)),
                 s2.clone(),
             );
             let second = Parameters::Plus(
                 s1.clone(),
-                Box::from(add(*s2.clone(), Parameters::Rational(r.clone()), ram)),
+                Box::from(add(*s2.clone(), Parameters::Rational(r), ram)),
             );
 
             let (s1, s2) = (size(&first), size(&second));
@@ -406,11 +406,11 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
 
         (Parameters::Mul(s1, s2), Parameters::Rational(r)) => Parameters::Plus(
             Box::from(Parameters::Mul(s1.clone(), s2.clone())),
-            Box::from(Parameters::Rational(r.clone())),
+            Box::from(Parameters::Rational(r)),
         ),
 
         (Parameters::Rational(r), Parameters::Mul(s1, s2)) => Parameters::Plus(
-            Box::from(Parameters::Rational(r.clone())),
+            Box::from(Parameters::Rational(r)),
             Box::from(Parameters::Mul(s1.clone(), s2.clone())),
         ),
 
@@ -492,13 +492,13 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
         ),
 
         (Parameters::Rational(r), Parameters::Var(x, y, z)) => Parameters::Plus(
-            Box::from(Parameters::Rational(r.clone())),
+            Box::from(Parameters::Rational(r)),
             Box::from(Parameters::Var(x, y, z)),
         ),
 
         (Parameters::Var(x, y, z), Parameters::Rational(r)) => Parameters::Plus(
             Box::from(Parameters::Var(x, y, z)),
-            Box::from(Parameters::Rational(r.clone())),
+            Box::from(Parameters::Rational(r)),
         ),
 
         _ => Parameters::Identifier(

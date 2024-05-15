@@ -314,12 +314,12 @@ pub fn minus(
 
         (Parameters::Plus(s1, s2), Parameters::Rational(r)) => {
             let first = Parameters::Plus(
-                Box::from(minus(*s1.clone(), Parameters::Rational(r.clone()), ram)),
+                Box::from(minus(*s1.clone(), Parameters::Rational(r), ram)),
                 s2.clone(),
             );
             let second = Parameters::Plus(
                 s1.clone(),
-                Box::from(minus(*s2.clone(), Parameters::Rational(r.clone()), ram)),
+                Box::from(minus(*s2.clone(), Parameters::Rational(r), ram)),
             );
 
             let (s1, s2) = (size(&first), size(&second));
@@ -332,12 +332,12 @@ pub fn minus(
 
         (Parameters::Rational(r), Parameters::Plus(s1, s2)) => {
             let first = Parameters::Plus(
-                Box::from(minus(Parameters::Rational(r.clone()), *s1.clone(), ram)),
+                Box::from(minus(Parameters::Rational(r), *s1.clone(), ram)),
                 Box::from(minus(Parameters::Int(0), *s2.clone(), ram)),
             );
             let second = Parameters::Plus(
                 Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
-                Box::from(minus(Parameters::Rational(r.clone()), *s2.clone(), ram)),
+                Box::from(minus(Parameters::Rational(r), *s2.clone(), ram)),
             );
 
             let (s1, s2) = (size(&first), size(&second));
@@ -468,7 +468,7 @@ pub fn minus(
         ),
 
         (Parameters::Rational(r), Parameters::Mul(s1, s2)) => Parameters::Plus(
-            Box::from(Parameters::Rational(r.clone())),
+            Box::from(Parameters::Rational(r)),
             Box::from(Parameters::Mul(
                 Box::from(minus(Parameters::Int(0), *s1.clone(), ram)),
                 s2.clone(),
@@ -592,7 +592,7 @@ pub fn minus(
         ),
 
         (Parameters::Rational(r), Parameters::Var(x, y, z)) => Parameters::Plus(
-            Box::from(Parameters::Rational(r.clone())),
+            Box::from(Parameters::Rational(r)),
             Box::from(Parameters::Var(
                 Box::from(minus(Parameters::Int(0), *x.clone(), ram)),
                 y,
