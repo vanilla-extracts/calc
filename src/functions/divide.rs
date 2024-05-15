@@ -762,9 +762,9 @@ pub fn divide(
             first
         }
 
-        (Parameters::Null, Parameters::Div(s1, s2)) => divide(*s1.clone(), *s2.clone(), ram),
+        (Parameters::Null, Parameters::Div(s1, s2)) => divide(*s2.clone(), *s1.clone(), ram),
 
-        (Parameters::Div(s1, s2), Parameters::Null) => divide(*s1.clone(), *s2.clone(), ram),
+        (Parameters::Div(s1, s2), Parameters::Null) => divide(*s2.clone(), *s1.clone(), ram),
         _ => Parameters::Identifier(
             "@Those two values are incompatible with the / operator".to_string(),
         ),
