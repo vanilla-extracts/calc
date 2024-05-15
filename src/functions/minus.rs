@@ -86,21 +86,19 @@ pub fn minus(
             None => Var(Box::from(Int(-1)), 1, s),
             Some(_) => apply_operator_reverse(Identifier(s), Null, ram, minus),
         },
-        (Rational(s), Identifier(ss)) => match ram {
+        (Rational(r), Identifier(ss)) => match ram {
             None => Plus(
-                Box::from(Rational(s.clone())),
+                Box::from(Rational(r)),
                 Box::from(Var(Box::from(Int(-1)), 1, ss)),
             ),
-            Some(_) => {
-                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, minus)
-            }
+            Some(_) => apply_operator_reverse(Rational(r), Identifier(ss.clone()), ram, minus),
         },
-        (Identifier(ss), Rational(s)) => match ram {
+        (Identifier(ss), Rational(r)) => match ram {
             None => Plus(
                 Box::from(Var(Box::from(Int(1)), 1, ss)),
-                Box::from(Rational(s.opposite())),
+                Box::from(Rational(r.opposite())),
             ),
-            Some(_) => apply_operator(Identifier(ss), Rational(s), ram, minus),
+            Some(_) => apply_operator(Identifier(ss), Rational(r), ram, minus),
         },
         (Int(i), Identifier(s)) => match ram {
             None => Plus(Box::from(Int(i)), Box::from(Var(Box::from(Int(-1)), 1, s))),

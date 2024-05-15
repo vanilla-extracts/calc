@@ -50,18 +50,16 @@ pub fn divide(
             ),
         },
 
-        (Rational(s), Identifier(ss)) => match ram {
-            Some(_) => {
-                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, divide)
-            }
+        (Rational(r), Identifier(ss)) => match ram {
+            Some(_) => apply_operator_reverse(Rational(r), Identifier(ss.clone()), ram, divide),
             None => Div(
-                Box::from(Int(s.over)),
-                Box::from(Var(Box::from(Int(s.under)), 1, ss.clone())),
+                Box::from(Int(r.over)),
+                Box::from(Var(Box::from(Int(r.under)), 1, ss.clone())),
             ),
         },
-        (Identifier(ss), Rational(s)) => match ram {
-            Some(_) => apply_operator(Identifier(ss), Rational(s), ram, divide),
-            None => match s.invert() {
+        (Identifier(ss), Rational(r)) => match ram {
+            Some(_) => apply_operator(Identifier(ss), Rational(r), ram, divide),
+            None => match r.invert() {
                 Ok(r) => Var(Box::from(Rational(r)), 1, ss.clone()),
                 Err(_) => Null,
             },

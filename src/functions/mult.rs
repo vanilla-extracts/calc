@@ -136,15 +136,13 @@ pub fn mult(
             None => Var(Box::from(Int(i)), 1, s.clone()),
         },
 
-        (Rational(s), Identifier(ss)) => match ram {
-            None => Var(Box::from(Rational(s.clone())), 1, ss.clone()),
-            Some(_) => {
-                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, mult)
-            }
+        (Rational(r), Identifier(ss)) => match ram {
+            None => Var(Box::from(Rational(r)), 1, ss.clone()),
+            Some(_) => apply_operator_reverse(Rational(r), Identifier(ss.clone()), ram, mult),
         },
-        (Identifier(ss), Rational(s)) => match ram {
-            Some(_) => apply_operator(Identifier(ss), Rational(s), ram, mult),
-            None => Var(Box::from(Rational(s.clone())), 1, ss.clone()),
+        (Identifier(ss), Rational(r)) => match ram {
+            Some(_) => apply_operator(Identifier(ss), Rational(r), ram, mult),
+            None => Var(Box::from(Rational(r)), 1, ss.clone()),
         },
         (Int(i), Identifier(s)) => match ram {
             None => Var(Box::from(Int(i)), 1, s.clone()),

@@ -61,21 +61,13 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
             None => Identifier(s.clone()),
             Some(_) => apply_operator(Identifier(s), Null, ram, add),
         },
-        (Rational(s), Identifier(ss)) => match ram {
-            None => Plus(
-                Box::from(Rational(s.clone())),
-                Box::from(Identifier(ss.clone())),
-            ),
-            Some(_) => {
-                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, add)
-            }
+        (Rational(r), Identifier(ss)) => match ram {
+            None => Plus(Box::from(Rational(r)), Box::from(Identifier(ss.clone()))),
+            Some(_) => apply_operator_reverse(Rational(r), Identifier(ss.clone()), ram, add),
         },
-        (Identifier(ss), Rational(s)) => match ram {
-            None => Plus(
-                Box::from(Identifier(ss.clone())),
-                Box::from(Rational(s.clone())),
-            ),
-            Some(_) => apply_operator(Identifier(ss), Rational(s), ram, add),
+        (Identifier(ss), Rational(r)) => match ram {
+            None => Plus(Box::from(Identifier(ss.clone())), Box::from(Rational(r))),
+            Some(_) => apply_operator(Identifier(ss), Rational(r), ram, add),
         },
         (Identifier(s), Null) => match ram {
             None => Identifier(s.clone()),
