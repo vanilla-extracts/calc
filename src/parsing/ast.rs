@@ -1,7 +1,8 @@
 use std::collections::HashMap;
-use std::fmt::{Display, Formatter};
+use std::fmt::{format, Display, Formatter};
 
 use crate::exact_math::rationals::Rationals;
+use crate::functions::divide;
 use crate::lexing::token::{Operator, Token};
 use crate::parsing::ast::Ast::{Nil, Node};
 use crate::parsing::ast::Parameters::*;
@@ -174,24 +175,58 @@ impl Parameters {
                 if l == "error".to_string() {
                     format!("{}", x.clone())
                 } else {
-                    match **x {
-                        Int(1) => format!("{}{}", z, int_to_superscript_string(*y)),
+                    let division = l.starts_with("⁻");
+                    let separator = if division { "/" } else { "" };
+                    let v = &x.pretty_print(
+                        Some(ram.as_mut().unwrap()),
+                        Some(function.as_mut().unwrap()),
+                    );
+                    let first_attach = match **x {
+                        Int(1) => {
+                            if division {
+                                "1"
+                            } else {
+                                ""
+                            }
+                        }
                         Float(f) if f >= 1.0 - 1e10 && f <= 1.0 + 1e10 => {
-                            format!("{}{}", z, int_to_superscript_string(*y))
+                            if division {
+                                "1"
+                            } else {
+                                ""
+                            }
                         }
                         Rational(r) if r.clone() == Rationals::new(1, 1) => {
-                            format!("{}{}", z, int_to_superscript_string(*y))
+                            if division {
+                                "1"
+                            } else {
+                                ""
+                            }
                         }
-                        Int(-1) => format!("-{}{}", z, int_to_superscript_string(*y)),
+                        Int(-1) => {
+                            if division {
+                                "-1"
+                            } else {
+                                "-"
+                            }
+                        }
                         Float(f) if f <= -1.0 - 1e10 && f >= -1.0 + 1e10 => {
-                            format!("-{}{}", z, int_to_superscript_string(*y))
+                            if division {
+                                "-1"
+                            } else {
+                                ""
+                            }
                         }
                         Rational(r) if r.clone() == Rationals::new(-1, 1) => {
-                            format!("-{}{}", z, int_to_superscript_string(*y))
+                            if division {
+                                "-1"
+                            } else {
+                                ""
+                            }
                         }
-                        Int(0) => format!("0"),
-                        _ => format!("{}", Var(x.clone(), y.clone(), z.clone())),
-                    }
+                        _ => v,
+                    };
+                    format!("{}{}{}{}", first_attach, separator, z, l.replace("⁻", ""))
                 }
             }
 
