@@ -521,112 +521,109 @@ pub fn divide(
         ),
 
         (Var(x, y, z), Div(s1, s2)) => {
-            let first = divide(
-                mult(Var(x.clone(), y, z.clone()), *s2.clone(), ram),
-                *s1.clone(),
-                ram,
+            let first = Div(
+                Box::from(mult(Var(x.clone(), y, z.clone()), *s2.clone(), ram)),
+                s1.clone(),
             );
             first
         }
 
         (Div(s1, s2), Var(x, y, z)) => {
-            let first = divide(
-                *s1.clone(),
-                mult(*s2.clone(), Var(x.clone(), y, z.clone()), ram),
-                ram,
+            let first = Div(
+                s1.clone(),
+                Box::from(mult(*s2.clone(), Var(x.clone(), y, z.clone()), ram)),
             );
             first
         }
 
         (Mul(s1, s2), Div(s3, s4)) => {
-            let first = divide(
-                mult(*s4.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
-                *s3.clone(),
-                ram,
+            let first = Div(
+                Box::from(mult(*s4.clone(), mult(*s1.clone(), *s2.clone(), ram), ram)),
+                s3.clone(),
             );
             first
         }
 
         (Div(s1, s2), Mul(s3, s4)) => {
-            let first = divide(
-                *s1.clone(),
-                mult(*s2.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
-                ram,
+            let first = Div(
+                s1.clone(),
+                Box::from(mult(*s2.clone(), mult(*s3.clone(), *s4.clone(), ram), ram)),
             );
             first
         }
 
         (Div(s1, s2), Div(s3, s4)) => {
-            let first = divide(
-                mult(*s1.clone(), *s4.clone(), ram),
-                mult(*s2.clone(), *s3.clone(), ram),
-                ram,
+            let first = Div(
+                Box::from(mult(*s1.clone(), *s4.clone(), ram)),
+                Box::from(mult(*s2.clone(), *s3.clone(), ram)),
             );
             first
         }
 
         (Div(s1, s2), Identifier(s)) => {
-            let first = divide(
-                *s1.clone(),
-                mult(*s2.clone(), Var(Box::from(Int(1)), 1, s.clone()), ram),
-                ram,
+            let first = Div(
+                s1.clone(),
+                Box::from(mult(*s2.clone(), Var(Box::from(Int(1)), 1, s.clone()), ram)),
             );
             first
         }
 
         (Identifier(s), Div(s1, s2)) => {
-            let first = divide(
-                mult(Var(Box::from(Int(1)), 1, s.clone()), *s2.clone(), ram),
-                *s1.clone(),
-                ram,
+            let first = Div(
+                Box::from(mult(Var(Box::from(Int(1)), 1, s.clone()), *s2.clone(), ram)),
+                s1.clone(),
             );
             first
         }
 
         (Div(s1, s2), Int(i)) => {
-            let first = divide(mult(*s1.clone(), Int(i), ram), *s2.clone(), ram);
+            let first = Div(s1.clone(), Box::from(mult(*s2.clone(), Int(i), ram)));
             first
         }
 
         (Int(i), Div(s1, s2)) => {
-            let first = divide(mult(Int(i), *s2.clone(), ram), *s1.clone(), ram);
+            let first = Div(Box::from(mult(Int(i), *s2.clone(), ram)), s1.clone());
             first
         }
 
         (Div(s1, s2), Float(f)) => {
-            let first = divide(mult(*s1.clone(), Float(f), ram), *s2.clone(), ram);
+            let first = Div(s1.clone(), Box::from(mult(*s2.clone(), Float(f), ram)));
             first
         }
 
         (Float(f), Div(s1, s2)) => {
-            let first = divide(mult(Float(f), *s2.clone(), ram), *s1.clone(), ram);
+            let first = Div(Box::from(mult(Float(f), *s2.clone(), ram)), s1.clone());
             first
         }
 
         (Div(s1, s2), Rational(r)) => {
-            let first = divide(mult(*s1.clone(), Rational(r), ram), *s2.clone(), ram);
+            let first = Div(
+                Box::from(mult(*s1.clone(), Int(r.under), ram)),
+                Box::from(mult(*s2.clone(), Int(r.over), ram)),
+            );
             first
         }
 
         (Rational(r), Div(s1, s2)) => {
-            let first = divide(mult(Rational(r), *s2.clone(), ram), *s1.clone(), ram);
+            let first = Div(
+                Box::from(mult(Int(r.under), *s2.clone(), ram)),
+                Box::from(mult(*s1.clone(), Int(r.over), ram)),
+            );
             first
         }
 
         (Div(s1, s2), Plus(s3, s4)) => {
-            let first = divide(
-                mult(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
-                *s2.clone(),
-                ram,
+            let first = Div(
+                Box::from(mult(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram)),
+                s2.clone(),
             );
             first
         }
 
         (Plus(s3, s4), Div(s1, s2)) => {
-            let first = divide(
-                mult(*s2.clone(), add(*s3.clone(), *s4.clone(), ram), ram),
-                *s1.clone(),
-                ram,
+            let first = Div(
+                Box::from(mult(*s2.clone(), add(*s3.clone(), *s4.clone(), ram), ram)),
+                s1.clone(),
             );
             first
         }
