@@ -226,7 +226,20 @@ impl Parameters {
                         }
                         _ => v,
                     };
-                    format!("{}{}{}{}", first_attach, separator, z, l.replace("⁻", ""))
+                    let e = l.replace("⁻", "");
+                    format!(
+                        "{}{}{}{}",
+                        first_attach,
+                        separator,
+                        z,
+                        if l == "¹" {
+                            ""
+                        } else if l == "⁻¹" {
+                            ""
+                        } else {
+                            e.as_str()
+                        }
+                    )
                 }
             }
 
