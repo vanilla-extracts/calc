@@ -1,6 +1,9 @@
 # Version 3.0.0 : Symbolic calculation!
-You can use the calculator to compute and simplify symbolic computation problems
-it's compatible with +,-,*,/,^.
+Version 3.0.0, at last! (if you've seen the PR for it it's been sitting for more
+than a month!) 
+
+Symbolic computation was added you can compute expressions with symbols (such as
+x,y,whatever) and more !
 
 # Version 2.13.2 : Bug fix
 Fix #43 
