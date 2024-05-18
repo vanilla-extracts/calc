@@ -563,9 +563,9 @@ pub fn mult(
             first
         }
 
-        (Null, Div(s1, s2)) => divide(*s2.clone(), *s1.clone(), ram),
+        (Null, Div(s1, s2)) => Div(s1.clone(), s2.clone()),
 
-        (Div(s1, s2), Null) => divide(*s2.clone(), *s1.clone(), ram),
+        (Div(s1, s2), Null) => Div(s1.clone(), s2.clone()),
 
         _ => Identifier("@Those two values are incompatible with the * operator".to_string()),
     }

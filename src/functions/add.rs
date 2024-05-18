@@ -6,6 +6,8 @@ use crate::parsing::ast::Parameters::*;
 use crate::parsing::ast::*;
 use std::collections::HashMap;
 
+use super::mult::mult;
+
 pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameters>>) -> Parameters {
     match (i, i2) {
         (Null, Int(v)) => Int(v),
@@ -372,6 +374,145 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
 
         (Var(x, y, z), Rational(r)) => Plus(Box::from(Var(x, y, z)), Box::from(Rational(r))),
 
+        (Var(x, y, z), Div(s1, s2)) => {
+            let first = Div(
+                Box::from(add(
+                    mult(Var(x.clone(), y, z.clone()), *s2.clone(), ram),
+                    *s1.clone(),
+                    ram,
+                )),
+                s2.clone(),
+            );
+            first
+        }
+
+        (Div(s1, s2), Var(x, y, z)) => {
+            let first = Div(
+                Box::from(add(
+                    mult(Var(x.clone(), y, z.clone()), *s2.clone(), ram),
+                    *s1.clone(),
+                    ram,
+                )),
+                s2.clone(),
+            );
+            first
+        }
+
+        (Mul(s1, s2), Div(s3, s4)) => {
+            let first = Div(
+                Box::from(add(
+                    mult(*s4.clone(), mult(*s1.clone(), *s2.clone(), ram), ram),
+                    *s3.clone(),
+                    ram,
+                )),
+                s4.clone(),
+            );
+            first
+        }
+
+        (Div(s1, s2), Mul(s3, s4)) => {
+            let first = Div(
+                Box::from(add(
+                    mult(*s2.clone(), mult(*s3.clone(), *s4.clone(), ram), ram),
+                    *s1.clone(),
+                    ram,
+                )),
+                s2.clone(),
+            );
+            first
+        }
+
+        (Div(s1, s2), Div(s3, s4)) => {
+            let first = Div(
+                Box::from(add(
+                    mult(*s1.clone(), *s4.clone(), ram),
+                    mult(*s2.clone(), *s3.clone(), ram),
+                    ram,
+                )),
+                Box::from(mult(*s2.clone(), *s4.clone(), ram)),
+            );
+            first
+        }
+
+        (Div(s1, s2), Identifier(s)) => {
+            let first = Div(
+                Box::from(add(
+                    mult(*s2.clone(), Var(Box::from(Int(1)), 1, s.clone()), ram),
+                    *s1.clone(),
+                    ram,
+                )),
+                s2.clone(),
+            );
+            first
+        }
+
+        (Identifier(s), Div(s1, s2)) => {
+            let first = Div(
+                Box::from(add(
+                    mult(Var(Box::from(Int(1)), 1, s.clone()), *s1.clone(), ram),
+                    *s1.clone(),
+                    ram,
+                )),
+                s2.clone(),
+            );
+            first
+        }
+
+        (Div(s1, s2), Int(i)) => {
+            let first = Div(Box::from(mult(*s1.clone(), Int(i), ram)), s2.clone());
+            first
+        }
+
+        (Int(i), Div(s1, s2)) => {
+            let first = Div(Box::from(mult(Int(i), *s1.clone(), ram)), s2.clone());
+            first
+        }
+
+        (Div(s1, s2), Float(f)) => {
+            let first = Div(Box::from(mult(*s1.clone(), Float(f), ram)), s2.clone());
+            first
+        }
+
+        (Float(f), Div(s1, s2)) => {
+            let first = Div(Box::from(mult(Float(f), *s1.clone(), ram)), s2.clone());
+            first
+        }
+
+        (Div(s1, s2), Rational(r)) => {
+            let first = Div(
+                Box::from(mult(*s1.clone(), Int(r.over), ram)),
+                Box::from(mult(*s2.clone(), Int(r.under), ram)),
+            );
+            first
+        }
+
+        (Rational(r), Div(s1, s2)) => {
+            let first = Div(
+                Box::from(mult(Int(r.over), *s1.clone(), ram)),
+                Box::from(mult(*s2.clone(), Int(r.under), ram)),
+            );
+            first
+        }
+
+        (Div(s1, s2), Plus(s3, s4)) => {
+            let first = Div(
+                Box::from(mult(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram)),
+                s2.clone(),
+            );
+            first
+        }
+
+        (Plus(s3, s4), Div(s1, s2)) => {
+            let first = Div(
+                Box::from(mult(*s1.clone(), add(*s3.clone(), *s4.clone(), ram), ram)),
+                s2.clone(),
+            );
+            first
+        }
+
+        (Null, Div(s1, s2)) => Div(s1.clone(), s2.clone()),
+
+        (Div(s1, s2), Null) => Div(s1.clone(), s2.clone()),
         _ => Identifier("@Those two values are incompatible with the + operator".to_string()),
     }
 }
