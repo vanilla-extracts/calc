@@ -169,22 +169,52 @@ pub fn lesser(
         (Bool(b), Null) => Bool(b),
         (Null, Bool(b)) => Bool(b),
         (Bool(b), Bool(b2)) => Bool(b && b2),
-        (Identifier(s), Identifier(s2)) => {
-            apply_operator(Identifier(s), Identifier(s2), ram, lesser)
-        }
-        (Identifier(s), Int(i)) => apply_operator(Identifier(s), Int(i), ram, lesser),
-        (Null, Identifier(s)) => apply_operator(Identifier(s), Null, ram, lesser),
-        (Rational(s), Identifier(ss)) => {
-            apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, lesser)
-        }
-        (Identifier(ss), Rational(s)) => apply_operator(Identifier(ss), Rational(s), ram, lesser),
-        (Identifier(s), Null) => apply_operator(Identifier(s), Null, ram, lesser),
-        (Int(i), Identifier(s)) => apply_operator_reverse(Int(i), Identifier(s), ram, lesser),
-        (Identifier(s), Float(i)) => apply_operator(Identifier(s), Float(i), ram, lesser),
-        (Float(i), Identifier(s)) => apply_operator_reverse(Float(i), Identifier(s), ram, lesser),
-        (Bool(b), Identifier(s)) => apply_operator_reverse(Bool(b), Identifier(s), ram, lesser),
-        (Identifier(s), Bool(b)) => apply_operator(Identifier(s), Bool(b), ram, lesser),
-
+        (Identifier(s), Identifier(s2)) => match ram {
+            None => Identifier(s),
+            Some(_) => apply_operator(Identifier(s), Identifier(s2), ram, lesser),
+        },
+        (Identifier(s), Int(i)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Int(i), ram, lesser),
+            None => Int(i),
+        },
+        (Null, Identifier(s)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Null, ram, lesser),
+            None => Identifier(s),
+        },
+        (Rational(s), Identifier(ss)) => match ram {
+            Some(_) => {
+                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, lesser)
+            }
+            None => Rational(s),
+        },
+        (Identifier(ss), Rational(s)) => match ram {
+            Some(_) => apply_operator(Identifier(ss), Rational(s), ram, lesser),
+            None => Rational(s),
+        },
+        (Identifier(s), Null) => match ram {
+            Some(_) => apply_operator(Identifier(s), Null, ram, lesser),
+            None => Identifier(s),
+        },
+        (Int(i), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Int(i), Identifier(s), ram, lesser),
+            None => Int(i),
+        },
+        (Identifier(s), Float(i)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Float(i), ram, lesser),
+            None => Float(i),
+        },
+        (Float(i), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Float(i), Identifier(s), ram, lesser),
+            None => Float(i),
+        },
+        (Bool(b), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Bool(b), Identifier(s), ram, lesser),
+            None => Bool(b),
+        },
+        (Identifier(s), Bool(b)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Bool(b), ram, lesser),
+            None => Bool(b),
+        },
         _ => Identifier("@Those two values are incompatible with the < operator".to_string()),
     }
 }
