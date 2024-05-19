@@ -475,7 +475,7 @@ mod test {
     use crate::functions::divide::divide;
     use crate::functions::minus::minus;
     use crate::functions::mult::mult;
-    use crate::parsing::ast::Parameters;
+    use crate::parsing::ast::Parameters::*;
 
     #[test]
     pub fn test_add_null() {
