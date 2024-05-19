@@ -97,9 +97,7 @@ pub fn greater(
 
         (Rational(s), Identifier(ss)) => match ram {
             None => Rational(s),
-            Some(_) => {
-                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, greater)
-            }
+            Some(_) => apply_operator_reverse(Rational(s), Identifier(ss.clone()), ram, greater),
         },
         (Identifier(ss), Rational(s)) => match ram {
             Some(_) => apply_operator(Identifier(ss), Rational(s), ram, greater),
@@ -182,9 +180,7 @@ pub fn lesser(
             None => Identifier(s),
         },
         (Rational(s), Identifier(ss)) => match ram {
-            Some(_) => {
-                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, lesser)
-            }
+            Some(_) => apply_operator_reverse(Rational(s), Identifier(ss.clone()), ram, lesser),
             None => Rational(s),
         },
         (Identifier(ss), Rational(s)) => match ram {
@@ -265,12 +261,9 @@ pub fn greater_or_equal(
             None => Identifier(s),
         },
         (Rational(s), Identifier(ss)) => match ram {
-            Some(_) => apply_operator_reverse(
-                Rational(s.clone()),
-                Identifier(ss.clone()),
-                ram,
-                greater_or_equal,
-            ),
+            Some(_) => {
+                apply_operator_reverse(Rational(s), Identifier(ss.clone()), ram, greater_or_equal)
+            }
             None => Rational(s),
         },
         (Identifier(ss), Rational(s)) => match ram {
@@ -339,12 +332,9 @@ pub fn lesser_or_equal(
             None => Int(i),
         },
         (Rational(s), Identifier(ss)) => match ram {
-            Some(_) => apply_operator_reverse(
-                Rational(s.clone()),
-                Identifier(ss.clone()),
-                ram,
-                lesser_or_equal,
-            ),
+            Some(_) => {
+                apply_operator_reverse(Rational(s), Identifier(ss.clone()), ram, lesser_or_equal)
+            }
             None => Rational(s),
         },
         (Identifier(ss), Rational(s)) => match ram {
@@ -451,9 +441,7 @@ pub fn equal(
 
         (Rational(s), Identifier(ss)) => match ram {
             None => Rational(s),
-            Some(_) => {
-                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, equal)
-            }
+            Some(_) => apply_operator_reverse(Rational(s), Identifier(ss.clone()), ram, equal),
         },
         (Identifier(ss), Rational(s)) => match ram {
             Some(_) => apply_operator(Identifier(ss), Rational(s), ram, equal),
