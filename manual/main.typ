@@ -5,7 +5,7 @@
 #set text(size: 18pt,weight: "bold")
 Calc Manual\
 #set text(size: 13pt,weight: "regular")
-Last updated, November, The 27th, 2023
+Last updated, May, The 19th, 2024
 #set align(left)
 #show heading.where(level:1): set align(right)
 #set heading(numbering: "I.1.")
@@ -483,4 +483,15 @@ a quick computation to run and don't want to start the REPL.
 #figure(
  image("assets/non_interactive_use.png"),
  caption: [Example of non interactive use]
+)
+
+= Symbolic computation
+
+Starting at version 3.0.0, the support for symbolic computation has been added
+in the calculator, you can simplify a number of symbolic expressions and see the
+results!
+
+#figure(
+  image("assets/symbolic.png"),
+  caption: [Example of a symbolic expression computation]
 )
