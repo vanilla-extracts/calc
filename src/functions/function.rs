@@ -459,7 +459,10 @@ pub fn not(
 ) -> Parameters {
     match i {
         Bool(b) => Bool(!b),
-        Identifier(s) => apply_operator(Identifier(s), Null, ram, not),
+        Identifier(s) => match ram {
+            None => Bool(false),
+            Some(_) => apply_operator(Identifier(s), Null, ram, not),
+        },
         _ => Bool(false),
     }
 }
@@ -469,9 +472,18 @@ pub fn and(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
         (Bool(b), Bool(b2)) => Bool(b && b2),
         (Bool(b), Null) => Bool(b),
         (Null, Bool(b)) => Bool(b),
-        (Identifier(s), Bool(b)) => apply_operator(Identifier(s), Bool(b), ram, and),
-        (Bool(b), Identifier(s)) => apply_operator_reverse(Bool(b), Identifier(s), ram, and),
-        (Identifier(s), Identifier(s2)) => apply_operator(Identifier(s), Identifier(s2), ram, and),
+        (Identifier(s), Bool(b)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Bool(b), ram, and),
+            None => Bool(b),
+        },
+        (Bool(b), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Bool(b), Identifier(s), ram, and),
+            None => Bool(b),
+        },
+        (Identifier(s), Identifier(s2)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Identifier(s2), ram, and),
+            None => Bool(false),
+        },
         _ => Bool(false),
     }
 }
@@ -481,9 +493,18 @@ pub fn or(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameters
         (Bool(b), Bool(b2)) => Bool(b || b2),
         (Bool(b), Null) => Bool(b),
         (Null, Bool(b)) => Bool(b),
-        (Identifier(s), Bool(b)) => apply_operator(Identifier(s), Bool(b), ram, or),
-        (Bool(b), Identifier(s)) => apply_operator_reverse(Bool(b), Identifier(s), ram, or),
-        (Identifier(s), Identifier(s2)) => apply_operator(Identifier(s), Identifier(s2), ram, or),
+        (Identifier(s), Bool(b)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Bool(b), ram, or),
+            None => Bool(b),
+        },
+        (Bool(b), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Bool(b), Identifier(s), ram, or),
+            None => Bool(b),
+        },
+        (Identifier(s), Identifier(s2)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Identifier(s2), ram, or),
+            None => Bool(false),
+        },
         _ => Bool(false),
     }
 }
