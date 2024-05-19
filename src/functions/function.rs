@@ -412,22 +412,53 @@ pub fn equal(
         (Int(i), Rational(s)) => Bool(Rationals::new(1, i) == s),
         (Rational(s), Float(f)) => Bool(s.approx() == f),
         (Float(f), Rational(s)) => Bool(f == s.approx()),
-        (Identifier(s), Identifier(s2)) => {
-            apply_operator(Identifier(s), Identifier(s2), ram, equal)
-        }
-        (Identifier(s), Int(i)) => apply_operator(Identifier(s), Int(i), ram, equal),
-        (Null, Identifier(s)) => apply_operator(Identifier(s), Null, ram, equal),
-        (Identifier(s), Null) => apply_operator(Identifier(s), Null, ram, equal),
-        (Int(i), Identifier(s)) => apply_operator_reverse(Int(i), Identifier(s), ram, equal),
-        (Identifier(s), Float(i)) => apply_operator(Identifier(s), Float(i), ram, equal),
-        (Float(i), Identifier(s)) => apply_operator_reverse(Float(i), Identifier(s), ram, equal),
-        (Bool(b), Identifier(s)) => apply_operator_reverse(Bool(b), Identifier(s), ram, equal),
-        (Identifier(s), Bool(b)) => apply_operator(Identifier(s), Bool(b), ram, equal),
+        (Identifier(s), Identifier(s2)) => match ram {
+            None => Identifier(s),
+            Some(_) => apply_operator(Identifier(s), Identifier(s2), ram, equal),
+        },
+        (Identifier(s), Int(i)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Int(i), ram, equal),
+            None => Int(i),
+        },
+        (Null, Identifier(s)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Null, ram, equal),
+            None => Identifier(s),
+        },
+        (Identifier(s), Null) => match ram {
+            Some(_) => apply_operator(Identifier(s), Null, ram, equal),
+            None => Identifier(s),
+        },
+        (Int(i), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Int(i), Identifier(s), ram, equal),
+            None => Int(i),
+        },
+        (Identifier(s), Float(i)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Float(i), ram, equal),
+            None => Float(i),
+        },
+        (Float(i), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Float(i), Identifier(s), ram, equal),
+            None => Float(i),
+        },
+        (Bool(b), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Bool(b), Identifier(s), ram, equal),
+            None => Bool(b),
+        },
+        (Identifier(s), Bool(b)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Bool(b), ram, equal),
+            None => Bool(b),
+        },
 
-        (Rational(s), Identifier(ss)) => {
-            apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, equal)
-        }
-        (Identifier(ss), Rational(s)) => apply_operator(Identifier(ss), Rational(s), ram, equal),
+        (Rational(s), Identifier(ss)) => match ram {
+            None => Rational(s),
+            Some(_) => {
+                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, equal)
+            }
+        },
+        (Identifier(ss), Rational(s)) => match ram {
+            Some(_) => apply_operator(Identifier(ss), Rational(s), ram, equal),
+            None => Rational(s),
+        },
 
         _ => Identifier("@Those two values are incompatible with the == operator".to_string()),
     }
