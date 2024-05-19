@@ -2,7 +2,7 @@ use std::{fmt::Display, ops};
 
 use crate::utils::integer_utils::gcd;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Rationals {
     pub under: i64,
     pub over: i64,
@@ -30,6 +30,17 @@ impl Rationals {
 
     pub fn is_null(self) -> bool {
         return self.over == 0;
+    }
+
+    pub fn opposite(self) -> Self {
+        Rationals::new(self.under, -1 * self.over)
+    }
+
+    pub fn invert(self) -> Result<Rationals, Rationals> {
+        match self.over {
+            0 => Err(Rationals::new(0, 1)),
+            _ => Ok(Rationals::new(self.over, self.under).reduce()),
+        }
     }
 
     pub fn reduce(self) -> Self {
@@ -84,7 +95,7 @@ impl Rationals {
 
 impl Display for Rationals {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let fs = self.clone().reduce();
+        let fs = self.reduce();
         if fs.under == 1 {
             write!(f, "{}", fs.over)
         } else {

@@ -9,7 +9,8 @@ use crate::parsing::ast::{Ast, Parameters};
 use crate::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
 use crate::utils::plot_utils::computes_lines;
 
-use super::function::{add as other_add, mult};
+use crate::functions::add::add as other_add;
+use crate::functions::mult::mult;
 
 pub fn exec(
     s: String,

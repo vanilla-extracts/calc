@@ -32,6 +32,10 @@ pub enum Parameters {
     ExpoOperation,
     Vector(Box<Vec<Ast>>),
     InterpreterVector(Box<Vec<Parameters>>),
+    Var(Box<Parameters>, i64, String),
+    Plus(Box<Parameters>, Box<Parameters>),
+    Mul(Box<Parameters>, Box<Parameters>),
+    Div(Box<Parameters>, Box<Parameters>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -46,6 +50,41 @@ pub enum Ast {
         name: String,
         lst: Vec<Ast>,
     },
+}
+
+fn int_to_superscript_string(i: i64) -> String {
+    fn digit_to_superscript_char(i: &str) -> &str {
+        match i {
+            "-" => "⁻",
+            "0" => "⁰",
+            "1" => "¹",
+            "2" => "²",
+            "3" => "³",
+            "4" => "⁴",
+            "5" => "⁵",
+            "6" => "⁶",
+            "7" => "⁷",
+            "8" => "⁸",
+            "9" => "⁹",
+            _ => "",
+        }
+    }
+
+    let mut vec = vec![];
+    let string_int = i.to_string();
+    string_int
+        .split("")
+        .map(|x| digit_to_superscript_char(x))
+        .for_each(|f| vec.push(f));
+
+    let i = vec.join("");
+    if i == "⁰".to_string() {
+        "error".to_string()
+    } else if i == "¹" {
+        "".to_string()
+    } else {
+        i
+    }
 }
 
 impl Display for Parameters {
@@ -74,6 +113,10 @@ impl Display for Parameters {
             InterpreterVector(a) => write!(f, "{:?}", a),
             Str(s) => write!(f, "{s}"),
             Rational(s) => write!(f, "{s}"),
+            Plus(x, y) => write!(f, "(({x})+({y}))"),
+            Mul(x, y) => write!(f, "(({x})*({y}))"),
+            Var(x, y, s) => write!(f, "({x}){s}{}", int_to_superscript_string(*y)),
+            Div(x, y) => write!(f, "(({x})/({y}))"),
         }
     }
 }
@@ -116,7 +159,7 @@ impl Parameters {
                         return self.to_string();
                     } else {
                         match ram.as_mut().unwrap().get(s) {
-                            None => "This variable is not initialized yet".to_string(),
+                            None => s.to_string(),
                             Some(t) => t.clone().pretty_print(
                                 Some(ram.as_mut().unwrap()),
                                 Some(function.as_mut().unwrap()),
@@ -125,6 +168,131 @@ impl Parameters {
                     }
                 }
             }
+
+            Var(x, y, z) => {
+                let l = int_to_superscript_string(*y);
+                if l == "error".to_string() {
+                    format!("{}", x.clone())
+                } else {
+                    let division = l.starts_with("⁻");
+                    let separator = if division { "/" } else { "" };
+                    let v = &x.pretty_print(
+                        Some(ram.as_mut().unwrap()),
+                        Some(function.as_mut().unwrap()),
+                    );
+                    let vs = format!("({v})");
+
+                    let first_attach = match **x {
+                        Int(1) => {
+                            if division {
+                                "1"
+                            } else {
+                                ""
+                            }
+                        }
+                        Float(f) if f >= 1.0 - 1e10 && f <= 1.0 + 1e10 => {
+                            if division {
+                                "1"
+                            } else {
+                                ""
+                            }
+                        }
+                        Rational(r) if r.clone() == Rationals::new(1, 1) => {
+                            if division {
+                                "1"
+                            } else {
+                                ""
+                            }
+                        }
+                        Int(-1) => {
+                            if division {
+                                "-1"
+                            } else {
+                                "-"
+                            }
+                        }
+                        Float(f) if f <= -1.0 - 1e10 && f >= -1.0 + 1e10 => {
+                            if division {
+                                "-1"
+                            } else {
+                                ""
+                            }
+                        }
+                        Rational(r) if r.clone() == Rationals::new(-1, 1) => {
+                            if division {
+                                "-1"
+                            } else {
+                                ""
+                            }
+                        }
+                        _ => vs.as_str(),
+                    };
+                    let e = l.replace("⁻", "");
+                    format!(
+                        "{}{}{}{}",
+                        first_attach,
+                        separator,
+                        z,
+                        if l == "¹" {
+                            ""
+                        } else if l == "⁻¹" {
+                            ""
+                        } else {
+                            e.as_str()
+                        }
+                    )
+                }
+            }
+
+            Mul(x, y) => {
+                let x_printed = x.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                let y_printed = y.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                format!("({x_printed})*({y_printed})")
+            }
+
+            Plus(x, y) => {
+                let mut x_printed = x.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                let y_printed = y.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                if x_printed == "0" {
+                    x_printed = "".to_string()
+                }
+                match y_printed.chars().nth(0) {
+                    Some('-') => format!("({}{})", x_printed, y_printed),
+                    _ => {
+                        if y_printed == "0".to_string() {
+                            format!("{}", x_printed)
+                        } else {
+                            format!("({})+({})", x_printed, y_printed)
+                        }
+                    }
+                }
+            }
+
+            Div(x, y) => {
+                let x_printed = x.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+                let y_printed = y.pretty_print(
+                    Some(ram.as_mut().unwrap()),
+                    Some(function.as_mut().unwrap()),
+                );
+
+                format!("({x_printed})/({y_printed})")
+            }
+
             InterpreterVector(lst) => {
                 let mut vec = Vec::new();
 

@@ -22,6 +22,7 @@ use std::io::BufRead;
 
 mod configuration;
 mod exact_math;
+mod functions;
 mod interpreting;
 mod lexing;
 mod parsing;
@@ -262,7 +263,7 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 fn main() {
     let mut args: Args = env::args();
 
-    let version: String = "v2.13.2".to_string();
+    let version: String = "v3.0.0".to_string();
     if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
 
