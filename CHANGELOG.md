@@ -1,6 +1,6 @@
 # Version 3.0.0 : Symbolic calculation!
 Version 3.0.0, at last! (if you've seen the PR for it it's been sitting for more
-than a month!) 
+than three weeks!) 
 
 Symbolic computation was added you can compute expressions with symbols (such as
 x,y,whatever) and more !
