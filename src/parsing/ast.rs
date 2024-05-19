@@ -1,8 +1,7 @@
 use std::collections::HashMap;
-use std::fmt::{format, Display, Formatter};
+use std::fmt::{Display, Formatter};
 
 use crate::exact_math::rationals::Rationals;
-use crate::functions::divide;
 use crate::lexing::token::{Operator, Token};
 use crate::parsing::ast::Ast::{Nil, Node};
 use crate::parsing::ast::Parameters::*;
@@ -181,6 +180,8 @@ impl Parameters {
                         Some(ram.as_mut().unwrap()),
                         Some(function.as_mut().unwrap()),
                     );
+                    let vs = format!("({v})");
+
                     let first_attach = match **x {
                         Int(1) => {
                             if division {
@@ -224,7 +225,7 @@ impl Parameters {
                                 ""
                             }
                         }
-                        _ => v,
+                        _ => vs.as_str(),
                     };
                     let e = l.replace("⁻", "");
                     format!(
