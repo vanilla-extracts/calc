@@ -248,34 +248,55 @@ pub fn greater_or_equal(
         (Int(i), Rational(s)) => Bool(Rationals::new(1, i) >= s),
         (Rational(s), Float(f)) => Bool(s.approx() >= f),
         (Float(f), Rational(s)) => Bool(f >= s.approx()),
-        (Identifier(s), Identifier(s2)) => {
-            apply_operator(Identifier(s), Identifier(s2), ram, greater_or_equal)
-        }
-        (Identifier(s), Int(i)) => apply_operator(Identifier(s), Int(i), ram, greater_or_equal),
-        (Null, Identifier(s)) => apply_operator(Identifier(s), Null, ram, greater_or_equal),
-        (Identifier(s), Null) => apply_operator(Identifier(s), Null, ram, greater_or_equal),
-
-        (Rational(s), Identifier(ss)) => apply_operator_reverse(
-            Rational(s.clone()),
-            Identifier(ss.clone()),
-            ram,
-            greater_or_equal,
-        ),
-        (Identifier(ss), Rational(s)) => {
-            apply_operator(Identifier(ss), Rational(s), ram, greater_or_equal)
-        }
-        (Int(i), Identifier(s)) => {
-            apply_operator_reverse(Int(i), Identifier(s), ram, greater_or_equal)
-        }
-        (Identifier(s), Float(i)) => apply_operator(Identifier(s), Float(i), ram, greater_or_equal),
-        (Float(i), Identifier(s)) => {
-            apply_operator_reverse(Float(i), Identifier(s), ram, greater_or_equal)
-        }
-        (Bool(b), Identifier(s)) => {
-            apply_operator_reverse(Bool(b), Identifier(s), ram, greater_or_equal)
-        }
-        (Identifier(s), Bool(b)) => apply_operator(Identifier(s), Bool(b), ram, greater_or_equal),
-
+        (Identifier(s), Identifier(s2)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Identifier(s2), ram, greater_or_equal),
+            None => Identifier(s),
+        },
+        (Identifier(s), Int(i)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Int(i), ram, greater_or_equal),
+            None => Int(i),
+        },
+        (Null, Identifier(s)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Null, ram, greater_or_equal),
+            None => Identifier(s),
+        },
+        (Identifier(s), Null) => match ram {
+            Some(_) => apply_operator(Identifier(s), Null, ram, greater_or_equal),
+            None => Identifier(s),
+        },
+        (Rational(s), Identifier(ss)) => match ram {
+            Some(_) => apply_operator_reverse(
+                Rational(s.clone()),
+                Identifier(ss.clone()),
+                ram,
+                greater_or_equal,
+            ),
+            None => Rational(s),
+        },
+        (Identifier(ss), Rational(s)) => match ram {
+            None => Rational(s),
+            Some(_) => apply_operator(Identifier(ss), Rational(s), ram, greater_or_equal),
+        },
+        (Int(i), Identifier(s)) => match ram {
+            None => Int(i),
+            Some(_) => apply_operator_reverse(Int(i), Identifier(s), ram, greater_or_equal),
+        },
+        (Identifier(s), Float(i)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Float(i), ram, greater_or_equal),
+            None => Float(i),
+        },
+        (Float(i), Identifier(s)) => match ram {
+            None => Float(i),
+            Some(_) => apply_operator_reverse(Float(i), Identifier(s), ram, greater_or_equal),
+        },
+        (Bool(b), Identifier(s)) => match ram {
+            None => Bool(b),
+            Some(_) => apply_operator_reverse(Bool(b), Identifier(s), ram, greater_or_equal),
+        },
+        (Identifier(s), Bool(b)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Bool(b), ram, greater_or_equal),
+            None => Bool(b),
+        },
         _ => Identifier("@Those two values are incompatible with the >= operator".to_string()),
     }
 }
