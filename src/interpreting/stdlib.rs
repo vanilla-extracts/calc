@@ -75,9 +75,16 @@ pub fn exec(
                             },
                         }
                     }
-                    names.iter().zip(lst).for_each(|(name, param)| {
-                        sram.insert(name.to_string(), param);
-                    });
+                    names
+                        .iter()
+                        .zip(lst)
+                        .filter(|(name, param)| match param {
+                            Parameters::Identifier(s) => s.as_str() != name.as_str(),
+                            _ => true,
+                        })
+                        .for_each(|(name, param)| {
+                            sram.insert(name.to_string(), param);
+                        });
                     interpret(ast, &mut sram, &mut HashMap::new())
                 }
             }
