@@ -1,3 +1,6 @@
+# Version 3.0.1 : Bug fix
+Fix stackoverflow on custom function call with same name 
+
 # Version 3.0.0 : Symbolic calculation!
 Version 3.0.0, at last! (if you've seen the PR for it it's been sitting for more
 than three weeks!) 
