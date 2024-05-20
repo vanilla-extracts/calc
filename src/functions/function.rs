@@ -56,8 +56,9 @@ pub fn apply_operator_reverse(
 }
 
 pub fn assign(s: Parameters, s2: Parameters) -> (String, Parameters) {
-    match s {
-        Identifier(s) => (s, s2),
+    match (s, s2.clone()) {
+        (Identifier(s), Identifier(s2)) if s == s2 => ("".to_string(), Identifier(s2)),
+        (Identifier(s), _) => (s, s2),
         _ => ("".to_string(), s2),
     }
 }
