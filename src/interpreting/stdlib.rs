@@ -45,6 +45,7 @@ pub fn exec(
         "invert" => inverse_matrix(&lst, &ram),
         "plot" => plot_fn(&lst, &ram, functions, false),
         "termplot" => plot_fn(&lst, &ram, functions, true),
+        "diff" => diff(&lst, &ram, functions),
         s => {
             let mut sram: HashMap<String, Parameters> = HashMap::new();
             sram.insert("pi".to_string(), Float(PI));
@@ -1539,6 +1540,46 @@ pub fn inverse_matrix(
                 Some(t) => inverse_matrix(&vec![t.clone()], ram),
             },
         },
+        _ => Null,
+    }
+}
+
+pub fn diff(
+    p: &Vec<Parameters>,
+    ram: &Option<&mut HashMap<String, Parameters>>,
+    function: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
+) -> Parameters {
+    let color = match load() {
+        Ok(cfg) => load_config(cfg).general_color,
+        Err(_) => load_config(Config::default()).general_color,
+    };
+
+    if p.len() == 0 {
+        let m = color.paint("Usage: diff <function>");
+        println!("{m}");
+        return Null;
+    }
+
+    let first_param = p.first().unwrap();
+
+    match first_param {
+        Identifier(fun) => Identifier(
+            (match fun.as_str() {
+                "cos" => "-sin(x)",
+                "sin" => "cos(x)",
+                "exp" => "exp(x)",
+                "ln" => "1/x",
+                "tan" => "1/(cos(x)*cos(x))",
+                "sinh" => "sinh",
+                "cosh" => "cosh",
+                "acos" => "(-1)/(sqrt(1 - x*x))",
+                "asin" => "1/(sqrt(1-x*x))",
+                "x" => "1",
+                "sqrt" => "1/(2*sqrt(x))",
+                _ => "1",
+            })
+            .to_string(),
+        ),
         _ => Null,
     }
 }
