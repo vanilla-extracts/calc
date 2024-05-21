@@ -4,8 +4,8 @@
 
 Name: mini-calc
 Summary: A fully-featured minimalistic configurable rust calculator
-Version: @@VERSION@@
-Release: @@RELEASE@@%{?dist}
+Version: 3.0.1
+Release: 3.0.1
 License: GPLv3+
 Group: Applications/System
 Source0: %{name}-%{version}.tar.gz
