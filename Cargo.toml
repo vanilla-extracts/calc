@@ -40,3 +40,12 @@ pr-run-mode = "plan"
 [profile.dist]
 inherits = "release"
 lto = "thin"
+
+[package.metadata.rpm]
+package = "mini-calc"
+
+[package.metadata.rpm.cargo]
+buildflags = ["--release"]
+
+[package.metadata.rpm.targets]
+mini-calc = { path = "/usr/bin/mini-calc" }
