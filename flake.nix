@@ -27,6 +27,12 @@
             pname = "calc";
             src = ./.;
 
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+            postFixup = ''
+              wrapProgram $out/bin/mini-calc \
+                --prefix PATH : "${pkgs.lib.makeBinPath [ pkgs.gnuplot ]}"
+            '';
+
             cargoLock.lockFile = ./Cargo.lock;
             meta.mainProgram = "mini-calc";
           };
