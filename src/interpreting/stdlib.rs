@@ -47,6 +47,7 @@ pub fn exec(
         "termplot" => plot_fn(&lst, &ram, functions, true),
         "diff" => diff(&lst, &ram, functions),
         s => {
+ 
             let mut sram: HashMap<String, Parameters> = HashMap::new();
             sram.insert("pi".to_string(), Float(PI));
             sram.insert("e".to_string(), Float(E));
