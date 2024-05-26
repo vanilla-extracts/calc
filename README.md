@@ -14,6 +14,8 @@
 
 ## Install
 
+### Source 
+
 You can install the latest version from source
 
 ```bash
@@ -23,8 +25,7 @@ cargo build --release
 ./target/release/mini-calc
 ```
 
-or install it via cargo
-
+### Cargo
 ```bash
 cargo install mini-calc
 ```
@@ -38,6 +39,10 @@ Running directly:
 nix run github:coco33920/calc
 ```
 > You may need to enable nix experimental features. In that case, execute the following command: `mkdir -p ~/.config/nix && echo "experimental-features = nix-command flakes" | tee ~/.config/nix/nix.conf`
+
+### From packaged version
+Both `.deb` and `.rpm` packages are availables. Not on any repository but in the
+releases.
 
 ## Website
 The website (powered by oranda) is available for more informations [the website](https://calc.nwa2coco.fr) for more informations.
