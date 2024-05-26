@@ -4,7 +4,6 @@ use std::f64::consts::{E, PI};
 use gnuplot::{AxesCommon, Figure};
 
 use crate::configuration::loader::{load, load_config, Config};
-use crate::functions;
 use crate::interpreting::interpreter::interpret;
 use crate::parsing::ast::{Ast, Parameters, Parameters::*};
 use crate::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
@@ -1570,6 +1569,14 @@ pub fn diff(
 
     let first_param = p.first().unwrap();
 
+    let mut c: HashMap<String, Parameters> = HashMap::new();
+    for (key, ele) in ram.as_deref().unwrap().clone() {
+        c.insert(key, ele);
+    }
+    let mut s: HashMap<String, (Vec<Ast>, Ast)> = HashMap::new();
+    for (key, ele) in function.as_deref().unwrap().clone() {
+        s.insert(key, ele);
+    }
     match first_param {
         Identifier(fun) => match fun.as_str() {
             "cos" => Identifier("-sin(x)".to_string()),
@@ -1584,17 +1591,12 @@ pub fn diff(
             "x" => Identifier("1".to_string()),
             "sqrt" => Identifier("1/(2*sqrt(x))".to_string()),
             p => {
-                let mut c: HashMap<String, Parameters> = HashMap::new();
-                for (key, ele) in ram.as_deref().unwrap().clone() {
-                    c.insert(key, ele);
-                }
                 let param = exec(
                     p.to_string(),
                     vec![Identifier("x".to_string())],
                     Some(&mut c),
                     function,
                 );
-                println!("{:#?}", param);
                 match param {
                     Identifier(_) => Int(1),
                     Var(x, y, z) => Var(
@@ -1602,11 +1604,52 @@ pub fn diff(
                         y - 1,
                         z,
                     ),
+                    Plus(x, y) => other_add(
+                        diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                        diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                        Some(&c),
+                    ),
+                    Mul(x, y) => other_add(
+                        mult(
+                            *x.clone(),
+                            diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                            Some(&c),
+                        ),
+                        mult(
+                            *y.clone(),
+                            diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                            Some(&c),
+                        ),
+                        Some(&c),
+                    ),
                     _ => Int(0),
                 }
             } //2*x = 2'*x + 2*x' = 0*x + 2
         },
-        _ => Null,
+        Var(x, y, z) => Var(
+            Box::from(mult(Parameters::Int(*y), *x.clone(), Some(&c))),
+            y - 1,
+            z.clone(),
+        ),
+        Plus(x, y) => other_add(
+            diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+            diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+            Some(&c),
+        ),
+        Mul(x, y) => other_add(
+            mult(
+                *x.clone(),
+                diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                Some(&c),
+            ),
+            mult(
+                *y.clone(),
+                diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                Some(&c),
+            ),
+            Some(&c),
+        ),
+        _ => Int(0),
     }
 }
 
