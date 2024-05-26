@@ -23,6 +23,20 @@ confy = "0.5.1"
 gnuplot = "0.0.39"
 serde = { version = "1.0.192", features = ["derive"] }
 atty = "0.2"
+
+
+
+[package.metadata.deb]
+name = "mini-calc"
+maintainer = "Charlotte Thomas"
+copyright = "GPLv3"
+license-file = "LICENSE"
+
+[package.metadata.generate-rpm]
+name = "mini-calc"
+version = "3.1.0"
+license = "GPLv3"
+assets = [{source="target/release/mini-calc", dest="/usr/bin/mini-calc", mode = "755"}]
 # Config for 'cargo dist'
 [workspace.metadata.dist]
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
@@ -36,14 +50,3 @@ targets = ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-dar
 # Publish jobs to run in CI
 pr-run-mode = "plan"
 
-[package.metadata.deb]
-name = "mini-calc"
-maintainer = "Charlotte Thomas"
-copyright = "GPLv3"
-license-file = "LICENSE"
-
-[package.metadata.generate-rpm]
-name = "mini-calc"
-version = "3.1.0"
-license = "GPLv3"
-assets = [{source="target/release/mini-calc", dest="/usr/bin/mini-calc", mode = "755"}]
