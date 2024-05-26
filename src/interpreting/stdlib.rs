@@ -1594,8 +1594,17 @@ pub fn diff(
                     Some(&mut c),
                     function,
                 );
-                param
-            }
+                println!("{:#?}", param);
+                match param {
+                    Identifier(_) => Int(1),
+                    Var(x, y, z) => Var(
+                        Box::from(mult(Parameters::Int(y), *x.clone(), Some(&c))),
+                        y - 1,
+                        z,
+                    ),
+                    _ => Int(0),
+                }
+            } //2*x = 2'*x + 2*x' = 0*x + 2
         },
         _ => Null,
     }
