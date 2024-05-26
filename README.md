@@ -41,8 +41,7 @@ nix run github:coco33920/calc
 > You may need to enable nix experimental features. In that case, execute the following command: `mkdir -p ~/.config/nix && echo "experimental-features = nix-command flakes" | tee ~/.config/nix/nix.conf`
 
 ### From packaged version
-Both `.deb` and `.rpm` packages are availables. Not on any repository but in the
-releases.
+Both `.deb` and `.rpm` packages are availables in the 
 
 ## Website
 The website (powered by oranda) is available for more informations [the website](https://calc.nwa2coco.fr) for more informations.
@@ -216,13 +215,12 @@ TODO List for the Exact Math Engine
 - [X] Rational calculation
   - [X] Implement rational numbers operations 
   - [X] Rational reduction
+- [X] Literal calculation
+  - [X] Computes literal expression with uninitialized operators
+  - [X] Literal reduction
 - [ ] Irrational calculation 
   - [ ] Implement irrational numbers operations
   - [ ] Irrational reduction
-- [ ] Literal calculation
-  - [ ] Computes literal expression with uninitialized operators
-  - [ ] Literal reduction
-
 #### Example of rational computations
 
 As of 2.11.0 the support for rational exact math has been implemented
