@@ -4,6 +4,7 @@ use std::f64::consts::{E, PI};
 use gnuplot::{AxesCommon, Figure};
 
 use crate::configuration::loader::{load, load_config, Config};
+use crate::functions;
 use crate::interpreting::interpreter::interpret;
 use crate::parsing::ast::{Ast, Parameters, Parameters::*};
 use crate::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
@@ -1570,23 +1571,32 @@ pub fn diff(
     let first_param = p.first().unwrap();
 
     match first_param {
-        Identifier(fun) => Identifier(
-            (match fun.as_str() {
-                "cos" => "-sin(x)",
-                "sin" => "cos(x)",
-                "exp" => "exp(x)",
-                "ln" => "1/x",
-                "tan" => "1/(cos(x)*cos(x))",
-                "sinh" => "sinh",
-                "cosh" => "cosh",
-                "acos" => "(-1)/(sqrt(1 - x*x))",
-                "asin" => "1/(sqrt(1-x*x))",
-                "x" => "1",
-                "sqrt" => "1/(2*sqrt(x))",
-                _ => "1",
-            })
-            .to_string(),
-        ),
+        Identifier(fun) => match fun.as_str() {
+            "cos" => Identifier("-sin(x)".to_string()),
+            "sin" => Identifier("cos(x)".to_string()),
+            "exp" => Identifier("exp(x)".to_string()),
+            "ln" => Identifier("1/x".to_string()),
+            "tan" => Identifier("1/(cos(x)*cos(x))".to_string()),
+            "sinh" => Identifier("sinh".to_string()),
+            "cosh" => Identifier("cosh".to_string()),
+            "acos" => Identifier("(-1)/(sqrt(1 - x*x))".to_string()),
+            "asin" => Identifier("1/(sqrt(1-x*x))".to_string()),
+            "x" => Identifier("1".to_string()),
+            "sqrt" => Identifier("1/(2*sqrt(x))".to_string()),
+            p => {
+                let mut c: HashMap<String, Parameters> = HashMap::new();
+                for (key, ele) in ram.as_deref().unwrap().clone() {
+                    c.insert(key, ele);
+                }
+                let param = exec(
+                    p.to_string(),
+                    vec![Identifier("x".to_string())],
+                    Some(&mut c),
+                    function,
+                );
+                param
+            }
+        },
         _ => Null,
     }
 }

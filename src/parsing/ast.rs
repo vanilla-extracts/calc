@@ -436,12 +436,6 @@ impl Parameters {
     }
 }
 
-impl Ast {
-    pub fn extract_string_from_function() -> Parameters {
-        Null
-    }
-}
-
 #[cfg(test)]
 mod test {
     use crate::parsing::ast::{Ast, Parameters};
