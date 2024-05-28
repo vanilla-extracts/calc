@@ -4,6 +4,7 @@ use std::f64::consts::{E, PI};
 use gnuplot::{AxesCommon, Figure};
 
 use crate::configuration::loader::{load, load_config, Config};
+use crate::functions::minus::minus;
 use crate::interpreting::interpreter::interpret;
 use crate::parsing::ast::{Ast, Parameters, Parameters::*};
 use crate::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
@@ -1579,17 +1580,80 @@ pub fn diff(
     }
     match first_param {
         Identifier(fun) => match fun.as_str() {
-            "cos" => Identifier("-sin(x)".to_string()),
-            "sin" => Identifier("cos(x)".to_string()),
-            "exp" => Identifier("exp(x)".to_string()),
-            "ln" => Identifier("1/x".to_string()),
-            "tan" => Identifier("1/(cos(x)*cos(x))".to_string()),
-            "sinh" => Identifier("sinh".to_string()),
-            "cosh" => Identifier("cosh".to_string()),
-            "acos" => Identifier("(-1)/(sqrt(1 - x*x))".to_string()),
-            "asin" => Identifier("1/(sqrt(1-x*x))".to_string()),
+            "cos" => Plus(
+                Box::from(Int(0)),
+                Box::from(mult(
+                    Int(-1),
+                    Call(
+                        "sin".to_string(),
+                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+                    ),
+                    Some(&c),
+                )),
+            ),
+            "sin" => Call(
+                "cos".to_string(),
+                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+            ),
+            "exp" => Call(
+                "exp".to_string(),
+                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+            ),
+            "ln" => Var(Box::from(Int(1)), -1, "x".to_string()),
+            "tan" => Div(
+                Box::from(Int(1)),
+                Box::from(Mul(
+                    Box::from(Call(
+                        "cos".to_string(),
+                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+                    )),
+                    Box::from(Call(
+                        "cos".to_string(),
+                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+                    )),
+                )),
+            ),
+            "sinh" => Call(
+                "cosh".to_string(),
+                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+            ),
+            "cosh" => Call(
+                "sinh".to_string(),
+                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+            ),
+            "acos" => Div(
+                Box::from(Int(-1)),
+                Box::from(Call(
+                    "sqrt".to_string(),
+                    Box::from(minus(
+                        Int(1),
+                        Var(Box::from(Int(1)), 2, "x".to_string()),
+                        Some(&c),
+                    )),
+                )),
+            ),
+            "asin" => Div(
+                Box::from(Int(1)),
+                Box::from(Call(
+                    "sqrt".to_string(),
+                    Box::from(minus(
+                        Int(1),
+                        Var(Box::from(Int(1)), 2, "x".to_string()),
+                        Some(&c),
+                    )),
+                )),
+            ),
             "x" => Identifier("1".to_string()),
-            "sqrt" => Identifier("1/(2*sqrt(x))".to_string()),
+            "sqrt" => Div(
+                Box::from(Int(1)),
+                Box::from(Mul(
+                    Box::from(Int(2)),
+                    Box::from(Call(
+                        "sqrt".to_string(),
+                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+                    )),
+                )),
+            ),
             p => {
                 let param = exec(
                     p.to_string(),
