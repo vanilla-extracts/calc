@@ -1,3 +1,7 @@
+# Version 3.1.0 : Differentiation #1 
+First differentiation version, it differentiates classic and user defined
+polynomials
+
 # Version 3.0.1 : Bug fix
 Fix stackoverflow on custom function call with same name 
 
