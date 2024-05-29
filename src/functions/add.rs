@@ -533,6 +533,84 @@ pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
         (Null, Div(s1, s2)) => Div(s1.clone(), s2.clone()),
 
         (Div(s1, s2), Null) => Div(s1.clone(), s2.clone()),
+
+        (Call(x, y), Call(a, b)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Call(a.clone(), b.clone())),
+        ),
+
+        (Call(x, y), Null) => Call(x.clone(), y.clone()),
+
+        (Null, Call(x, y)) => Call(x.clone(), y.clone()),
+
+        (Call(x, y), Int(i)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Int(i))),
+
+        (Call(x, y), Float(i)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Float(i))),
+
+        (Call(x, y), Rational(i)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Rational(i)),
+        ),
+
+        (Int(i), Call(x, y)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Int(i))),
+
+        (Float(i), Call(x, y)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Float(i))),
+
+        (Rational(i), Call(x, y)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Rational(i)),
+        ),
+
+        (Call(x, y), Identifier(a)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Var(Box::from(Int(1)), 1, a.clone())),
+        ),
+
+        (Identifier(a), Call(x, y)) => Plus(
+            Box::from(Var(Box::from(Int(1)), 1, a.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Call(x, y), Var(a, b, c)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Var(a.clone(), b, c.clone())),
+        ),
+
+        (Var(a, b, c), Call(x, y)) => Plus(
+            Box::from(Var(a.clone(), b, c.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Call(x, y), Plus(a, b)) => Plus(
+            Box::from(Plus(a.clone(), b.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Plus(a, b), Call(x, y)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Plus(a.clone(), b.clone())),
+        ),
+
+        (Call(x, y), Mul(a, b)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Mul(a.clone(), b.clone())),
+        ),
+
+        (Mul(a, b), Call(x, y)) => Plus(
+            Box::from(Mul(a.clone(), b.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Call(x, y), Div(a, b)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Div(a.clone(), b.clone())),
+        ),
+
+        (Div(a, b), Call(x, y)) => Plus(
+            Box::from(Div(a.clone(), b.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
         _ => Identifier("@Those two values are incompatible with the + operator".to_string()),
     }
 }
