@@ -631,6 +631,84 @@ pub fn divide(
         (Null, Div(s1, s2)) => divide(*s2.clone(), *s1.clone(), ram),
 
         (Div(s1, s2), Null) => divide(*s2.clone(), *s1.clone(), ram),
+
+        (Call(x, y), Call(a, b)) => Div(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Call(a.clone(), b.clone())),
+        ),
+
+        (Call(x, y), Null) => Call(x.clone(), y.clone()),
+
+        (Null, Call(x, y)) => Call(x.clone(), y.clone()),
+
+        (Call(x, y), Int(i)) => Div(Box::from(Call(x.clone(), y.clone())), Box::from(Int(i))),
+
+        (Call(x, y), Float(i)) => Div(Box::from(Call(x.clone(), y.clone())), Box::from(Float(i))),
+
+        (Call(x, y), Rational(i)) => Div(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Rational(i)),
+        ),
+
+        (Int(i), Call(x, y)) => Div(Box::from(Int(i)), Box::from(Call(x.clone(), y.clone()))),
+
+        (Float(i), Call(x, y)) => Div(Box::from(Float(i)), Box::from(Call(x.clone(), y.clone()))),
+
+        (Rational(i), Call(x, y)) => Div(
+            Box::from(Rational(i)),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Call(x, y), Identifier(a)) => Div(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Var(Box::from(Int(1)), 1, a.clone())),
+        ),
+
+        (Identifier(a), Call(x, y)) => Div(
+            Box::from(Var(Box::from(Int(1)), 1, a.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Call(x, y), Var(a, b, c)) => Div(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Var(a.clone(), b, c.clone())),
+        ),
+
+        (Var(a, b, c), Call(x, y)) => Div(
+            Box::from(Var(a.clone(), b, c.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Call(x, y), Plus(a, b)) => Div(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Plus(a.clone(), b.clone())),
+        ),
+
+        (Plus(a, b), Call(x, y)) => Div(
+            Box::from(Plus(a.clone(), b.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Call(x, y), Mul(a, b)) => Div(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Mul(a.clone(), b.clone())),
+        ),
+
+        (Mul(a, b), Call(x, y)) => Div(
+            Box::from(Mul(a.clone(), b.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
+        (Call(x, y), Div(a, b)) => Div(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Div(a.clone(), b.clone())),
+        ),
+
+        (Div(a, b), Call(x, y)) => Div(
+            Box::from(Div(a.clone(), b.clone())),
+            Box::from(Call(x.clone(), y.clone())),
+        ),
+
         _ => Identifier("@Those two values are incompatible with the / operator".to_string()),
     }
 }
