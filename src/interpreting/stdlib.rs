@@ -1688,7 +1688,7 @@ pub fn diff(
                             &Some(&mut c),
                             Some(&mut s),
                         );
-                        Mul(Box::from(prefix), Box::from(call))
+                        mult(prefix, call, Some(&c))
                     }
                     _ => Int(0),
                 }
@@ -1741,7 +1741,7 @@ pub fn diff(
                 &Some(&mut c),
                 Some(&mut s),
             );
-            Mul(Box::from(prefix), Box::from(call))
+            mult(prefix, call, Some(&c))
         }
         _ => Int(0),
     }
