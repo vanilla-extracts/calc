@@ -34,7 +34,6 @@ license-file = "LICENSE"
 
 [package.metadata.generate-rpm]
 name = "mini-calc"
-version = "3.1.0"
 license = "GPLv3"
 assets = [{source="target/release/mini-calc", dest="/usr/bin/mini-calc", mode = "755"}]
 
