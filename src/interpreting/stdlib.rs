@@ -4,6 +4,7 @@ use std::f64::consts::{E, PI};
 use gnuplot::{AxesCommon, Figure};
 
 use crate::configuration::loader::{load, load_config, Config};
+use crate::functions::minus::minus;
 use crate::interpreting::interpreter::interpret;
 use crate::parsing::ast::{Ast, Parameters, Parameters::*};
 use crate::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
@@ -164,9 +165,9 @@ pub fn cos(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("cos".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("cos".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         cos(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -176,7 +177,7 @@ pub fn cos(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
                 }
             },
         },
-        _ => Null,
+        p => Call("cos".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -251,9 +252,9 @@ pub fn sin(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("sin".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("sin".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         sin(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -263,7 +264,7 @@ pub fn sin(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
                 }
             },
         },
-        _ => Null,
+        p => Call("sin".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -339,9 +340,9 @@ pub fn tan(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("tan".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("tan".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         tan(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -351,7 +352,7 @@ pub fn tan(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
                 }
             },
         },
-        _ => Null,
+        p => Call("tan".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -427,9 +428,9 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("cosh".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("cosh".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         cosh(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -439,7 +440,7 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
                 }
             },
         },
-        _ => Null,
+        p => Call("cosh".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -515,9 +516,9 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("sinh".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("sinh".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         sinh(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -527,7 +528,7 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
                 }
             },
         },
-        _ => Null,
+        p => Call("sinh".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -603,9 +604,9 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("tanh".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("tanh".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         tanh(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -615,7 +616,7 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
                 }
             },
         },
-        _ => Null,
+        p => Call("tanh".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -689,9 +690,9 @@ pub fn acos(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("acos".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("acos".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         acos(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -701,7 +702,7 @@ pub fn acos(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
                 }
             },
         },
-        _ => Null,
+        p => Call("acos".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -776,9 +777,9 @@ pub fn asin(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("asin".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("asin".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         asin(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -788,7 +789,7 @@ pub fn asin(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
                 }
             },
         },
-        _ => Null,
+        p => Call("asin".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -863,9 +864,9 @@ pub fn atan(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("atan".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("atan".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
                         atan(&vec![t.clone(), Identifier("false".to_string())], ram)
@@ -875,7 +876,7 @@ pub fn atan(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
                 }
             },
         },
-        _ => Null,
+        p => Call("atan".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -957,13 +958,13 @@ pub fn exp(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("exp".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("exp".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => exp(&vec![t.clone(), Float(ln)], ram),
             },
         },
-        _ => Null,
+        p => Call("exp".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -1046,13 +1047,13 @@ pub fn ln(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("ln".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("ln".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => ln(&vec![t.clone(), Float(sln)], ram),
             },
         },
-        _ => Null,
+        p => Call("ln".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -1138,13 +1139,13 @@ pub fn sqrt(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
             InterpreterVector(Box::from(res))
         }
         Identifier(s) => match ram {
-            None => Identifier("This variable is not initialized yet".to_string()),
+            None => Call("sqrt".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
-                None => Null,
+                None => Call("sqrt".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => sqrt(&vec![t.clone(), Float(sln)], ram),
             },
         },
-        _ => Null,
+        p => Call("sqrt".to_string(), Box::from(p.clone())),
     }
 }
 
@@ -1579,17 +1580,80 @@ pub fn diff(
     }
     match first_param {
         Identifier(fun) => match fun.as_str() {
-            "cos" => Identifier("-sin(x)".to_string()),
-            "sin" => Identifier("cos(x)".to_string()),
-            "exp" => Identifier("exp(x)".to_string()),
-            "ln" => Identifier("1/x".to_string()),
-            "tan" => Identifier("1/(cos(x)*cos(x))".to_string()),
-            "sinh" => Identifier("sinh".to_string()),
-            "cosh" => Identifier("cosh".to_string()),
-            "acos" => Identifier("(-1)/(sqrt(1 - x*x))".to_string()),
-            "asin" => Identifier("1/(sqrt(1-x*x))".to_string()),
+            "cos" => Plus(
+                Box::from(Int(0)),
+                Box::from(mult(
+                    Int(-1),
+                    Call(
+                        "sin".to_string(),
+                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+                    ),
+                    Some(&c),
+                )),
+            ),
+            "sin" => Call(
+                "cos".to_string(),
+                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+            ),
+            "exp" => Call(
+                "exp".to_string(),
+                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+            ),
+            "ln" => Var(Box::from(Int(1)), -1, "x".to_string()),
+            "tan" => Div(
+                Box::from(Int(1)),
+                Box::from(Mul(
+                    Box::from(Call(
+                        "cos".to_string(),
+                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+                    )),
+                    Box::from(Call(
+                        "cos".to_string(),
+                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+                    )),
+                )),
+            ),
+            "sinh" => Call(
+                "cosh".to_string(),
+                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+            ),
+            "cosh" => Call(
+                "sinh".to_string(),
+                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+            ),
+            "acos" => Div(
+                Box::from(Int(-1)),
+                Box::from(Call(
+                    "sqrt".to_string(),
+                    Box::from(minus(
+                        Int(1),
+                        Var(Box::from(Int(1)), 2, "x".to_string()),
+                        Some(&c),
+                    )),
+                )),
+            ),
+            "asin" => Div(
+                Box::from(Int(1)),
+                Box::from(Call(
+                    "sqrt".to_string(),
+                    Box::from(minus(
+                        Int(1),
+                        Var(Box::from(Int(1)), 2, "x".to_string()),
+                        Some(&c),
+                    )),
+                )),
+            ),
             "x" => Identifier("1".to_string()),
-            "sqrt" => Identifier("1/(2*sqrt(x))".to_string()),
+            "sqrt" => Div(
+                Box::from(Int(1)),
+                Box::from(Mul(
+                    Box::from(Int(2)),
+                    Box::from(Call(
+                        "sqrt".to_string(),
+                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
+                    )),
+                )),
+            ),
             p => {
                 let param = exec(
                     p.to_string(),

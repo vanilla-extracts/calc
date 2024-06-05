@@ -1,3 +1,5 @@
+use gnuplot::palettes::PLASMA;
+
 use crate::exact_math::rationals::Rationals;
 use crate::exact_math::symbolic::size;
 use crate::functions::function::apply_operator;
@@ -639,6 +641,125 @@ pub fn minus(
             ram,
         ),
 
+        (Call(x, y), Call(a, b)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(a.clone(), b.clone())),
+            )),
+        ),
+
+        (Call(x, y), Null) => Mul(Box::from(Int(-1)), Box::from(Call(x.clone(), y.clone()))),
+
+        (Null, Call(x, y)) => Mul(Box::from(Int(-1)), Box::from(Call(x.clone(), y.clone()))),
+
+        (Call(x, y), Int(i)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Int(-i))),
+
+        (Call(x, y), Float(i)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Float(-i))),
+
+        (Call(x, y), Rational(i)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Rational(i.opposite())),
+        ),
+
+        (Int(i), Call(x, y)) => Plus(
+            Box::from(Int(i)),
+            Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(x.clone(), y.clone())),
+            )),
+        ),
+
+        (Float(i), Call(x, y)) => Plus(
+            Box::from(Float(i)),
+            Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(x.clone(), y.clone())),
+            )),
+        ),
+
+        (Rational(i), Call(x, y)) => Plus(
+            Box::from(Rational(i)),
+            Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(x.clone(), y.clone())),
+            )),
+        ),
+
+        (Call(x, y), Identifier(a)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Var(Box::from(Int(-1)), 1, a.clone())),
+        ),
+
+        (Identifier(a), Call(x, y)) => Plus(
+            Box::from(Var(Box::from(Int(1)), 1, a.clone())),
+            Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(x.clone(), y.clone())),
+            )),
+        ),
+
+        (Call(x, y), Var(a, b, c)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Var(
+                Box::from(mult(*a.clone(), Int(-1), ram).clone()),
+                b,
+                c.clone(),
+            )),
+        ),
+
+        (Var(a, b, c), Call(x, y)) => Plus(
+            Box::from(Var(a.clone(), b, c.clone())),
+            Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(x.clone(), y.clone())),
+            )),
+        ),
+
+        (Call(x, y), Plus(a, b)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Plus(a.clone(), b.clone())),
+            )),
+        ),
+
+        (Plus(a, b), Call(x, y)) => Plus(
+            Box::from(Plus(a.clone(), b.clone())),
+            Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(x.clone(), y.clone())),
+            )),
+        ),
+
+        (Call(x, y), Mul(a, b)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Mul(
+                Box::from(Mul(Box::from(Int(-1)), a.clone())),
+                b.clone(),
+            )),
+        ),
+
+        (Mul(a, b), Call(x, y)) => Plus(
+            Box::from(Mul(a.clone(), b.clone())),
+            Box::from(Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(x.clone(), y.clone())),
+            ))),
+        ),
+
+        (Call(x, y), Div(a, b)) => Plus(
+            Box::from(Call(x.clone(), y.clone())),
+            Box::from(Div(Box::from(mult(*a.clone(), Int(-1), ram)), b.clone())),
+        ),
+
+        (Div(a, b), Call(x, y)) => Plus(
+            Box::from(Div(a.clone(), b.clone())),
+            Box::from(Box::from(Mul(
+                Box::from(Int(-1)),
+                Box::from(Call(x.clone(), y.clone())),
+            ))),
+        ),
         _ => Identifier("Those two values are incompatible with the - operator".to_string()),
     }
 }

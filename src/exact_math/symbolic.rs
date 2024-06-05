@@ -30,6 +30,7 @@ pub fn size(p: &Parameters) -> i32 {
         Var(x, _, _) => 1 + size(x),
         Mul(x, y) => 1 + size(x) + size(y),
         Div(x, y) => 1 + size(x) + size(y),
+        Call(_, y) => 1 + size(y),
     }
 }
 

@@ -95,6 +95,9 @@ pub fn interpret(
                 Parameters::Plus(x, y) => add(*x.clone(), *y.clone(), Some(&ram)),
                 Parameters::Mul(x, y) => mult(*x.clone(), *y.clone(), Some(&ram)),
                 Parameters::Div(x, y) => divide(*x.clone(), *y.clone(), Some(&ram)),
+                Parameters::Call(x, y) => {
+                    exec(x.clone(), vec![*y.clone()], Some(ram), Some(function))
+                }
             };
             last.clone()
         }
