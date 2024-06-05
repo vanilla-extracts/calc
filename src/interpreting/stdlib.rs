@@ -1586,13 +1586,10 @@ pub fn diff(
     };
     match first_param {
         Identifier(fun) => match fun.as_str() {
-            "cos" => Plus(
-                Box::from(Int(0)),
-                Box::from(mult(
-                    Int(-1),
-                    Call("sin".to_string(), Box::from(insert)),
-                    Some(&c),
-                )),
+            "cos" => mult(
+                Int(-1),
+                Call("sin".to_string(), Box::from(insert)),
+                Some(&c),
             ),
             "sin" => Call("cos".to_string(), Box::from(insert)),
             "exp" => Call("exp".to_string(), Box::from(insert)),
@@ -1684,9 +1681,18 @@ pub fn diff(
                         )),
                         Box::from(mult(*y.clone(), *y.clone(), Some(&c))),
                     ),
+                    Call(name, pst) => {
+                        let prefix = diff(&vec![*pst.clone()], &Some(&mut c), Some(&mut s));
+                        let call = diff(
+                            &vec![Identifier(name), *pst.clone()],
+                            &Some(&mut c),
+                            Some(&mut s),
+                        );
+                        Mul(Box::from(prefix), Box::from(call))
+                    }
                     _ => Int(0),
                 }
-            } //2*x = 2'*x + 2*x' = 0*x + 2
+            }
         },
         Var(x, y, z) => Var(
             Box::from(mult(Parameters::Int(*y), *x.clone(), Some(&c))),
@@ -1727,6 +1733,16 @@ pub fn diff(
             )),
             Box::from(mult(*y.clone(), *y.clone(), Some(&c))),
         ),
+
+        Call(name, pst) => {
+            let prefix = diff(&vec![*pst.clone()], &Some(&mut c), Some(&mut s));
+            let call = diff(
+                &vec![Identifier(name.to_string()), *pst.clone()],
+                &Some(&mut c),
+                Some(&mut s),
+            );
+            Mul(Box::from(prefix), Box::from(call))
+        }
         _ => Int(0),
     }
 }
