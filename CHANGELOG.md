@@ -1,3 +1,6 @@
+# Version 3.2.0 : Differentiation #2 
+Differentiates all functions
+
 # Version 3.1.0 : Differentiation #1 
 First differentiation version, it differentiates classic and user defined
 polynomials
