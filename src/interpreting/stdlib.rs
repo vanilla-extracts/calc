@@ -1569,6 +1569,7 @@ pub fn diff(
     }
 
     let first_param = p.first().unwrap();
+    let second_param = p.len() > 1;
 
     let mut c: HashMap<String, Parameters> = HashMap::new();
     for (key, ele) in ram.as_deref().unwrap().clone() {
@@ -1578,56 +1579,40 @@ pub fn diff(
     for (key, ele) in function.as_deref().unwrap().clone() {
         s.insert(key, ele);
     }
+    let insert = if second_param {
+        p.get(1).unwrap().clone()
+    } else {
+        Var(Box::from(Int(1)), 1, "x".to_string())
+    };
     match first_param {
         Identifier(fun) => match fun.as_str() {
             "cos" => Plus(
                 Box::from(Int(0)),
                 Box::from(mult(
                     Int(-1),
-                    Call(
-                        "sin".to_string(),
-                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
-                    ),
+                    Call("sin".to_string(), Box::from(insert)),
                     Some(&c),
                 )),
             ),
-            "sin" => Call(
-                "cos".to_string(),
-                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
-            ),
-            "exp" => Call(
-                "exp".to_string(),
-                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
-            ),
-            "ln" => Var(Box::from(Int(1)), -1, "x".to_string()),
+            "sin" => Call("cos".to_string(), Box::from(insert)),
+            "exp" => Call("exp".to_string(), Box::from(insert)),
+            "ln" => Div(Box::from(Int(1)), Box::from(insert)),
             "tan" => Div(
                 Box::from(Int(1)),
                 Box::from(Mul(
-                    Box::from(Call(
-                        "cos".to_string(),
-                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
-                    )),
-                    Box::from(Call(
-                        "cos".to_string(),
-                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
-                    )),
+                    Box::from(Call("cos".to_string(), Box::from(insert.clone()))),
+                    Box::from(Call("cos".to_string(), Box::from(insert.clone()))),
                 )),
             ),
-            "sinh" => Call(
-                "cosh".to_string(),
-                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
-            ),
-            "cosh" => Call(
-                "sinh".to_string(),
-                Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
-            ),
+            "sinh" => Call("cosh".to_string(), Box::from(insert)),
+            "cosh" => Call("sinh".to_string(), Box::from(insert)),
             "acos" => Div(
                 Box::from(Int(-1)),
                 Box::from(Call(
                     "sqrt".to_string(),
                     Box::from(minus(
                         Int(1),
-                        Var(Box::from(Int(1)), 2, "x".to_string()),
+                        mult(insert.clone(), insert.clone(), Some(&c)),
                         Some(&c),
                     )),
                 )),
@@ -1638,7 +1623,7 @@ pub fn diff(
                     "sqrt".to_string(),
                     Box::from(minus(
                         Int(1),
-                        Var(Box::from(Int(1)), 2, "x".to_string()),
+                        mult(insert.clone(), insert.clone(), Some(&c)),
                         Some(&c),
                     )),
                 )),
@@ -1648,10 +1633,7 @@ pub fn diff(
                 Box::from(Int(1)),
                 Box::from(Mul(
                     Box::from(Int(2)),
-                    Box::from(Call(
-                        "sqrt".to_string(),
-                        Box::from(Var(Box::from(Int(1)), 1, "x".to_string())),
-                    )),
+                    Box::from(Call("sqrt".to_string(), Box::from(insert))),
                 )),
             ),
             p => {
@@ -1686,6 +1668,22 @@ pub fn diff(
                         ),
                         Some(&c),
                     ),
+                    Div(x, y) => Div(
+                        Box::from(other_add(
+                            mult(
+                                *x.clone(),
+                                diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                                Some(&c),
+                            ),
+                            mult(
+                                Mul(Box::from(Int(-1)), y.clone()),
+                                diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                                Some(&c),
+                            ),
+                            Some(&c),
+                        )),
+                        Box::from(mult(*y.clone(), *y.clone(), Some(&c))),
+                    ),
                     _ => Int(0),
                 }
             } //2*x = 2'*x + 2*x' = 0*x + 2
@@ -1712,6 +1710,22 @@ pub fn diff(
                 Some(&c),
             ),
             Some(&c),
+        ),
+        Div(x, y) => Div(
+            Box::from(other_add(
+                mult(
+                    *x.clone(),
+                    diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                    Some(&c),
+                ),
+                mult(
+                    Mul(Box::from(Int(-1)), y.clone()),
+                    diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                    Some(&c),
+                ),
+                Some(&c),
+            )),
+            Box::from(mult(*y.clone(), *y.clone(), Some(&c))),
         ),
         _ => Int(0),
     }

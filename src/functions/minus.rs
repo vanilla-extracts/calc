@@ -1,5 +1,3 @@
-use gnuplot::palettes::PLASMA;
-
 use crate::exact_math::rationals::Rationals;
 use crate::exact_math::symbolic::size;
 use crate::functions::function::apply_operator;
