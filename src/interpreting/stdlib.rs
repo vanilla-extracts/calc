@@ -4,6 +4,7 @@ use std::f64::consts::{E, PI};
 use gnuplot::{AxesCommon, Figure};
 
 use crate::configuration::loader::{load, load_config, Config};
+use crate::functions::divide::divide;
 use crate::functions::minus::minus;
 use crate::interpreting::interpreter::interpret;
 use crate::parsing::ast::{Ast, Parameters, Parameters::*};
@@ -1593,45 +1594,51 @@ pub fn diff(
             ),
             "sin" => Call("cos".to_string(), Box::from(insert)),
             "exp" => Call("exp".to_string(), Box::from(insert)),
-            "ln" => Div(Box::from(Int(1)), Box::from(insert)),
-            "tan" => Div(
-                Box::from(Int(1)),
-                Box::from(Mul(
-                    Box::from(Call("cos".to_string(), Box::from(insert.clone()))),
-                    Box::from(Call("cos".to_string(), Box::from(insert.clone()))),
-                )),
+            "ln" => divide(Int(1), insert, Some(&c)),
+            "tan" => divide(
+                Int(1),
+                mult(
+                    Call("cos".to_string(), Box::from(insert.clone())),
+                    Call("cos".to_string(), Box::from(insert.clone())),
+                    Some(&c),
+                ),
+                Some(&c),
             ),
             "sinh" => Call("cosh".to_string(), Box::from(insert)),
             "cosh" => Call("sinh".to_string(), Box::from(insert)),
-            "acos" => Div(
-                Box::from(Int(-1)),
-                Box::from(Call(
+            "acos" => divide(
+                Int(-1),
+                Call(
                     "sqrt".to_string(),
                     Box::from(minus(
                         Int(1),
                         mult(insert.clone(), insert.clone(), Some(&c)),
                         Some(&c),
                     )),
-                )),
+                ),
+                Some(&c),
             ),
-            "asin" => Div(
-                Box::from(Int(1)),
-                Box::from(Call(
+            "asin" => divide(
+                Int(1),
+                Call(
                     "sqrt".to_string(),
                     Box::from(minus(
                         Int(1),
                         mult(insert.clone(), insert.clone(), Some(&c)),
                         Some(&c),
                     )),
-                )),
+                ),
+                Some(&c),
             ),
             "x" => Identifier("1".to_string()),
-            "sqrt" => Div(
-                Box::from(Int(1)),
-                Box::from(Mul(
-                    Box::from(Int(2)),
-                    Box::from(Call("sqrt".to_string(), Box::from(insert))),
-                )),
+            "sqrt" => divide(
+                Int(1),
+                mult(
+                    Int(2),
+                    Call("sqrt".to_string(), Box::from(insert)),
+                    Some(&c),
+                ),
+                Some(&c),
             ),
             p => {
                 let param = exec(
@@ -1673,7 +1680,7 @@ pub fn diff(
                                 Some(&c),
                             ),
                             mult(
-                                Mul(Box::from(Int(-1)), y.clone()),
+                                mult(Int(-1), *y.clone(), Some(&c)),
                                 diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
                                 Some(&c),
                             ),
