@@ -1,6 +1,6 @@
 [package]
 name = "mini-calc"
-version = "3.2.0"
+version = "3.4.0-alpha"
 license = "GPL-3.0-or-later"
 description = "A fully-featured minimalistic configurable rust calculator"
 homepage = "https://calc.nwa2coco.fr"
