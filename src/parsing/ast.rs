@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 
+use ansi_term::Color;
+
 use crate::exact_math::rationals::Rationals;
 use crate::lexing::token::{Operator, Token};
 use crate::parsing::ast::Ast::{Nil, Node};
@@ -396,28 +398,75 @@ impl Parameters {
         function: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
     ) -> String {
         match self.clone() {
-            Int(_) => format!("val: int = {}", self.pretty_print(ram, function)),
-            Float(_) => format!("val: float = {}", self.pretty_print(ram, function)),
+            Int(_) => format!(
+                "{}: {} = {}",
+                Color::Cyan.paint("val"),
+                Color::Green.paint("int"),
+                Color::Green.paint(self.pretty_print(ram, function))
+            ),
+            Float(_) => format!(
+                "{}: {} = {}",
+                Color::Cyan.paint("val"),
+                Color::White.paint("float"),
+                Color::White.paint(self.pretty_print(ram, function))
+            ),
             Identifier(s) => {
                 if s.starts_with("@") {
                     self.pretty_print(ram, function)
                 } else {
-                    format!("val: ident = {}", self.pretty_print(ram, function))
+                    format!(
+                        "{}: {} = {}",
+                        Color::Cyan.paint("val"),
+                        Color::Yellow.paint("ident"),
+                        Color::Yellow.paint(self.pretty_print(ram, function))
+                    )
                 }
             }
-            Rational(_) => format!("val: rational = {}", self.pretty_print(ram, function)),
-            Bool(_) => format!("val: bool = {}", self.pretty_print(ram, function)),
+            Rational(_) => format!(
+                "{}: {} = {}",
+                Color::Cyan.paint("val"),
+                Color::Yellow.paint("rational"),
+                Color::Yellow.paint(self.pretty_print(ram, function)),
+            ),
+            Bool(_) => format!(
+                "{}: {} = {}",
+                Color::Cyan.paint("val"),
+                Color::Yellow.paint("bool"),
+                Color::Yellow.paint(self.pretty_print(ram, function)),
+            ),
             InterpreterVector(_) => {
-                format!("val: matrix \n{}", self.pretty_print(ram, function))
+                format!(
+                    "{}: {} \n{}",
+                    Color::Cyan.paint("val"),
+                    Color::Purple.paint("matrix"),
+                    Color::Purple.paint(self.pretty_print(ram, function))
+                )
             }
             Var(_, _, _) => {
-                format!("val: var = {}", self.pretty_print(ram, function))
+                format!(
+                    "{}: {} = {}",
+                    Color::Cyan.paint("val"),
+                    Color::Purple.paint("var"),
+                    Color::Purple.paint(self.pretty_print(ram, function))
+                )
             }
             Plus(_, _) | Mul(_, _) | Div(_, _) => {
-                format!("val: op = {}", self.pretty_print(ram, function))
+                format!(
+                    "{}: {} = {}",
+                    Color::Cyan.paint("val"),
+                    Color::Red.paint("op"),
+                    Color::Red.paint(self.pretty_print(ram, function))
+                )
             }
             Str(_) => {
-                format!("val: string = \"{}\"", self.pretty_print(ram, function))
+                format!(
+                    "{}: {} = {}{}{}",
+                    Color::Cyan.paint("val"),
+                    Color::Blue.paint("string"),
+                    Color::Blue.paint("\""),
+                    Color::Blue.paint(self.pretty_print(ram, function)),
+                    Color::Blue.paint("\"")
+                )
             }
 
             _ => self.pretty_print(ram, function),
