@@ -396,26 +396,30 @@ impl Parameters {
         function: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
     ) -> String {
         match self.clone() {
-            Int(_) => format!("val = int: {}", self.pretty_print(ram, function)),
-            Float(_) => format!("val = float: {}", self.pretty_print(ram, function)),
+            Int(_) => format!("val: int = {}", self.pretty_print(ram, function)),
+            Float(_) => format!("val: float = {}", self.pretty_print(ram, function)),
             Identifier(s) => {
                 if s.starts_with("@") {
                     self.pretty_print(ram, function)
                 } else {
-                    format!("val = ident: {}", self.pretty_print(ram, function))
+                    format!("val: ident = {}", self.pretty_print(ram, function))
                 }
             }
-            Rational(_) => format!("val = rational: {}", self.pretty_print(ram, function)),
-            Bool(_) => format!("val = bool: {}", self.pretty_print(ram, function)),
+            Rational(_) => format!("val: rational = {}", self.pretty_print(ram, function)),
+            Bool(_) => format!("val: bool = {}", self.pretty_print(ram, function)),
             InterpreterVector(_) => {
-                format!("val = matrix: \n{}", self.pretty_print(ram, function))
+                format!("val: matrix \n{}", self.pretty_print(ram, function))
             }
             Var(_, _, _) => {
-                format!("val = var: {}", self.pretty_print(ram, function))
+                format!("val: var = {}", self.pretty_print(ram, function))
             }
             Plus(_, _) | Mul(_, _) | Div(_, _) => {
-                format!("val = op: {}", self.pretty_print(ram, function))
+                format!("val: op = {}", self.pretty_print(ram, function))
             }
+            Str(_) => {
+                format!("val: string = \"{}\"", self.pretty_print(ram, function))
+            }
+
             _ => self.pretty_print(ram, function),
         }
     }
