@@ -322,7 +322,7 @@ fn main() {
         if result != Parameters::Null {
             println!(
                 "{}",
-                result.pretty_print(Some(&mut ram), Some(&mut functions))
+                result.argument_print(Some(&mut ram), Some(&mut functions))
             )
         }
         exit(0);
@@ -426,7 +426,7 @@ fn main() {
                     if result != Parameters::Null {
                         println!(
                             "{}",
-                            result.pretty_print(Some(&mut ram), Some(&mut functions))
+                            result.argument_print(Some(&mut ram), Some(&mut functions))
                         )
                     }
                 }
