@@ -1,3 +1,5 @@
+# Version 3.3.2 : CI
+
 # Version 3.3.0 : Colours
 The REPL is now full of :sparkles: colours :sparkles:
 Fix the re-assignment bug
