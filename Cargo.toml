@@ -1,10 +1,10 @@
 [package]
 name = "mini-calc"
-version = "3.2.0"
+version = "3.3.0"
 license = "GPL-3.0-or-later"
-description = "A fully-featured minimalistic configurable rust calculator"
-homepage = "https://calc.nwa2coco.fr"
-repository = "https://github.com/coco33920/calc"
+description = "A Fully-Featured Configurable (mini) Rust Calculator"
+homepage = "https://calc.charlotte-thomas.me"
+repository = "https://github.com/vanilla-extract/calc"
 readme = "README.md"
 edition = "2021"
 exclude = [

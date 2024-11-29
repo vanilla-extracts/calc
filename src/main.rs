@@ -263,7 +263,7 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 fn main() {
     let mut args: Args = env::args();
 
-    let version: String = "v3.2.0".to_string();
+    let version: String = "v3.3.0".to_string();
     if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
 
@@ -426,7 +426,7 @@ fn main() {
                     if result != Parameters::Null {
                         println!(
                             "{}",
-                            result.pretty_print(Some(&mut ram), Some(&mut functions))
+                            result.argument_print(Some(&mut ram), Some(&mut functions))
                         )
                     }
                 }
