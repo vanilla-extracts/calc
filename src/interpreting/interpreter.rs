@@ -70,7 +70,18 @@ pub fn interpret(
                         }
                     }
                     _ => {
-                        let (a, b) = assign(param1.clone(), param2.clone());
+                        let p1 = match *l.clone() {
+                            Ast::Node { value, left, right } => {
+                                match (value.clone(), *left, *right) {
+                                    (Parameters::Identifier(_), Ast::Nil, Ast::Nil) => {
+                                        value.clone()
+                                    }
+                                    _ => Parameters::Null,
+                                }
+                            }
+                            _ => Parameters::Null,
+                        };
+                        let (a, b) = assign(p1, param2.clone());
                         if a != "".to_string() {
                             if ram.contains_key(&a) {
                                 ram.remove(&a);
