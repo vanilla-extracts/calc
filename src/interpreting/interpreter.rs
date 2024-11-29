@@ -43,30 +43,62 @@ pub fn interpret(
                 Parameters::Assign => match *(l.clone()) {
                     Ast::Call { name: n, lst: list } => {
                         if function.contains_key(&n) {
-                            Parameters::Str("This function has already been set".to_string())
+                            println!(
+                                "{}",
+                                ansi_term::Color::Red
+                                    .bold()
+                                    .paint("This function has already been set")
+                            );
+                            Parameters::Null
                         } else {
                             if n.as_str() != "" {
-                                (function).insert(n.to_string(), (list, *r.clone()));
+                                (function).insert(n.to_string(), (list.clone(), *r.clone()));
                             }
-                            Parameters::Identifier(format!(
-                                "@The function {} has been set",
-                                n.clone()
-                            ))
+                            println!(
+                                "{}: {} = {}",
+                                ansi_term::Color::Cyan.paint("fun"),
+                                ansi_term::Color::RGB(255, 215, 0).paint(format!(
+                                    "{}",
+                                    Ast::Call {
+                                        name: n.clone(),
+                                        lst: list.clone()
+                                    }
+                                )),
+                                ansi_term::Color::RGB(255, 215, 0).paint(format!("{}", *r.clone()))
+                            );
+                            Parameters::Null
                         }
                     }
                     _ => {
-                        let (a, b) = assign(param1.clone(), param2.clone());
+                        let p1 = match *l.clone() {
+                            Ast::Node { value, left, right } => {
+                                match (value.clone(), *left, *right) {
+                                    (Parameters::Identifier(_), Ast::Nil, Ast::Nil) => {
+                                        value.clone()
+                                    }
+                                    _ => Parameters::Null,
+                                }
+                            }
+                            _ => Parameters::Null,
+                        };
+                        let (a, b) = assign(p1, param2.clone());
                         if a != "".to_string() {
                             if ram.contains_key(&a) {
                                 ram.remove(&a);
                             }
                             (ram).insert(a.clone(), b.clone());
 
-                            return Parameters::Identifier(format!(
-                                "@ {} = {}",
-                                a.clone(),
-                                b.clone().pretty_print(Some(ram), Some(function))
-                            ));
+                            println!(
+                                "{}: {} = {}",
+                                ansi_term::Color::Cyan.paint("assign"),
+                                ansi_term::Color::Yellow.paint(format!("{}", a.clone())),
+                                ansi_term::Color::Yellow.paint(format!(
+                                    "{}",
+                                    b.clone().pretty_print(Some(ram), Some(function))
+                                ))
+                            );
+
+                            return Parameters::Null;
                         }
                         Parameters::Null
                     }
