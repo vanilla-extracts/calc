@@ -284,6 +284,7 @@ fn main() {
             println!("mini-calc > launch the mini-calc REPL");
             println!("mini-calc [arg] > compute non interactively");
             println!("mini-calc -h || --help > open this help");
+            println!("mini-calc -u || --update > update the binary");
             println!("");
             println!("------Help Calc-----");
             exit(0);
