@@ -416,7 +416,7 @@ impl Parameters {
                 } else {
                     format!(
                         "{}: {} = {}",
-                        Color::Cyan.paint("val"),
+                        Color::Cyan.paint(format!("{}", s.clone())),
                         Color::Yellow.paint("ident"),
                         Color::Yellow.paint(self.pretty_print(ram, function))
                     )
