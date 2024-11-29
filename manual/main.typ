@@ -1,4 +1,4 @@
-#import "@preview/codly:0.1.0": *
+#import "@preview/codly:1.0.0": *
 #set page(numbering: "1/1")
 #set align(center)
 #set text(font:"Monaspace Xenon")
@@ -30,7 +30,7 @@ Last updated, May, The 19th, 2024
   sh: (name: "Bash", icon: icon("brand-bash.svg"), color: rgb("3c3c3c")),
 ))
 
-#let calc = link("https://calc.nwa2coco.fr",[#set text(red); *Calc*])
+#let calc = link("https://calc.charlotte-thomas.me",[#set text(red); *Calc*])
 
 = Introduction
 #v(1em)
@@ -81,7 +81,7 @@ Visit #calc to see all the install page
   [*Name*], [*Role*], [*Website*],
   "Charlotte THOMAS",
   "Main developer/Maintener",
-  link("https://me.nwa2coco.fr",[#set text(red); Personal Page]),
+  link("https://www.charlotte-thomas.me",[#set text(red); Personal Page]),
   "Léana 江",
   "Help, cleanup",
   link("https://earth2077.fr",[#set text(red); Website/Blog])
@@ -495,3 +495,18 @@ results!
   image("assets/symbolic.png"),
   caption: [Example of a symbolic expression computation]
 )
+
+= Differenciation 
+
+You can differentiate function with calc
+
+```
+> f(x) = x^2 + x
+[...]
+> diff(f)
+2x+1
+```
+
+= Syntax coloration
+
+In 3.3.0 the coloration was added.
