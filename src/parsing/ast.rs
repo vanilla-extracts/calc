@@ -407,8 +407,8 @@ impl Parameters {
             Float(_) => format!(
                 "{}: {} = {}",
                 Color::Cyan.paint("val"),
-                Color::White.paint("float"),
-                Color::White.paint(self.pretty_print(ram, function))
+                Color::RGB(186, 214, 152).paint("float"),
+                Color::RGB(186, 214, 152).paint(self.pretty_print(ram, function))
             ),
             Identifier(s) => {
                 if s.starts_with("@") {
@@ -425,29 +425,29 @@ impl Parameters {
             Rational(_) => format!(
                 "{}: {} = {}",
                 Color::Cyan.paint("val"),
-                Color::Yellow.paint("rational"),
-                Color::Yellow.paint(self.pretty_print(ram, function)),
+                Color::RGB(237, 138, 35).paint("rational"),
+                Color::RGB(237, 138, 35).paint(self.pretty_print(ram, function)),
             ),
             Bool(_) => format!(
                 "{}: {} = {}",
                 Color::Cyan.paint("val"),
-                Color::Yellow.paint("bool"),
-                Color::Yellow.paint(self.pretty_print(ram, function)),
+                Color::RGB(234, 144, 144).paint("bool"),
+                Color::RGB(234, 144, 144).paint(self.pretty_print(ram, function)),
             ),
             InterpreterVector(_) => {
                 format!(
                     "{}: {} \n{}",
                     Color::Cyan.paint("val"),
-                    Color::Purple.paint("matrix"),
-                    Color::Purple.paint(self.pretty_print(ram, function))
+                    Color::RGB(248, 204, 249).paint("matrix"),
+                    Color::RGB(248, 204, 249).paint(self.pretty_print(ram, function))
                 )
             }
             Var(_, _, _) => {
                 format!(
                     "{}: {} = {}",
                     Color::Cyan.paint("val"),
-                    Color::Purple.paint("var"),
-                    Color::Purple.paint(self.pretty_print(ram, function))
+                    Color::RGB(30, 154, 176).paint("var"),
+                    Color::RGB(30, 154, 176).paint(self.pretty_print(ram, function))
                 )
             }
             Plus(_, _) | Mul(_, _) | Div(_, _) => {
