@@ -7,6 +7,9 @@
     "favicon": "https://www.axo.dev/favicon.ico"
   },
   "components": {
+    "mdbook": {
+      "path": "./docs/book"
+    },
     "artifacts": {
       "package_managers": {
         "preferred": {
