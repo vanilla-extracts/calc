@@ -50,7 +50,7 @@ There is a _MD Book_ [there](https://calc.charlotte-thomas.me/book)
 
 ## Manual
 
-If you prefer a PDF, there is a [manual](https://calc.nwa2coco.fr/assets/manual.pdf)
+If you prefer a PDF, there is a [manual](https://calc.charlotte-thomas.me/assets/manual.pdf)
 
 ## Contributors
 
