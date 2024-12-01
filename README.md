@@ -44,11 +44,13 @@ nix run github:vanilla-extracts/calc
 Both `.deb` and `.rpm` packages are availables in the download page
 
 ## Website
-The website (powered by oranda) is available for more informations [the website (SOON)](https://calc.charlotte-thomas.me) for more informations.
+The website (powered by oranda) is available for more informations [the website](https://calc.charlotte-thomas.me) for more informations.
+
+There is a _MD Book_ [there](https://calc.charlotte-thomas.me/book)
 
 ## Manual
 
-If you prefer a PDF, there is a [manual](https://calc.charlotte-thomas.me/manual.pdf)
+If you prefer a PDF, there is a [manual](https://calc.charlotte-thomas.me/static/manual.pdf)
 
 ## Contributors
 

@@ -1,4 +1,7 @@
 {
+  "build": {
+    "static_dir": "docs/assets"
+  },
   "styles": {
     "theme": "axodark",
     "favicon": "https://www.axo.dev/favicon.ico"
