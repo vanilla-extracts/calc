@@ -19,7 +19,7 @@
 You can install the latest version from source
 
 ```bash
-git clone https://github.com/coco33920/calc
+git clone https://github.com/vanilla-extracts/calc
 cd calc
 cargo build --release
 ./target/release/mini-calc
@@ -36,7 +36,7 @@ Alternatively, you can use [nix](https://nixos.org) to build or run this project
 
 Running directly:
 ```sh
-nix run github:coco33920/calc
+nix run github:vanilla-extracts/calc
 ```
 > You may need to enable nix experimental features. In that case, execute the following command: `mkdir -p ~/.config/nix && echo "experimental-features = nix-command flakes" | tee ~/.config/nix/nix.conf`
 
@@ -44,17 +44,17 @@ nix run github:coco33920/calc
 Both `.deb` and `.rpm` packages are availables in the download page
 
 ## Website
-The website (powered by oranda) is available for more informations [the website](https://calc.nwa2coco.fr) for more informations.
+The website (powered by oranda) is available for more informations [the website (SOON)](https://calc.charlotte-thomas.me) for more informations.
 
 ## Manual
 
-If you prefer a PDF, there is a [manual](https://calc.nwa2coco.fr/assets/manual.pdf)
+If you prefer a PDF, there is a [manual](manual.pdf)
 
 ## Contributors
 
 |                                                                                                                                               | Name    | Role                     | Website                                     |
 |-------------------------------------------------------------------------------------------------------------------------------------------------|:--------|:-------------------------|:--------------------------------------------|
-| [<img src="https://avatars.githubusercontent.com/u/17108449?v=4" style="border-radius: 50%;height:90pt;width:auto">](https://github.com/coco33920)        |Charlotte THOMAS          | Main developer/Maintener | [Main page](https://me.nwa2coco.fr)         | 
+| [<img src="https://avatars.githubusercontent.com/u/17108449?v=4" style="border-radius: 50%;height:90pt;width:auto">](https://github.com/vanilla-extracts)        |Charlotte THOMAS          | Main developer/Maintener | [Main page](https://www.charlotte-thomas.me)         | 
 | [<img src="https://avatars.githubusercontent.com/u/87855546?v=4" style="border-radius: 50%;height:90pt;width:auto">](https://github.com/leana8959)        |Léana 江                  | Help, cleanup            | [Website/Blog](https://earth2077.fr)        |
 | [<img src="https://avatars.githubusercontent.com/u/53050011?v=4" style="border-radius:50%;height:90pt;width:auto">](https://github.com/Sigmaficient)      |Sigmaficient              | Nixify                   | [Website](https://sigmanificient.github.io/)|
 
@@ -154,6 +154,11 @@ The TODO list is completed so I collapsed it
 
 ## Evolution
 
+Everything is advanced so I'll put a big details here
+
+<details>
+<summary>Finished Evolution</summary>
+
 ### Ploting
 
 Plot functions (both stdlib, and runtime) would be useful and appreciated.
@@ -206,6 +211,8 @@ And now it auto scales on y!
 
 ![](docs/assets/termplot_cos.png)
 
+</details>
+
 ### Exact math calculator
 
 As this project provides a frontend with a parser we could plug an exact math engine in the backend to transform `calc` into a 
@@ -221,6 +228,7 @@ TODO List for the Exact Math Engine
 - [ ] Irrational calculation 
   - [ ] Implement irrational numbers operations
   - [ ] Irrational reduction
+
 #### Example of rational computations
 
 As of 2.11.0 the support for rational exact math has been implemented
@@ -240,7 +248,14 @@ As of 2.11.4 floats are automatically rationalized (with 10 decimal points of pr
 If we ever go to this step, yes, I will remove the "minimalistic" from the description
 - [ ] It's hard.
 
+
 ## Examples
+
+This is big, so details once again. The README is not up to date please read the
+manual for more up to date informations
+
+<details>
+<summary>Examples</summary>
 
 ### REPL with only Lexing (verbose mode: on by default)
 
@@ -412,3 +427,5 @@ As of 2.11.3 matrices are pretty printed !
 As of 2.12.0 non interactive use was added
 
 ![](docs/assets/non_interactive_use.png)
+
+</details>
