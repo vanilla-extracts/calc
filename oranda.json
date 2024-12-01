@@ -5,5 +5,14 @@
   "styles": {
     "theme": "axodark",
     "favicon": "https://www.axo.dev/favicon.ico"
+  },
+  "components": {
+    "artifacts": {
+      "package_managers": {
+        "preferred": {
+          "crates.io": "cargo install mini-calc"
+        }
+      }
+    }
   }
 }
