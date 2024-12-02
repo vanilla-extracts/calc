@@ -1,4 +1,4 @@
-# Configuration
+# Chapter III. Configuration
 The calculator is completely configurable, you can change the general color,
 the greeting message, the greeting color, the prompt and prompt color
 in a toml file found in your config folder.

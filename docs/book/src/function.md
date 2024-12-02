@@ -1,4 +1,4 @@
-# Functions
+# Chapter II. Functions
 
 ## Built-in functions
 The following functions are currently (as of `3.3.0`) built-in
