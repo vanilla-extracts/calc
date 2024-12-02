@@ -1,6 +1,6 @@
 [package]
 name = "mini-calc"
-version = "3.3.3"
+version = "4.0.0-alpha"
 license = "GPL-3.0-or-later"
 description = "A Fully-Featured Configurable (mini) Rust Calculator"
 homepage = "https://calc.charlotte-thomas.me"
