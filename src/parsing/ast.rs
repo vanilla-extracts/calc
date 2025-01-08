@@ -156,7 +156,7 @@ impl Parameters {
                 if s.starts_with("@") {
                     match s.strip_prefix("@") {
                         None => format!(""),
-                        Some(c) => format!("{c}"),
+                        Some(c) => format!("Error: {}", Color::Red.paint(c)),
                     }
                 } else {
                     if ram == None {
