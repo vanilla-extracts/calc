@@ -7,19 +7,18 @@ use crate::configuration::loader::{load, load_config, Config};
 use crate::functions::divide::divide;
 use crate::functions::minus::minus;
 use crate::interpreting::interpreter::interpret;
-use crate::parsing::ast::{Ast, Parameters, Parameters::*};
+use crate::parsing::ast::{
+    Ast,
+    Parameters::{self, *},
+};
+use crate::parsing::ast::{Functions, Ram};
 use crate::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
 use crate::utils::plot_utils::computes_lines;
 
 use crate::functions::add::add as other_add;
 use crate::functions::mult::mult;
 
-pub fn exec(
-    s: String,
-    lst: Vec<Parameters>,
-    ram: Option<&mut HashMap<String, Parameters>>,
-    functions: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
-) -> Parameters {
+pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> Parameters {
     match s.as_str() {
         "cos" => cos(&lst, &ram),
         "sin" => sin(&lst, &ram),
@@ -94,7 +93,7 @@ pub fn exec(
     }
 }
 
-pub fn cos(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -181,7 +180,7 @@ pub fn cos(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
     }
 }
 
-pub fn sin(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -268,7 +267,7 @@ pub fn sin(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
     }
 }
 
-pub fn tan(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -356,7 +355,7 @@ pub fn tan(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
     }
 }
 
-pub fn cosh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -444,7 +443,7 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
     }
 }
 
-pub fn sinh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -532,7 +531,7 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
     }
 }
 
-pub fn tanh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -620,7 +619,7 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
     }
 }
 
-pub fn acos(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -706,7 +705,7 @@ pub fn acos(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
     }
 }
 
-pub fn asin(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -793,7 +792,7 @@ pub fn asin(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
     }
 }
 
-pub fn atan(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -880,7 +879,7 @@ pub fn atan(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
     }
 }
 
-pub fn exp(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -968,7 +967,7 @@ pub fn exp(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
     }
 }
 
-pub fn ln(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1057,7 +1056,7 @@ pub fn ln(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -
     }
 }
 
-pub fn sqrt(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1159,10 +1158,7 @@ pub fn fact(n: i64) -> i64 {
     aux(n, 1)
 }
 
-pub fn factorial(
-    p: &Vec<Parameters>,
-    ram: &Option<&mut HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn factorial(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1181,7 +1177,7 @@ pub fn factorial(
     }
 }
 
-pub fn abs(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn abs(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1201,7 +1197,7 @@ pub fn abs(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) 
     }
 }
 
-pub fn ceil(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn ceil(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1220,7 +1216,7 @@ pub fn ceil(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>)
     }
 }
 
-pub fn floor(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn floor(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1239,7 +1235,7 @@ pub fn floor(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>
     }
 }
 
-pub fn round(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>) -> Parameters {
+pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1295,11 +1291,7 @@ pub fn round(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>
     }
 }
 
-pub fn norm(
-    p: &Vec<Parameters>,
-    ram: &Option<&mut HashMap<String, Parameters>>,
-    function: &Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
-) -> Parameters {
+pub fn norm(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1333,10 +1325,7 @@ pub fn norm(
     }
 }
 
-pub fn transpose_vectors(
-    p: &Vec<Parameters>,
-    ram: &Option<&mut HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn transpose_vectors(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1369,10 +1358,7 @@ pub fn transpose_vectors(
     }
 }
 
-pub fn transpose_matrices(
-    p: &Vec<Parameters>,
-    ram: &Option<&mut HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn transpose_matrices(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1417,10 +1403,7 @@ pub fn transpose_matrices(
     }
 }
 
-pub fn det_matrix(
-    p: &Vec<Parameters>,
-    ram: &Option<&mut HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn det_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1472,10 +1455,7 @@ pub fn det_matrix(
     }
 }
 
-pub fn inverse_matrix(
-    p: &Vec<Parameters>,
-    ram: &Option<&mut HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;
     }
@@ -1552,11 +1532,7 @@ pub fn inverse_matrix(
     }
 }
 
-pub fn diff(
-    p: &Vec<Parameters>,
-    ram: &Option<&mut HashMap<String, Parameters>>,
-    function: &Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
-) -> Parameters {
+pub fn diff(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters {
     let color = match load() {
         Ok(cfg) => load_config(cfg).general_color,
         Err(_) => load_config(Config::default()).general_color,
@@ -1756,8 +1732,8 @@ pub fn diff(
 
 pub fn plot_fn(
     p: &Vec<Parameters>,
-    ram: &Option<&mut HashMap<String, Parameters>>,
-    functions: &Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
+    ram: &Ram,
+    functions: &Functions,
     terminal: bool,
 ) -> Parameters {
     let color = match load() {
@@ -1772,7 +1748,7 @@ pub fn plot_fn(
     }
 
     let fs = p.first().unwrap();
-    let mut f: fn(&Vec<Parameters>, &Option<&mut HashMap<String, Parameters>>) -> Parameters = cos;
+    let mut f: fn(&Vec<Parameters>, &Ram) -> Parameters = cos;
     let mut fd: String = "".to_string();
     let mut rad: bool = false;
     let mut fun: bool = true;
