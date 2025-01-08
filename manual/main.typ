@@ -1,4 +1,6 @@
 #import "@preview/codly:1.0.0": *
+#import "@preview/colorful-boxes:1.4.1": *
+
 #set page(numbering: "1/1")
 #set align(center)
 #set text(font: "Monaspace Xenon")
@@ -99,6 +101,14 @@ Visit #calc to see all the install page
 - `*` for the multiplication
 - `/` for the division (or for a rational)
 - `^` for the exponentation
+
+#colorbox(
+ title: "Warning",
+ color: "red",
+)[
+  You shoudln't use the `^` operator with functions, it is not taken into
+  account for differentiations
+]
 
 == Variables
 
@@ -492,12 +502,13 @@ As of `3.2.0`, the calculator can differentiate known functions (function
 constructed using the standard functions). It supports both built-in and
 user-defined functions. 
 
-#text(20pt)[#emoji.warning] Beware as of `3.3.3` there is some bugs to iron out.
+#colorbox(title: "Warning", color: "red")[Beware as of `3.3.3` there is some bugs to iron out.
 It doesn't differentiates vars (differentiation of $x*x$ works but not $x^2$.).
 And differentiation of function 
-referencing each other (example $v(x) = f(x) + x*x$) doesn't work either. 
+referencing each other (example $v(x) = f(x) + x*x$) doesn't work either.] 
 
-It's currently being fixed, and will be fixed before `3.4.0`
+#colorbox(title: "Fixed", color: "blue")[As of `3.3.4` functions referencing
+each other works with *diff*]
 
 === Examples
 

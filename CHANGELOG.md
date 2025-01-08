@@ -1,3 +1,6 @@
+# Version 3.3.4 : Bug fix
+Fix bug #61 and #59
+
 # Version 3.3.2 : CI
 
 # Version 3.3.0 : Colours

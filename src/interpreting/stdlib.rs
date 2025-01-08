@@ -40,27 +40,26 @@ pub fn exec(
         "ceil" => ceil(&lst, &ram),
         "floor" => floor(&lst, &ram),
         "round" => round(&lst, &ram),
-        "norm" => norm(&lst, &ram, functions),
+        "norm" => norm(&lst, &ram, &functions),
         "transpose_vector" => transpose_vectors(&lst, &ram),
         "transpose" => transpose_matrices(&lst, &ram),
         "det" => det_matrix(&lst, &ram),
         "invert" => inverse_matrix(&lst, &ram),
-        "plot" => plot_fn(&lst, &ram, functions, false),
-        "termplot" => plot_fn(&lst, &ram, functions, true),
-        "diff" => diff(&lst, &ram, functions),
+        "plot" => plot_fn(&lst, &ram, &functions, false),
+        "termplot" => plot_fn(&lst, &ram, &functions, true),
+        "diff" => diff(&lst, &ram, &functions),
         s => {
             let mut sram: HashMap<String, Parameters> = HashMap::new();
             sram.insert("pi".to_string(), Float(PI));
             sram.insert("e".to_string(), Float(E));
             match functions.cloned() {
-                None => Identifier("This function is unknown".to_string()),
+                None => Identifier("@This function is unknown".to_string()),
                 Some(mut f) => {
-                    let fs = f.get_mut(s);
-                    let (vec, ast): (&mut Vec<Ast>, &mut Ast) = match fs {
+                    let (vec, ast): (Vec<Ast>, Ast) = match f.get(s) {
                         None => {
-                            return Identifier("This function is unknown".to_string());
+                            return Identifier("@This function is unknown".to_string());
                         }
-                        Some((a, b)) => (a, b),
+                        Some((a, b)) => (a.clone(), b.clone()),
                     };
 
                     let mut names = Vec::new();
@@ -88,7 +87,7 @@ pub fn exec(
                         .for_each(|(name, param)| {
                             sram.insert(name.to_string(), param);
                         });
-                    interpret(ast, &mut sram, &mut HashMap::new())
+                    interpret(&ast, &mut sram, &mut f)
                 }
             }
         }
@@ -1299,7 +1298,7 @@ pub fn round(p: &Vec<Parameters>, ram: &Option<&mut HashMap<String, Parameters>>
 pub fn norm(
     p: &Vec<Parameters>,
     ram: &Option<&mut HashMap<String, Parameters>>,
-    function: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
+    function: &Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
 ) -> Parameters {
     if p.len() < 1 {
         return Null;
@@ -1556,7 +1555,7 @@ pub fn inverse_matrix(
 pub fn diff(
     p: &Vec<Parameters>,
     ram: &Option<&mut HashMap<String, Parameters>>,
-    function: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
+    function: &Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
 ) -> Parameters {
     let color = match load() {
         Ok(cfg) => load_config(cfg).general_color,
@@ -1645,7 +1644,7 @@ pub fn diff(
                     p.to_string(),
                     vec![Identifier("x".to_string())],
                     Some(&mut c),
-                    function,
+                    Some(&mut s),
                 );
                 match param {
                     Identifier(_) => Int(1),
@@ -1654,20 +1653,21 @@ pub fn diff(
                         y - 1,
                         z,
                     ),
+
                     Plus(x, y) => other_add(
-                        diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
-                        diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                        diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
+                        diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
                         Some(&c),
                     ),
                     Mul(x, y) => other_add(
                         mult(
                             *x.clone(),
-                            diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                            diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
                             Some(&c),
                         ),
                         mult(
                             *y.clone(),
-                            diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                            diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
                             Some(&c),
                         ),
                         Some(&c),
@@ -1676,12 +1676,12 @@ pub fn diff(
                         Box::from(other_add(
                             mult(
                                 *x.clone(),
-                                diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                                diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
                                 Some(&c),
                             ),
                             mult(
                                 mult(Int(-1), *y.clone(), Some(&c)),
-                                diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                                diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
                                 Some(&c),
                             ),
                             Some(&c),
@@ -1689,11 +1689,11 @@ pub fn diff(
                         Box::from(mult(*y.clone(), *y.clone(), Some(&c))),
                     ),
                     Call(name, pst) => {
-                        let prefix = diff(&vec![*pst.clone()], &Some(&mut c), Some(&mut s));
+                        let prefix = diff(&vec![*pst.clone()], &Some(&mut c), &Some(&mut s));
                         let call = diff(
                             &vec![Identifier(name), *pst.clone()],
                             &Some(&mut c),
-                            Some(&mut s),
+                            &Some(&mut s),
                         );
                         mult(prefix, call, Some(&c))
                     }
@@ -1707,19 +1707,19 @@ pub fn diff(
             z.clone(),
         ),
         Plus(x, y) => other_add(
-            diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
-            diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+            diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
+            diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
             Some(&c),
         ),
         Mul(x, y) => other_add(
             mult(
                 *x.clone(),
-                diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
                 Some(&c),
             ),
             mult(
                 *y.clone(),
-                diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
                 Some(&c),
             ),
             Some(&c),
@@ -1728,12 +1728,12 @@ pub fn diff(
             Box::from(other_add(
                 mult(
                     *x.clone(),
-                    diff(&vec![*y.clone()], &Some(&mut c), Some(&mut s)),
+                    diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
                     Some(&c),
                 ),
                 mult(
                     Mul(Box::from(Int(-1)), y.clone()),
-                    diff(&vec![*x.clone()], &Some(&mut c), Some(&mut s)),
+                    diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
                     Some(&c),
                 ),
                 Some(&c),
@@ -1742,11 +1742,11 @@ pub fn diff(
         ),
 
         Call(name, pst) => {
-            let prefix = diff(&vec![*pst.clone()], &Some(&mut c), Some(&mut s));
+            let prefix = diff(&vec![*pst.clone()], &Some(&mut c), &Some(&mut s));
             let call = diff(
                 &vec![Identifier(name.to_string()), *pst.clone()],
                 &Some(&mut c),
-                Some(&mut s),
+                &Some(&mut s),
             );
             mult(prefix, call, Some(&c))
         }
@@ -1757,7 +1757,7 @@ pub fn diff(
 pub fn plot_fn(
     p: &Vec<Parameters>,
     ram: &Option<&mut HashMap<String, Parameters>>,
-    functions: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
+    functions: &Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
     terminal: bool,
 ) -> Parameters {
     let color = match load() {
