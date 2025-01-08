@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::exact_math::rationals::Rationals;
 use crate::functions::add::add;
 use crate::functions::divide::divide;
@@ -8,13 +6,9 @@ use crate::functions::function::*;
 use crate::functions::minus::minus;
 use crate::functions::mult::mult;
 use crate::interpreting::stdlib::exec;
-use crate::parsing::ast::{Ast, Parameters};
+use crate::parsing::ast::{Ast, Functions, Parameters, Ram};
 
-pub fn interpret(
-    ast: &Ast,
-    mut ram: &mut HashMap<String, Parameters>,
-    mut function: &mut HashMap<String, (Vec<Ast>, Ast)>,
-) -> Parameters {
+pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> Parameters {
     match ast {
         Ast::Nil => Parameters::Null,
         Ast::Node {

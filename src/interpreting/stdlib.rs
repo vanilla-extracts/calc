@@ -7,16 +7,19 @@ use crate::configuration::loader::{load, load_config, Config};
 use crate::functions::divide::divide;
 use crate::functions::minus::minus;
 use crate::interpreting::interpreter::interpret;
+use crate::parsing::ast::{self};
 use crate::parsing::ast::{
     Ast,
     Parameters::{self, *},
 };
-use crate::parsing::ast::{Functions, Ram};
 use crate::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
 use crate::utils::plot_utils::computes_lines;
 
 use crate::functions::add::add as other_add;
 use crate::functions::mult::mult;
+
+type Ram<'a> = Option<&'a mut ast::Ram>;
+type Functions<'a> = Option<&'a mut ast::Functions>;
 
 pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> Parameters {
     match s.as_str() {

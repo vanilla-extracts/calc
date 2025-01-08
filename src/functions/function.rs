@@ -1,15 +1,15 @@
-use std::collections::HashMap;
-
 use crate::exact_math::rationals::Rationals;
 
 use crate::parsing::ast::Parameters;
 use crate::parsing::ast::Parameters::*;
 
+use super::add::ORam;
+
 pub fn apply_operator(
     value: Parameters,
     value2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-    f: fn(Parameters, Parameters, Option<&HashMap<String, Parameters>>) -> Parameters,
+    ram: ORam,
+    f: fn(Parameters, Parameters, ORam) -> Parameters,
 ) -> Parameters {
     let s = match value {
         Identifier(ref s) => s,
@@ -33,8 +33,8 @@ pub fn apply_operator(
 pub fn apply_operator_reverse(
     value: Parameters,
     value2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-    f: fn(Parameters, Parameters, Option<&HashMap<String, Parameters>>) -> Parameters,
+    ram: ORam,
+    f: fn(Parameters, Parameters, ORam) -> Parameters,
 ) -> Parameters {
     let s = match value2 {
         Identifier(ref s) => s,
@@ -63,11 +63,7 @@ pub fn assign(s: Parameters, s2: Parameters) -> (String, Parameters) {
     }
 }
 
-pub fn greater(
-    i: Parameters,
-    i2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn greater(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(true),
         (Null, Float(_)) => Bool(true),
@@ -140,11 +136,7 @@ pub fn greater(
     }
 }
 
-pub fn lesser(
-    i: Parameters,
-    i2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn lesser(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(false),
         (Null, Float(_)) => Bool(false),
@@ -216,11 +208,7 @@ pub fn lesser(
     }
 }
 
-pub fn greater_or_equal(
-    i: Parameters,
-    i2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn greater_or_equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(true),
         (Null, Float(_)) => Bool(true),
@@ -295,11 +283,7 @@ pub fn greater_or_equal(
     }
 }
 
-pub fn lesser_or_equal(
-    i: Parameters,
-    i2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn lesser_or_equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(false),
         (Null, Float(_)) => Bool(false),
@@ -374,11 +358,7 @@ pub fn lesser_or_equal(
     }
 }
 
-pub fn equal(
-    i: Parameters,
-    i2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(true),
         (Null, Float(_)) => Bool(true),
@@ -453,11 +433,7 @@ pub fn equal(
     }
 }
 
-pub fn not(
-    i: Parameters,
-    _i2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn not(i: Parameters, _i2: Parameters, ram: ORam) -> Parameters {
     match i {
         Bool(b) => Bool(!b),
         Identifier(s) => match ram {
@@ -468,7 +444,7 @@ pub fn not(
     }
 }
 
-pub fn and(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameters>>) -> Parameters {
+pub fn and(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Bool(b), Bool(b2)) => Bool(b && b2),
         (Bool(b), Null) => Bool(b),
@@ -489,7 +465,7 @@ pub fn and(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameter
     }
 }
 
-pub fn or(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameters>>) -> Parameters {
+pub fn or(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Bool(b), Bool(b2)) => Bool(b || b2),
         (Bool(b), Null) => Bool(b),

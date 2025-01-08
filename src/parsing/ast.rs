@@ -9,8 +9,8 @@ use crate::parsing::ast::Ast::{Nil, Node};
 use crate::parsing::ast::Parameters::*;
 use crate::utils::matrix_utils::transpose;
 
-pub type Ram<'a> = Option<&'a mut HashMap<String, Parameters>>;
-pub type Functions<'a> = Option<&'a mut HashMap<String, (Vec<Ast>, Ast)>>;
+pub type Ram = HashMap<String, Parameters>;
+pub type Functions = HashMap<String, (Vec<Ast>, Ast)>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Parameters {
@@ -149,7 +149,11 @@ impl Display for Ast {
 }
 
 impl Parameters {
-    pub fn pretty_print(&self, mut ram: Ram, mut function: Functions) -> String {
+    pub fn pretty_print(
+        &self,
+        mut ram: Option<&mut Ram>,
+        mut function: Option<&mut Functions>,
+    ) -> String {
         match self {
             Identifier(s) => {
                 if s.starts_with("@") {
