@@ -1,11 +1,17 @@
-use std::collections::HashMap;
-
 use crate::{
-    functions::add::add, functions::divide::divide, functions::function::*,
-    functions::minus::minus, functions::mult::mult, parsing::ast::Parameters,
+    functions::{
+        add::{add, ORam},
+        divide::divide,
+        function::*,
+        minus::minus,
+        mult::mult,
+    },
+    parsing::ast::Parameters,
 };
 
-pub fn transpose<T>(matrix: Vec<Vec<T>>) -> Vec<Vec<T>> {
+type Matrix<T> = Vec<Vec<T>>;
+
+pub fn transpose<T>(matrix: Matrix<T>) -> Matrix<T> {
     let num_cols = matrix.first().unwrap().len();
     let mut row_iters: Vec<_> = matrix.into_iter().map(Vec::into_iter).collect();
     let mut out: Vec<Vec<_>> = (0..num_cols).map(|_| Vec::new()).collect();
@@ -18,11 +24,7 @@ pub fn transpose<T>(matrix: Vec<Vec<T>>) -> Vec<Vec<T>> {
     out
 }
 
-pub fn mult_matrix(
-    a: Vec<Vec<Parameters>>,
-    b: Vec<Vec<Parameters>>,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Vec<Vec<Parameters>> {
+pub fn mult_matrix(a: Matrix<Parameters>, b: Matrix<Parameters>, ram: ORam) -> Matrix<Parameters> {
     let first = a.first().unwrap().len();
     let second = b.len();
 
@@ -57,10 +59,10 @@ pub fn mult_matrix(
 }
 
 pub fn lup_decompose(
-    a: &mut Vec<Vec<Parameters>>,
+    a: &mut Matrix<Parameters>,
     mut p: &mut Vec<Parameters>,
     n: usize,
-    ram: Option<&HashMap<String, Parameters>>,
+    ram: ORam,
 ) -> i64 {
     let mut abs_a;
     let mut max_a;
@@ -123,10 +125,10 @@ pub fn lup_decompose(
 }
 
 pub fn lup_determinant(
-    a: &mut Vec<Vec<Parameters>>,
+    a: &mut Matrix<Parameters>,
     p: &mut Vec<Parameters>,
     n: usize,
-    ram: Option<&HashMap<String, Parameters>>,
+    ram: ORam,
 ) -> Parameters {
     let mut det: Parameters = (&a[0][0]).clone();
     for i in 1..n {
@@ -153,11 +155,11 @@ pub fn lup_determinant(
 }
 
 pub fn lup_invert(
-    a: &mut Vec<Vec<Parameters>>,
+    a: &mut Matrix<Parameters>,
     p: &mut Vec<Parameters>,
     n: usize,
-    ia: &mut Vec<Vec<Parameters>>,
-    ram: Option<&HashMap<String, Parameters>>,
+    ia: &mut Matrix<Parameters>,
+    ram: ORam,
 ) {
     for j in 0..n {
         for i in 0..n {

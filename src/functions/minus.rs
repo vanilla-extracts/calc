@@ -4,17 +4,13 @@ use crate::functions::function::apply_operator;
 use crate::functions::function::apply_operator_reverse;
 use crate::parsing::ast::Parameters;
 use crate::parsing::ast::Parameters::*;
-use std::collections::HashMap;
 
 use super::add::add;
+use super::add::ORam;
 use super::divide::divide;
 use super::mult::mult;
 
-pub fn minus(
-    i: Parameters,
-    i2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Parameters {
+pub fn minus(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(v)) => Int(-v),
         (Null, Float(f)) => Float(-f),

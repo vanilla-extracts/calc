@@ -1,3 +1,6 @@
+# Version 3.3.5 : Code refactoring
+Refactoring of Code for simpler type usage
+
 # Version 3.3.4 : Bug fix
 Fix bug #61 and #59
 

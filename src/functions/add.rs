@@ -2,13 +2,15 @@ use crate::exact_math::rationals::Rationals;
 use crate::exact_math::symbolic::size;
 use crate::functions::function::apply_operator;
 use crate::functions::function::apply_operator_reverse;
+use crate::parsing::ast;
 use crate::parsing::ast::Parameters::*;
 use crate::parsing::ast::*;
-use std::collections::HashMap;
 
 use super::mult::mult;
 
-pub fn add(i: Parameters, i2: Parameters, ram: Option<&HashMap<String, Parameters>>) -> Parameters {
+pub type ORam<'a> = Option<&'a ast::Ram>;
+
+pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(v)) => Int(v),
         (Null, Float(f)) => Float(f),

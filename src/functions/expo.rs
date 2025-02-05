@@ -2,13 +2,10 @@ use crate::functions::function::apply_operator;
 use crate::functions::function::apply_operator_reverse;
 use crate::parsing::ast::Parameters;
 use crate::parsing::ast::Parameters::*;
-use std::collections::HashMap;
 
-pub fn expo(
-    i: Parameters,
-    i2: Parameters,
-    ram: Option<&HashMap<String, Parameters>>,
-) -> Parameters {
+use super::add::ORam;
+
+pub fn expo(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(v)) => Int(v),
         (Null, Float(f)) => Float(f),

@@ -9,6 +9,9 @@ use crate::parsing::ast::Ast::{Nil, Node};
 use crate::parsing::ast::Parameters::*;
 use crate::utils::matrix_utils::transpose;
 
+pub type Ram = HashMap<String, Parameters>;
+pub type Functions = HashMap<String, (Vec<Ast>, Ast)>;
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Parameters {
     Int(i64),
@@ -148,8 +151,8 @@ impl Display for Ast {
 impl Parameters {
     pub fn pretty_print(
         &self,
-        mut ram: Option<&mut HashMap<String, Parameters>>,
-        mut function: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
+        mut ram: Option<&mut Ram>,
+        mut function: Option<&mut Functions>,
     ) -> String {
         match self {
             Identifier(s) => {
