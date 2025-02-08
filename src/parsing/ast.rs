@@ -3,11 +3,13 @@ use std::fmt::{Display, Formatter};
 
 use ansi_term::Color;
 
+use crate::exact_math::float_mode::FloatMode;
 use crate::exact_math::rationals::Rationals;
 use crate::lexing::token::{Operator, Token};
 use crate::parsing::ast::Ast::{Nil, Node};
 use crate::parsing::ast::Parameters::*;
 use crate::utils::matrix_utils::transpose;
+use crate::FLOAT_MODE;
 
 pub type Ram = HashMap<String, Parameters>;
 pub type Functions = HashMap<String, (Vec<Ast>, Ast)>;
@@ -164,7 +166,7 @@ impl Parameters {
                         }
                     }
                 } else {
-                    if ram == None {
+                    if ram.is_none() {
                         return self.to_string();
                     } else {
                         match ram.as_mut().unwrap().get(s) {
@@ -178,9 +180,15 @@ impl Parameters {
                 }
             }
 
+            Float(f) => FLOAT_MODE.with(|fm| match *fm.borrow() {
+                FloatMode::Normal => format!("{:.10}", f),
+                FloatMode::Exact => format!("{}", f),
+                FloatMode::Science => format!("{}", f),
+            }),
+
             Var(x, y, z) => {
                 let l = int_to_superscript_string(*y);
-                if l == "error".to_string() {
+                if l == *"error".to_string() {
                     format!("{}", x.clone())
                 } else {
                     let division = l.starts_with("⁻");
@@ -199,7 +207,7 @@ impl Parameters {
                                 ""
                             }
                         }
-                        Float(f) if f >= 1.0 - 1e10 && f <= 1.0 + 1e10 => {
+                        Float(f) if f >= 1.0 - 1e-10 && f <= 1.0 + 1e-10 => {
                             if division {
                                 "1"
                             } else {
@@ -220,7 +228,7 @@ impl Parameters {
                                 "-"
                             }
                         }
-                        Float(f) if f <= -1.0 - 1e10 && f >= -1.0 + 1e10 => {
+                        Float(f) if f >= -1.0 - 1e-10 && f <= -1.0 + 1e-10 => {
                             if division {
                                 "-1"
                             } else {
@@ -409,12 +417,24 @@ impl Parameters {
                 Color::Green.paint("int"),
                 Color::Green.paint(self.pretty_print(ram, function))
             ),
-            Float(_) => format!(
-                "{}: {} = {}",
-                Color::Cyan.paint("val"),
-                Color::RGB(186, 214, 152).paint("float"),
-                Color::RGB(186, 214, 152).paint(self.pretty_print(ram, function))
-            ),
+            Float(_) => {
+                let val = self.pretty_print(ram, function);
+                if val.contains("/") {
+                    format!(
+                        "{}: {} = {}",
+                        Color::Cyan.paint("val"),
+                        Color::RGB(237, 144, 144).paint("rational"),
+                        Color::RGB(237, 144, 144).paint(val)
+                    )
+                } else {
+                    format!(
+                        "{}: {} = {}",
+                        Color::Cyan.paint("val"),
+                        Color::RGB(186, 214, 152).paint("float"),
+                        Color::RGB(186, 214, 152).paint(val)
+                    )
+                }
+            }
             Identifier(s) => {
                 if s.starts_with("@") {
                     self.pretty_print(ram, function)
