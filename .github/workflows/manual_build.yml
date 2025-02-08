@@ -1,0 +1,22 @@
+name: Compile Manual
+on:
+  push:
+    paths:
+      - manual/main.typ
+  workflow_dispatch:
+permission:
+  contents: write
+jobs:
+  build:
+    runs-on: '123marvin123/typst:latest'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Compile Files
+        run: |
+          typst c manual/main.typ --font-path=fonts/
+          cp main.pdf ../manual.pdf
+      - name: Commit new manual
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: '[continuous deployment]: Compiled manual to PDF' 
