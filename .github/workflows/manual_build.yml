@@ -8,14 +8,22 @@ permissions:
   contents: write
 jobs:
   build:
-    runs-on: '123marvin123/typst:latest'
+    runs-on: ubuntu-latest 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Install Typst
+        run : |
+          wget https://github.com/typst/typst/releases/latest/download/typst-x86_64-unknown-linux-musl.tar.xz
+          tar xvf typst-x86_64-unknown-linux-musl.tar.xz
+          mv typst-x86_64-unknown-linux-musl/typst .
       - name: Compile Files
         run: |
           typst c manual/main.typ --font-path=fonts/
           cp main.pdf ../manual.pdf
+      - name: Clean Typst
+        run: |
+          rm -rf typst* 
       - name: Commit new manual
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
