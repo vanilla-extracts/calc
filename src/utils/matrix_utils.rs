@@ -1,5 +1,4 @@
 use crate::{
-    exact_math::float_mode::FloatMode,
     functions::{
         add::{add, ORam},
         divide::divide,
@@ -75,7 +74,7 @@ pub fn lup_decompose(
     }
 
     for i in 0..n {
-        max_a = Parameters::Float(0.0, FloatMode::NormalMode);
+        max_a = Parameters::Float(0.0);
         i_max = i;
 
         for k in i..n {
@@ -91,7 +90,7 @@ pub fn lup_decompose(
 
         match max_a {
             Parameters::Int(0) => return 0,
-            Parameters::Float(f, _) => {
+            Parameters::Float(f) => {
                 if f.abs() <= 1e-10 {
                     return 0;
                 }
@@ -144,18 +143,14 @@ pub fn lup_determinant(
                 minus(Parameters::Int(0), det, ram.as_deref())
             }
         }
-        Parameters::Float(f, _) => {
+        Parameters::Float(f) => {
             if (f - (n as f64)) % 2.0 == 0.0 {
                 det
             } else {
-                minus(
-                    Parameters::Float(0.0, FloatMode::NormalMode),
-                    det,
-                    ram.as_deref(),
-                )
+                minus(Parameters::Float(0.0), det, ram.as_deref())
             }
         }
-        _ => Parameters::Float(f64::NAN, FloatMode::NormalMode),
+        _ => Parameters::Float(f64::NAN),
     }
 }
 
@@ -176,7 +171,7 @@ pub fn lup_invert(
                         Parameters::Int(0)
                     }
                 }
-                Parameters::Float(f, _) => {
+                Parameters::Float(f) => {
                     if (*f - (j as f64)).abs() <= 1e10 {
                         Parameters::Int(1)
                     } else {
@@ -194,7 +189,7 @@ pub fn lup_invert(
                                 Parameters::Int(0)
                             }
                         }
-                        Some(Parameters::Float(f, _)) => {
+                        Some(Parameters::Float(f)) => {
                             if (*f - (j as f64)).abs() <= 1e-10 {
                                 Parameters::Int(1)
                             } else {
@@ -232,9 +227,7 @@ pub fn lup_invert(
 mod test {
 
     use crate::{
-        exact_math::float_mode::FloatMode,
-        functions::{function::greater, minus::minus},
-        parsing::ast::Parameters,
+        functions::function::greater, functions::minus::minus, parsing::ast::Parameters,
         utils::matrix_utils::lup_determinant,
     };
 
@@ -244,19 +237,19 @@ mod test {
     pub fn test() {
         let mut a = vec![
             vec![
-                Parameters::Float(1.0, FloatMode::NormalMode),
-                Parameters::Float(2.0, FloatMode::NormalMode),
-                Parameters::Float(3.0, FloatMode::NormalMode),
+                Parameters::Float(1.0),
+                Parameters::Float(2.0),
+                Parameters::Float(3.0),
             ],
             vec![
-                Parameters::Float(4.0, FloatMode::NormalMode),
-                Parameters::Float(0.0, FloatMode::NormalMode),
-                Parameters::Float(6.0, FloatMode::NormalMode),
+                Parameters::Float(4.0),
+                Parameters::Float(0.0),
+                Parameters::Float(6.0),
             ],
             vec![
-                Parameters::Float(7.0, FloatMode::NormalMode),
-                Parameters::Float(8.0, FloatMode::NormalMode),
-                Parameters::Float(9.0, FloatMode::NormalMode),
+                Parameters::Float(7.0),
+                Parameters::Float(8.0),
+                Parameters::Float(9.0),
             ],
         ];
 
@@ -271,8 +264,8 @@ mod test {
         println!("{:?}", det);
         assert_eq!(
             greater(
-                Parameters::Float(1e-10, FloatMode::NormalMode),
-                minus(det, Parameters::Float(60.0, FloatMode::NormalMode), None).abs(None),
+                Parameters::Float(1e-10),
+                minus(det, Parameters::Float(60.0), None).abs(None),
                 None
             ),
             Parameters::Bool(true)

@@ -4,7 +4,6 @@ use std::f64::consts::{E, PI};
 use gnuplot::{AxesCommon, Figure};
 
 use crate::configuration::loader::{load, load_config, Config};
-use crate::exact_math::float_mode::FloatMode;
 use crate::functions::divide::divide;
 use crate::functions::minus::minus;
 use crate::interpreting::interpreter::interpret;
@@ -53,8 +52,8 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
         "diff" => diff(&lst, &ram, &functions),
         s => {
             let mut sram: HashMap<String, Parameters> = HashMap::new();
-            sram.insert("pi".to_string(), Float(PI, FloatMode::NormalMode));
-            sram.insert("e".to_string(), Float(E, FloatMode::NormalMode));
+            sram.insert("pi".to_string(), Float(PI));
+            sram.insert("e".to_string(), Float(E));
             match functions.cloned() {
                 None => Identifier("@This function is unknown".to_string()),
                 Some(mut f) => {
@@ -118,11 +117,11 @@ pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 (*i).clone() as f64
             };
-            Float(fs.cos(), FloatMode::NormalMode)
+            Float(fs.cos())
         }
-        Float(f, _) => {
+        Float(f) => {
             let fs: f64 = if degrees { (*f) * (PI / 180.0) } else { *f };
-            Float(fs.cos(), FloatMode::NormalMode)
+            Float(fs.cos())
         }
         Rational(s) => {
             let fs = if degrees {
@@ -130,35 +129,26 @@ pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 s.clone().approx()
             };
-            Float(fs.cos(), FloatMode::NormalMode)
+            Float(fs.cos())
         }
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        ((i as f64) * PI / 180.0).cos()
-                    } else {
-                        (i as f64).cos()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        (f * PI / 180.0).cos()
-                    } else {
-                        f.cos()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        (s.approx() * PI / 180.0).cos()
-                    } else {
-                        s.approx().cos()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    ((i as f64) * PI / 180.0).cos()
+                } else {
+                    (i as f64).cos()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    (f * PI / 180.0).cos()
+                } else {
+                    f.cos()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    (s.approx() * PI / 180.0).cos()
+                } else {
+                    s.approx().cos()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -214,11 +204,11 @@ pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 (*i).clone() as f64
             };
-            Float(fs.sin(), FloatMode::NormalMode)
+            Float(fs.sin())
         }
-        Float(f, _) => {
+        Float(f) => {
             let fs: f64 = if degrees { (*f) * (PI / 180.0) } else { *f };
-            Float(fs.sin(), FloatMode::NormalMode)
+            Float(fs.sin())
         }
         Rational(s) => {
             let fs = if degrees {
@@ -226,35 +216,26 @@ pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 s.clone().approx()
             };
-            Float(fs.sin(), FloatMode::NormalMode)
+            Float(fs.sin())
         }
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        ((i as f64) * PI / 180.0).sin()
-                    } else {
-                        (i as f64).sin()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        (f * PI / 180.0).sin()
-                    } else {
-                        f.sin()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        (s.approx() * PI / 180.0).sin()
-                    } else {
-                        s.approx().sin()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    ((i as f64) * PI / 180.0).sin()
+                } else {
+                    (i as f64).sin()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    (f * PI / 180.0).sin()
+                } else {
+                    f.sin()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    (s.approx() * PI / 180.0).sin()
+                } else {
+                    s.approx().sin()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -310,11 +291,11 @@ pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 (*i).clone() as f64
             };
-            Float(fs.tan(), FloatMode::NormalMode)
+            Float(fs.tan())
         }
-        Float(f, _) => {
+        Float(f) => {
             let fs: f64 = if degrees { (*f) * (PI / 180.0) } else { *f };
-            Float(fs.tan(), FloatMode::NormalMode)
+            Float(fs.tan())
         }
         Rational(s) => {
             let fs = if degrees {
@@ -322,36 +303,27 @@ pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 s.clone().approx()
             };
-            Float(fs.tan(), FloatMode::NormalMode)
+            Float(fs.tan())
         }
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        ((i as f64) * PI / 180.0).tan()
-                    } else {
-                        (i as f64).tan()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        (f * PI / 180.0).tan()
-                    } else {
-                        f.tan()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        (s.approx() * PI / 180.0).tan()
-                    } else {
-                        s.approx().tan()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    ((i as f64) * PI / 180.0).tan()
+                } else {
+                    (i as f64).tan()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    (f * PI / 180.0).tan()
+                } else {
+                    f.tan()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    (s.approx() * PI / 180.0).tan()
+                } else {
+                    s.approx().tan()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -407,11 +379,11 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 (*i).clone() as f64
             };
-            Float(fs.cosh(), FloatMode::NormalMode)
+            Float(fs.cosh())
         }
-        Float(f, _) => {
+        Float(f) => {
             let fs: f64 = if degrees { (*f) * (PI / 180.0) } else { *f };
-            Float(fs.cosh(), FloatMode::NormalMode)
+            Float(fs.cosh())
         }
         Rational(s) => {
             let fs = if degrees {
@@ -419,36 +391,27 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 s.clone().approx()
             };
-            Float(fs.cosh(), FloatMode::NormalMode)
+            Float(fs.cosh())
         }
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        ((i as f64) * PI / 180.0).cosh()
-                    } else {
-                        (i as f64).cosh()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        (f * PI / 180.0).cosh()
-                    } else {
-                        f.cosh()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        (s.approx() * PI / 180.0).cosh()
-                    } else {
-                        s.approx().cosh()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    ((i as f64) * PI / 180.0).cosh()
+                } else {
+                    (i as f64).cosh()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    (f * PI / 180.0).cosh()
+                } else {
+                    f.cosh()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    (s.approx() * PI / 180.0).cosh()
+                } else {
+                    s.approx().cosh()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -504,11 +467,11 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 (*i).clone() as f64
             };
-            Float(fs.sinh(), FloatMode::NormalMode)
+            Float(fs.sinh())
         }
-        Float(f, _) => {
+        Float(f) => {
             let fs: f64 = if degrees { (*f) * (PI / 180.0) } else { *f };
-            Float(fs.sinh(), FloatMode::NormalMode)
+            Float(fs.sinh())
         }
         Rational(s) => {
             let fs = if degrees {
@@ -516,36 +479,27 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 s.clone().approx()
             };
-            Float(fs.sinh(), FloatMode::NormalMode)
+            Float(fs.sinh())
         }
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        ((i as f64) * PI / 180.0).sinh()
-                    } else {
-                        (i as f64).sinh()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        (f * PI / 180.0).sinh()
-                    } else {
-                        f.sinh()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        (s.approx() * PI / 180.0).sinh()
-                    } else {
-                        s.approx().sinh()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    ((i as f64) * PI / 180.0).sinh()
+                } else {
+                    (i as f64).sinh()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    (f * PI / 180.0).sinh()
+                } else {
+                    f.sinh()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    (s.approx() * PI / 180.0).sinh()
+                } else {
+                    s.approx().sinh()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -601,11 +555,11 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 (*i).clone() as f64
             };
-            Float(fs.tanh(), FloatMode::NormalMode)
+            Float(fs.tanh())
         }
-        Float(f, _) => {
+        Float(f) => {
             let fs: f64 = if degrees { (*f) * (PI / 180.0) } else { *f };
-            Float(fs.tanh(), FloatMode::NormalMode)
+            Float(fs.tanh())
         }
         Rational(s) => {
             let fs = if degrees {
@@ -613,36 +567,27 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             } else {
                 s.clone().approx()
             };
-            Float(fs.tanh(), FloatMode::NormalMode)
+            Float(fs.tanh())
         }
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        ((i as f64) * PI / 180.0).tanh()
-                    } else {
-                        (i as f64).tanh()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        (f * PI / 180.0).tanh()
-                    } else {
-                        f.tanh()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        (s.approx() * PI / 180.0).tanh()
-                    } else {
-                        s.approx().tanh()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    ((i as f64) * PI / 180.0).tanh()
+                } else {
+                    (i as f64).tanh()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    (f * PI / 180.0).tanh()
+                } else {
+                    f.tanh()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    (s.approx() * PI / 180.0).tanh()
+                } else {
+                    s.approx().tanh()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -694,59 +639,41 @@ pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     match p.get(0).unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
-            Float(
-                if degrees {
-                    fs.acos() * (180.0 / PI)
-                } else {
-                    fs.acos()
-                },
-                FloatMode::NormalMode,
-            )
+            Float(if degrees {
+                fs.acos() * (180.0 / PI)
+            } else {
+                fs.acos()
+            })
         }
-        Float(f, _) => Parameters::Float(
-            if degrees {
-                f.acos() * (180.0 / PI)
-            } else {
-                f.acos()
-            },
-            FloatMode::NormalMode,
-        ),
-        Rational(s) => Parameters::Float(
-            if degrees {
-                s.clone().approx().acos() * 180.0 / PI
-            } else {
-                s.clone().approx().acos()
-            },
-            FloatMode::NormalMode,
-        ),
+        Float(f) => Parameters::Float(if degrees {
+            f.acos() * (180.0 / PI)
+        } else {
+            f.acos()
+        }),
+        Rational(s) => Parameters::Float(if degrees {
+            s.clone().approx().acos() * 180.0 / PI
+        } else {
+            s.clone().approx().acos()
+        }),
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        (i as f64).acos() * 180.0 / PI
-                    } else {
-                        (i as f64).acos()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        f.acos() * 180.0 / PI
-                    } else {
-                        f.acos()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        s.approx().acos() * 180.0 / PI
-                    } else {
-                        s.approx().acos()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    (i as f64).acos() * 180.0 / PI
+                } else {
+                    (i as f64).acos()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    f.acos() * 180.0 / PI
+                } else {
+                    f.acos()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    s.approx().acos() * 180.0 / PI
+                } else {
+                    s.approx().acos()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -798,60 +725,42 @@ pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     match p.get(0).unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
-            Float(
-                if degrees {
-                    fs.asin() * (180.0 / PI)
-                } else {
-                    fs.asin()
-                },
-                FloatMode::NormalMode,
-            )
+            Float(if degrees {
+                fs.asin() * (180.0 / PI)
+            } else {
+                fs.asin()
+            })
         }
-        Float(f, _) => Parameters::Float(
-            if degrees {
-                f.asin() * (180.0 / PI)
-            } else {
-                f.asin()
-            },
-            FloatMode::NormalMode,
-        ),
+        Float(f) => Parameters::Float(if degrees {
+            f.asin() * (180.0 / PI)
+        } else {
+            f.asin()
+        }),
 
-        Rational(s) => Parameters::Float(
-            if degrees {
-                s.clone().approx().asin() * (180.0 / PI)
-            } else {
-                s.clone().approx().asin()
-            },
-            FloatMode::NormalMode,
-        ),
+        Rational(s) => Parameters::Float(if degrees {
+            s.clone().approx().asin() * (180.0 / PI)
+        } else {
+            s.clone().approx().asin()
+        }),
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        (i as f64).asin() * 180.0 / PI
-                    } else {
-                        (i as f64).asin()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        f.asin() * 180.0 / PI
-                    } else {
-                        f.asin()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        s.approx().asin() * 180.0 / PI
-                    } else {
-                        s.approx().asin()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    (i as f64).asin() * 180.0 / PI
+                } else {
+                    (i as f64).asin()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    f.asin() * 180.0 / PI
+                } else {
+                    f.asin()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    s.approx().asin() * 180.0 / PI
+                } else {
+                    s.approx().asin()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -903,60 +812,42 @@ pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     match p.get(0).unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
-            Float(
-                if degrees {
-                    fs.atan() * (180.0 / PI)
-                } else {
-                    fs.atan()
-                },
-                FloatMode::NormalMode,
-            )
+            Float(if degrees {
+                fs.atan() * (180.0 / PI)
+            } else {
+                fs.atan()
+            })
         }
-        Float(f, _) => Parameters::Float(
-            if degrees {
-                f.atan() * (180.0 / PI)
-            } else {
-                f.atan()
-            },
-            FloatMode::NormalMode,
-        ),
+        Float(f) => Parameters::Float(if degrees {
+            f.atan() * (180.0 / PI)
+        } else {
+            f.atan()
+        }),
 
-        Rational(s) => Parameters::Float(
-            if degrees {
-                s.clone().approx().atan() * (180.0 / PI)
-            } else {
-                s.clone().approx().atan()
-            },
-            FloatMode::NormalMode,
-        ),
+        Rational(s) => Parameters::Float(if degrees {
+            s.clone().approx().atan() * (180.0 / PI)
+        } else {
+            s.clone().approx().atan()
+        }),
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if degrees {
-                        (i as f64).atan() * 180.0 / PI
-                    } else {
-                        (i as f64).atan()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if degrees {
-                        f.atan() * 180.0 / PI
-                    } else {
-                        f.atan()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if degrees {
-                        s.approx().atan() * 180.0 / PI
-                    } else {
-                        s.approx().atan()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if degrees {
+                    (i as f64).atan() * 180.0 / PI
+                } else {
+                    (i as f64).atan()
+                })),
+                Float(f) => res.push(Parameters::Float(if degrees {
+                    f.atan() * 180.0 / PI
+                } else {
+                    f.atan()
+                })),
+                Rational(s) => res.push(Parameters::Float(if degrees {
+                    s.approx().atan() * 180.0 / PI
+                } else {
+                    s.approx().atan()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
@@ -1005,7 +896,7 @@ pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             Some(t) => {
                 plus = true;
                 match t {
-                    Float(f, _) => ln = *f,
+                    Float(f) => ln = *f,
                     Int(i) => ln = (*i) as f64,
                     _ => ln = 0.0,
                 }
@@ -1017,59 +908,47 @@ pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             if plus {
-                Float(ln.powf(fs), FloatMode::NormalMode)
+                Float(ln.powf(fs))
             } else {
-                Float(fs.exp(), FloatMode::NormalMode)
+                Float(fs.exp())
             }
         }
-        Float(f, _) => {
+        Float(f) => {
             if plus {
-                Float(ln.powf(*f), FloatMode::NormalMode)
+                Float(ln.powf(*f))
             } else {
-                Float((*f).exp(), FloatMode::NormalMode)
+                Float((*f).exp())
             }
         }
         Rational(s) => {
             if plus {
-                Float(ln.powf(s.clone().approx()), FloatMode::NormalMode)
+                Float(ln.powf(s.clone().approx()))
             } else {
-                Float(s.clone().approx().exp(), FloatMode::NormalMode)
+                Float(s.clone().approx().exp())
             }
         }
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if plus {
-                        ln.powf(i as f64)
-                    } else {
-                        (i as f64).exp()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Float(
-                    if plus { ln.powf(f) } else { f.exp() },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if plus {
-                        ln.powf(s.approx())
-                    } else {
-                        s.approx().exp()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if plus {
+                    ln.powf(i as f64)
+                } else {
+                    (i as f64).exp()
+                })),
+                Float(f) => res.push(Float(if plus { ln.powf(f) } else { f.exp() })),
+                Rational(s) => res.push(Parameters::Float(if plus {
+                    ln.powf(s.approx())
+                } else {
+                    s.approx().exp()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
                         None => (),
                         Some(s) => {
                             if plus {
-                                res.push(exp(
-                                    &vec![s.clone(), Float(ln, FloatMode::NormalMode)],
-                                    ram,
-                                ))
+                                res.push(exp(&vec![s.clone(), Float(ln)], ram))
                             } else {
                                 res.push(exp(&vec![s.clone()], ram))
                             }
@@ -1084,7 +963,7 @@ pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             None => Call("exp".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Call("exp".to_string(), Box::from(Identifier(s.clone()))),
-                Some(t) => exp(&vec![t.clone(), Float(ln, FloatMode::NormalMode)], ram),
+                Some(t) => exp(&vec![t.clone(), Float(ln)], ram),
             },
         },
         p => Call("exp".to_string(), Box::from(p.clone())),
@@ -1105,7 +984,7 @@ pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             Some(t) => {
                 plus = true;
                 match t {
-                    Float(f, _) => sln = *f,
+                    Float(f) => sln = *f,
                     Int(i) => sln = (*i) as f64,
                     _ => sln = 0.0,
                 }
@@ -1117,60 +996,48 @@ pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             if plus {
-                Float(fs.log(sln), FloatMode::NormalMode)
+                Float(fs.log(sln))
             } else {
-                Float(fs.ln(), FloatMode::NormalMode)
+                Float(fs.ln())
             }
         }
-        Float(f, _) => {
+        Float(f) => {
             if plus {
-                Float((*f).log(sln), FloatMode::NormalMode)
+                Float((*f).log(sln))
             } else {
-                Float((*f).ln(), FloatMode::NormalMode)
+                Float((*f).ln())
             }
         }
 
         Rational(s) => {
             if plus {
-                Float(s.clone().approx().log(sln), FloatMode::NormalMode)
+                Float(s.clone().approx().log(sln))
             } else {
-                Float(s.clone().approx().ln(), FloatMode::NormalMode)
+                Float(s.clone().approx().ln())
             }
         }
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if plus {
-                        (i as f64).log(sln)
-                    } else {
-                        (i as f64).ln()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Float(
-                    if plus { f.log(sln) } else { f.ln() },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if plus {
-                        s.approx().log(sln)
-                    } else {
-                        s.approx().ln()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if plus {
+                    (i as f64).log(sln)
+                } else {
+                    (i as f64).ln()
+                })),
+                Float(f) => res.push(Float(if plus { f.log(sln) } else { f.ln() })),
+                Rational(s) => res.push(Parameters::Float(if plus {
+                    s.approx().log(sln)
+                } else {
+                    s.approx().ln()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
                         None => (),
                         Some(s) => {
                             if plus {
-                                res.push(ln(
-                                    &vec![s.clone(), Float(sln, FloatMode::NormalMode)],
-                                    ram,
-                                ))
+                                res.push(ln(&vec![s.clone(), Float(sln)], ram))
                             } else {
                                 res.push(ln(&vec![s.clone()], ram))
                             }
@@ -1185,7 +1052,7 @@ pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             None => Call("ln".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Call("ln".to_string(), Box::from(Identifier(s.clone()))),
-                Some(t) => ln(&vec![t.clone(), Float(sln, FloatMode::NormalMode)], ram),
+                Some(t) => ln(&vec![t.clone(), Float(sln)], ram),
             },
         },
         p => Call("ln".to_string(), Box::from(p.clone())),
@@ -1206,7 +1073,7 @@ pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             Some(t) => {
                 plus = true;
                 match t {
-                    Float(f, _) => sln = *f,
+                    Float(f) => sln = *f,
                     Int(i) => sln = (*i) as f64,
                     _ => sln = 0.0,
                 }
@@ -1218,59 +1085,51 @@ pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             if plus {
-                Float(fs.powf(1.0 / sln), FloatMode::NormalMode)
+                Float(fs.powf(1.0 / sln))
             } else {
-                Float(fs.sqrt(), FloatMode::NormalMode)
+                Float(fs.sqrt())
             }
         }
-        Float(f, _) => {
+        Float(f) => {
             if plus {
-                Float((*f).powf(1.0 / sln), FloatMode::NormalMode)
+                Float((*f).powf(1.0 / sln))
             } else {
-                Float((*f).sqrt(), FloatMode::NormalMode)
+                Float((*f).sqrt())
             }
         }
         Rational(s) => {
             if plus {
-                Float(s.clone().approx().powf(1.0 / sln), FloatMode::NormalMode)
+                Float(s.clone().approx().powf(1.0 / sln))
             } else {
-                Float(s.clone().approx().sqrt(), FloatMode::NormalMode)
+                Float(s.clone().approx().sqrt())
             }
         }
 
         InterpreterVector(vec) => {
             let mut res = Vec::new();
             vec.clone().into_iter().for_each(|x| match x {
-                Int(i) => res.push(Parameters::Float(
-                    if plus {
-                        (i as f64).powf(1.0 / sln)
-                    } else {
-                        (i as f64).sqrt()
-                    },
-                    FloatMode::NormalMode,
-                )),
-                Float(f, _) => res.push(Parameters::Float(
-                    if plus { f.powf(1.0 / sln) } else { f.sqrt() },
-                    FloatMode::NormalMode,
-                )),
-                Rational(s) => res.push(Parameters::Float(
-                    if plus {
-                        s.clone().approx().powf(1.0 / sln)
-                    } else {
-                        s.clone().approx().sqrt()
-                    },
-                    FloatMode::NormalMode,
-                )),
+                Int(i) => res.push(Parameters::Float(if plus {
+                    (i as f64).powf(1.0 / sln)
+                } else {
+                    (i as f64).sqrt()
+                })),
+                Float(f) => res.push(Parameters::Float(if plus {
+                    f.powf(1.0 / sln)
+                } else {
+                    f.sqrt()
+                })),
+                Rational(s) => res.push(Parameters::Float(if plus {
+                    s.clone().approx().powf(1.0 / sln)
+                } else {
+                    s.clone().approx().sqrt()
+                })),
                 Identifier(s) => match ram {
                     None => (),
                     Some(ref t) => match t.get(s.as_str()) {
                         None => (),
                         Some(s) => {
                             if plus {
-                                res.push(sqrt(
-                                    &vec![s.clone(), Float(sln, FloatMode::NormalMode)],
-                                    ram,
-                                ))
+                                res.push(sqrt(&vec![s.clone(), Float(sln)], ram))
                             } else {
                                 res.push(sqrt(&vec![s.clone()], ram))
                             }
@@ -1285,7 +1144,7 @@ pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             None => Call("sqrt".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Call("sqrt".to_string(), Box::from(Identifier(s.clone()))),
-                Some(t) => sqrt(&vec![t.clone(), Float(sln, FloatMode::NormalMode)], ram),
+                Some(t) => sqrt(&vec![t.clone(), Float(sln)], ram),
             },
         },
         p => Call("sqrt".to_string(), Box::from(p.clone())),
@@ -1309,7 +1168,7 @@ pub fn factorial(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
     match p.get(0).unwrap() {
         Int(i) => Parameters::Int(fact(*i)),
-        Float(f, _) => Parameters::Int(fact(*f as i64)),
+        Float(f) => Parameters::Int(fact(*f as i64)),
         Identifier(s) => match ram {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
@@ -1328,7 +1187,7 @@ pub fn abs(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
     match p.get(0).unwrap() {
         Int(i) => Parameters::Int(i.abs()),
-        Float(f, _) => Parameters::Float(f.abs(), FloatMode::NormalMode),
+        Float(f) => Parameters::Float(f.abs()),
         Rational(s) => Parameters::Rational(s.clone().abs()),
         Identifier(s) => match ram {
             None => Identifier("This variable is not initialized yet".to_string()),
@@ -1347,8 +1206,8 @@ pub fn ceil(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 
     match p.get(0).unwrap() {
-        Int(i) => Parameters::Float((*i as f64).ceil(), FloatMode::NormalMode),
-        Float(f, _) => Parameters::Float(f.ceil(), FloatMode::NormalMode),
+        Int(i) => Parameters::Float((*i as f64).ceil()),
+        Float(f) => Parameters::Float(f.ceil()),
         Identifier(s) => match ram {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
@@ -1366,8 +1225,8 @@ pub fn floor(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 
     match p.get(0).unwrap() {
-        Int(i) => Parameters::Float((*i as f64).floor(), FloatMode::NormalMode),
-        Float(f, _) => Parameters::Float(f.floor(), FloatMode::NormalMode),
+        Int(i) => Parameters::Float((*i as f64).floor()),
+        Float(f) => Parameters::Float(f.floor()),
         Identifier(s) => match ram {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
@@ -1393,7 +1252,7 @@ pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             Some(t) => {
                 plus = true;
                 match t {
-                    Float(f, _) => sln = *f,
+                    Float(f) => sln = *f,
                     Int(i) => sln = (*i) as f64,
                     _ => sln = 0.0,
                 }
@@ -1405,39 +1264,30 @@ pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             if plus {
-                Float(
-                    ((fs * 10.0_f64.powf(sln)).round()) / (10.0_f64.powf(sln)),
-                    FloatMode::NormalMode,
-                )
+                Float(((fs * 10.0_f64.powf(sln)).round()) / (10.0_f64.powf(sln)))
             } else {
-                Float(fs.round(), FloatMode::NormalMode)
+                Float(fs.round())
             }
         }
-        Float(f, _) => {
+        Float(f) => {
             if plus {
-                Float(
-                    ((f * 10.0_f64.powf(sln)).round()) / (10.0_f64.powf(sln)),
-                    FloatMode::NormalMode,
-                )
+                Float(((f * 10.0_f64.powf(sln)).round()) / (10.0_f64.powf(sln)))
             } else {
-                Float((*f).round(), FloatMode::NormalMode)
+                Float((*f).round())
             }
         }
         Rational(s) => {
             if plus {
-                Float(
-                    (s.clone().approx() * 10.0_f64.powf(sln).round()) / (10.0_f64.powf(sln)),
-                    FloatMode::NormalMode,
-                )
+                Float((s.clone().approx() * 10.0_f64.powf(sln).round()) / (10.0_f64.powf(sln)))
             } else {
-                Float(s.clone().approx().round(), FloatMode::NormalMode)
+                Float(s.clone().approx().round())
             }
         }
         Identifier(s) => match ram {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => round(&vec![t.clone(), Float(sln, FloatMode::NormalMode)], ram),
+                Some(t) => round(&vec![t.clone(), Float(sln)], ram),
             },
         },
         _ => Null,
@@ -1451,7 +1301,7 @@ pub fn norm(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters 
 
     match p.get(0).unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
-        Float(f, _) => Parameters::Float((*f).abs(), FloatMode::NormalMode),
+        Float(f) => Parameters::Float((*f).abs()),
         InterpreterVector(lst) => {
             let mut sum = Int(0);
 
@@ -1461,10 +1311,10 @@ pub fn norm(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters 
                 .for_each(|x| sum = other_add(sum.clone(), x.clone(), ram.as_deref()));
 
             match sum {
-                Int(i) => Parameters::Float((i as f64).sqrt(), FloatMode::NormalMode),
-                Float(f, _) => Parameters::Float(f.sqrt(), FloatMode::NormalMode),
-                Rational(s) => Parameters::Float(s.approx().sqrt(), FloatMode::NormalMode),
-                _ => Float(0.0, FloatMode::NormalMode),
+                Int(i) => Parameters::Float((i as f64).sqrt()),
+                Float(f) => Parameters::Float(f.sqrt()),
+                Rational(s) => Parameters::Float(s.approx().sqrt()),
+                _ => Float(0.0),
             }
         }
         Identifier(s) => match ram {
@@ -1485,7 +1335,7 @@ pub fn transpose_vectors(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
     match p.get(0).unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
-        Float(f, _) => Parameters::Float((*f).abs(), FloatMode::NormalMode),
+        Float(f) => Parameters::Float((*f).abs()),
         Rational(s) => Parameters::Rational(s.clone().abs()),
         InterpreterVector(lst) => {
             let r = vec![*(lst.clone())];
@@ -1518,7 +1368,7 @@ pub fn transpose_matrices(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
     match p.get(0).unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
-        Float(f, _) => Parameters::Float((*f).abs(), FloatMode::NormalMode),
+        Float(f) => Parameters::Float((*f).abs()),
         Rational(s) => Parameters::Rational(s.clone().abs()),
         InterpreterVector(lst) => {
             let mut res1 = Vec::new();
@@ -1563,7 +1413,7 @@ pub fn det_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
     match p.get(0).unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
-        Float(f, _) => Parameters::Float((*f).abs(), FloatMode::NormalMode),
+        Float(f) => Parameters::Float((*f).abs()),
         Rational(s) => Parameters::Rational(s.clone().abs()),
         InterpreterVector(lst) => {
             let mut res1 = Vec::new();
@@ -1578,7 +1428,7 @@ pub fn det_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             });
 
             if !is_matrix {
-                return Float(0.0, FloatMode::NormalMode);
+                return Float(0.0);
             }
 
             let mut p = Vec::new();
@@ -1615,7 +1465,7 @@ pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
     match p.get(0).unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
-        Float(f, _) => Parameters::Float((*f).abs(), FloatMode::NormalMode),
+        Float(f) => Parameters::Float((*f).abs()),
         Rational(s) => Parameters::Rational(s.clone().abs()),
         InterpreterVector(lst) => {
             let mut res1 = Vec::new();
@@ -1656,7 +1506,7 @@ pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                         Int(0) => {
                             return Str("Determinant is zero, matrix is not invertible".to_string())
                         }
-                        Float(s, _) if s.abs() < 1e-10 => {
+                        Float(s) if s.abs() < 1e-10 => {
                             return Str("Determinant is zero, matrix is not invertible".to_string())
                         }
                         Rational(s) if s.clone().is_null() => {
@@ -1987,14 +1837,14 @@ pub fn plot_fn(
     match p.get(1) {
         None => (),
         Some(p) => match p {
-            Float(f, _) => start = *f,
+            Float(f) => start = *f,
             Int(i) => start = *i as f64,
             Rational(s) => start = s.clone().approx(),
             InterpreterVector(vec) => second_vector = Some(&**vec),
 
             Identifier(s) if ram.as_ref().unwrap().contains_key(s) => {
                 match ram.as_ref().unwrap().get(s) {
-                    Some(Float(f, _)) => start = *f,
+                    Some(Float(f)) => start = *f,
                     Some(Int(i)) => start = *i as f64,
                     Some(InterpreterVector(vec)) => second_vector = Some(&**vec),
 
@@ -2014,13 +1864,13 @@ pub fn plot_fn(
     match p.get(2) {
         None => (),
         Some(p) => match p {
-            Float(f, _) => end = *f,
+            Float(f) => end = *f,
             Int(i) => end = *i as f64,
             Rational(s) => end = s.clone().approx(),
 
             Identifier(s) if ram.as_ref().unwrap().contains_key(s) => {
                 match ram.as_ref().unwrap().get(s) {
-                    Some(Float(f, _)) => {
+                    Some(Float(f)) => {
                         end = *f;
                     }
                     Some(Int(i)) => end = *i as f64,
@@ -2046,13 +1896,13 @@ pub fn plot_fn(
     match p.get(3) {
         None => (),
         Some(p) => match p {
-            Float(f, _) => steps = *f,
+            Float(f) => steps = *f,
             Int(i) => steps = *i as f64,
             Rational(s) => steps = s.clone().approx(),
 
             Identifier(s) if ram.as_ref().unwrap().contains_key(s) => {
                 match ram.as_ref().unwrap().get(s) {
-                    Some(Float(f, _)) => steps = *f,
+                    Some(Float(f)) => steps = *f,
                     Some(Int(i)) => steps = *i as f64,
                     _ => (),
                 }
@@ -2174,14 +2024,14 @@ pub fn plot_fn(
         }
 
         let mut sram: HashMap<String, Parameters> = HashMap::new();
-        sram.insert("pi".to_string(), Float(PI, _));
-        sram.insert("e".to_string(), Float(E, _));
+        sram.insert("pi".to_string(), Float(PI));
+        sram.insert("e".to_string(), Float(E));
         while start <= end {
             x.push(start);
             if &fd == "" {
-                let p = f(&vec![Float(start, _)], ram);
+                let p = f(&vec![Float(start)], ram);
                 y.push(match p {
-                    Float(f, _) => f,
+                    Float(f) => f,
                     Int(i) => i as f64,
                     Rational(s) => s.approx(),
                     _ => f64::NAN,
@@ -2204,12 +2054,12 @@ pub fn plot_fn(
                 }
                 names
                     .iter()
-                    .zip(vec![Float(start, _)])
+                    .zip(vec![Float(start)])
                     .for_each(|(name, param)| {
                         sram.insert(name.to_string(), param.clone());
                     });
                 y.push(match interpret(&ast, &mut sram, &mut HashMap::new()) {
-                    Float(p, _) => p,
+                    Float(p) => p,
                     Int(i) => i as f64,
                     Rational(s) => s.approx(),
                     _ => f64::NAN,
@@ -2222,11 +2072,11 @@ pub fn plot_fn(
             Some(t) => {
                 t.into_iter().for_each(|j| match j {
                     Int(i) => x.push(*i as f64),
-                    Float(f, _) => x.push(*f),
+                    Float(f) => x.push(*f),
                     Rational(s) => x.push(s.clone().approx()),
                     Identifier(s) => match ram.as_ref().unwrap().get(s) {
                         Some(Int(i)) => x.push(*i as f64),
-                        Some(Float(f, _)) => x.push(*f),
+                        Some(Float(f)) => x.push(*f),
                         Some(Rational(r)) => x.push(r.clone().approx()),
                         _ => (),
                     },
@@ -2240,11 +2090,11 @@ pub fn plot_fn(
             Some(t) => {
                 t.into_iter().for_each(|j| match j {
                     Int(i) => y.push(*i as f64),
-                    Float(f, _) => y.push(*f),
+                    Float(f) => y.push(*f),
                     Rational(r) => y.push(r.clone().approx()),
                     Identifier(s) => match ram.as_ref().unwrap().get(s) {
                         Some(Int(i)) => y.push(*i as f64),
-                        Some(Float(f, _)) => y.push(*f),
+                        Some(Float(f)) => y.push(*f),
                         Some(Rational(r)) => y.push(r.clone().approx()),
                         _ => (),
                     },
