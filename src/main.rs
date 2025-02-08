@@ -460,6 +460,12 @@ fn main() {
                     }
 
                     let result = interpret(&p, &mut ram, &mut functions);
+
+                    if verbose {
+                        println!("{:#?}", &result);
+                        println!()
+                    }
+
                     if result != Parameters::Null {
                         println!(
                             "{}",
