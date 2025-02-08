@@ -542,3 +542,18 @@ In 3.3.0 the coloration was added.
 image("assets/syntax_coloration.png"), 
 caption: [Syntax coloration as of `3.3.3`]
 )
+
+= Float display
+With `v3.4.0` there is now a way to chose how you want your floats to be
+displayed.
+
+For example in `normal` mode if you type 
+```
+> 1.5
+```
+
+you will see 
+
+```
+val: float = 1.5000000000
+```
