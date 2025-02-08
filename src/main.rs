@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::env::{self, Args};
 use std::f64::consts::{E, PI};
@@ -7,6 +8,7 @@ use std::sync::Arc;
 
 use ansi_term::Color;
 use configuration::loader::Config;
+use exact_math::float_mode::FloatMode;
 use linefeed::{Completer, Completion, Interface, ReadResult, Terminal};
 
 use crate::configuration::loader::{
@@ -27,6 +29,8 @@ mod interpreting;
 mod lexing;
 mod parsing;
 mod utils;
+
+thread_local! {static FLOAT_MODE: RefCell<FloatMode> = RefCell::new(FloatMode::Exact)}
 
 fn show_config(config: Config) -> (String, Option<Config>) {
     let loaded = load_config(config.clone());
@@ -368,13 +372,13 @@ fn main() {
     while let ReadResult::Input(line) = interface.read_line().unwrap() {
         match line.as_str().trim() {
             "info" => {
-                let message = loaded.general_color.paint(format!(" Calc {version} \n Author: Charlotte Thomas \n Written in Rust \n Repo: https://github.com/coco33920/calc\n"));
+                let message = loaded.general_color.paint(format!(" Calc {version} \n Author: Charlotte Thomas \n Written in Rust \n Repo: https://github.com/vanilla-extracts/calc\n"));
                 println!("{}", message)
             }
             "exit" => break,
             "help" => {
                 let message = loaded.general_color.paint(format!(
-                    " Calc {version} Help \n > info : show infos \n > exit : exit the program \n > help : print this help \n > verbose : toggle the verbose \n > version : prints the version \n > config : root of the config \n"
+                    " Calc {version} Help \n > info : show infos \n > exit : exit the program \n > help : print this help \n > verbose : toggle the verbose \n > version : prints the version \n > config : root of the config \n toggle_float <exact|science|normal> : toggle the float mode"
                 ));
                 println!("{}", message)
             }
@@ -387,6 +391,38 @@ fn main() {
                 let message = loaded.general_color.paint("You toggled the verbose : ");
                 let message2 = Color::Red.paint(if verbose { "on" } else { "off" });
                 println!("{}{}", message, message2)
+            }
+            str if str.starts_with("toggle_float") => {
+                let p = str.replace("toggle_float ", "");
+                match p.as_str().trim() {
+                    "exact" => FLOAT_MODE.with(|fm| {
+                        *fm.borrow_mut() = FloatMode::Exact;
+                        let message = loaded
+                            .general_color
+                            .paint("You toggled the float mode to :");
+                        let message2 = Color::Red.paint("exact mode.");
+                        let message3 = loaded.general_color.paint("Example: 1.5=3/2");
+                        println!("{} {}\n{}", message, message2, message3);
+                    }),
+                    "science" => FLOAT_MODE.with(|fm| {
+                        *fm.borrow_mut() = FloatMode::Science;
+                        let message = loaded
+                            .general_color
+                            .paint("You toggled the float mode to :");
+                        let message2 = Color::Red.paint("science mode.");
+                        let message3 = loaded.general_color.paint("Example: 1500.1=1.5001*10³");
+                        println!("{} {}\n{}", message, message2, message3);
+                    }),
+                    _ => FLOAT_MODE.with(|fm| {
+                        *fm.borrow_mut() = FloatMode::Normal;
+                        let message = loaded
+                            .general_color
+                            .paint("You toggled the float mode to :");
+                        let message2 = Color::Red.paint("normal mode.");
+                        let message3 = loaded.general_color.paint("Example: 1.5=1.5000000000");
+                        println!("{} {}\n{}", message, message2, message3);
+                    }),
+                }
             }
             str => {
                 if str.starts_with("config") {
@@ -440,7 +476,15 @@ fn main() {
 
 struct CalcCompleter;
 
-static CMD: &[&str] = &["config", "exit", "verbose", "version", "help", "info"];
+static CMD: &[&str] = &[
+    "config",
+    "exit",
+    "verbose",
+    "version",
+    "help",
+    "info",
+    "toggle_float",
+];
 static CONFIG_CMD: &[&str] = &["reload", "reset", "set", "show"];
 static SET_CMD: &[&str] = &[
     "general_color",

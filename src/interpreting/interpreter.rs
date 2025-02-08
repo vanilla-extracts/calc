@@ -1,3 +1,4 @@
+use crate::exact_math::float_mode::FloatMode;
 use crate::exact_math::rationals::Rationals;
 use crate::functions::add::add;
 use crate::functions::divide::divide;
@@ -7,6 +8,7 @@ use crate::functions::minus::minus;
 use crate::functions::mult::mult;
 use crate::interpreting::stdlib::exec;
 use crate::parsing::ast::{Ast, Functions, Parameters, Ram};
+use crate::FLOAT_MODE;
 
 pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> Parameters {
     match ast {
@@ -75,6 +77,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                             }
                             _ => Parameters::Null,
                         };
+
                         let (a, b) = assign(p1, param2.clone());
                         if a != "".to_string() {
                             if ram.contains_key(&a) {
@@ -97,7 +100,10 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                         Parameters::Null
                     }
                 },
-                Parameters::Float(f) => Parameters::Rational(Rationals::rationalize(*f)),
+                Parameters::Float(f) => FLOAT_MODE.with(|fm| match *fm.borrow() {
+                    FloatMode::Exact => Parameters::Rational(Rationals::rationalize(f.clone())),
+                    _ => Parameters::Float(f.clone()),
+                }),
                 Parameters::Int(i) => Parameters::Int(*i),
                 Parameters::Identifier(s) => {
                     if ram.contains_key(s) {
