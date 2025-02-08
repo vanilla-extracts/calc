@@ -97,7 +97,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                         Parameters::Null
                     }
                 },
-                Parameters::Float(f, _) => Parameters::Rational(Rationals::rationalize(*f)),
+                Parameters::Float(f) => Parameters::Rational(Rationals::rationalize(*f)),
                 Parameters::Int(i) => Parameters::Int(*i),
                 Parameters::Identifier(s) => {
                     if ram.contains_key(s) {
