@@ -7,6 +7,7 @@ use std::sync::Arc;
 
 use ansi_term::Color;
 use configuration::loader::Config;
+use exact_math::float_mode::FloatMode;
 use linefeed::{Completer, Completion, Interface, ReadResult, Terminal};
 
 use crate::configuration::loader::{
@@ -317,8 +318,11 @@ fn main() {
         let parsed = parser.parse();
         let mut ram: HashMap<String, Parameters> = HashMap::new();
         let mut functions: HashMap<String, (Vec<Ast>, Ast)> = HashMap::new();
-        ram.insert("pi".to_string(), Parameters::Float(PI));
-        ram.insert("e".to_string(), Parameters::Float(E));
+        ram.insert(
+            "pi".to_string(),
+            Parameters::Float(PI, FloatMode::NormalMode),
+        );
+        ram.insert("e".to_string(), Parameters::Float(E, FloatMode::NormalMode));
         let result = interpret(&parsed, &mut ram, &mut functions);
         if result != Parameters::Null {
             println!(
@@ -351,6 +355,7 @@ fn main() {
     let style = &loaded.clone().prompt_style;
     let mut text = &loaded.clone().prompt;
     let mut verbose = false;
+    let mut float_mod = FloatMode::NormalMode;
     interface.set_completer(Arc::new(CalcCompleter));
     interface
         .set_prompt(&format!(
@@ -363,8 +368,11 @@ fn main() {
 
     let mut ram: HashMap<String, Parameters> = HashMap::new();
     let mut functions: HashMap<String, (Vec<Ast>, Ast)> = HashMap::new();
-    ram.insert("pi".to_string(), Parameters::Float(PI));
-    ram.insert("e".to_string(), Parameters::Float(E));
+    ram.insert(
+        "pi".to_string(),
+        Parameters::Float(PI, FloatMode::NormalMode),
+    );
+    ram.insert("e".to_string(), Parameters::Float(E, FloatMode::NormalMode));
     while let ReadResult::Input(line) = interface.read_line().unwrap() {
         match line.as_str().trim() {
             "info" => {

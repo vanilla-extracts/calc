@@ -3,6 +3,7 @@ use std::fmt::{Display, Formatter};
 
 use ansi_term::Color;
 
+use crate::exact_math::float_mode::FloatMode;
 use crate::exact_math::rationals::Rationals;
 use crate::lexing::token::{Operator, Token};
 use crate::parsing::ast::Ast::{Nil, Node};
@@ -15,7 +16,7 @@ pub type Functions = HashMap<String, (Vec<Ast>, Ast)>;
 #[derive(Debug, Clone, PartialEq)]
 pub enum Parameters {
     Int(i64),
-    Float(f64),
+    Float(f64, FloatMode),
     Bool(bool),
     Str(String),
     Identifier(String),
@@ -97,7 +98,7 @@ impl Display for Parameters {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Int(i) => write!(f, "{}", i),
-            Float(fl) => write!(f, "{:.10}", fl),
+            Float(fl, mode) => write!(f, "{}", mode.transform(f1)),
             Identifier(s) => write!(f, "{}", s),
             PlusOperation => write!(f, "+"),
             MinusOperation => write!(f, "-"),
@@ -197,7 +198,7 @@ impl Parameters {
                                 ""
                             }
                         }
-                        Float(f) if f >= 1.0 - 1e10 && f <= 1.0 + 1e10 => {
+                        Float(f, _) if f >= 1.0 - 1e10 && f <= 1.0 + 1e10 => {
                             if division {
                                 "1"
                             } else {
@@ -218,7 +219,7 @@ impl Parameters {
                                 "-"
                             }
                         }
-                        Float(f) if f <= -1.0 - 1e10 && f >= -1.0 + 1e10 => {
+                        Float(f, _) if f <= -1.0 - 1e10 && f >= -1.0 + 1e10 => {
                             if division {
                                 "-1"
                             } else {
@@ -407,7 +408,7 @@ impl Parameters {
                 Color::Green.paint("int"),
                 Color::Green.paint(self.pretty_print(ram, function))
             ),
-            Float(_) => format!(
+            Float(_, _) => format!(
                 "{}: {} = {}",
                 Color::Cyan.paint("val"),
                 Color::RGB(186, 214, 152).paint("float"),
@@ -480,7 +481,7 @@ impl Parameters {
 pub fn token_to_parameter(token: Token) -> Parameters {
     match token {
         Token::INT(i) => Int(i),
-        Token::FLOAT(f) => Float(f),
+        Token::FLOAT(f) => Float(f, FloatMode::NormalMode),
         Token::IDENTIFIER(s) => Identifier(s),
         Token::OPE(Operator::PLUS) => PlusOperation,
         Token::OPE(Operator::MINUS) => MinusOperation,
@@ -506,7 +507,7 @@ impl Parameters {
     pub fn abs(self, ram: Option<&HashMap<String, Parameters>>) -> Parameters {
         match self {
             Parameters::Int(i) => Parameters::Int(i.abs()),
-            Parameters::Float(f) => Parameters::Float(f.abs()),
+            Parameters::Float(f, mode) => Parameters::Float(f.abs(), mode),
             Parameters::Rational(r) => Parameters::Rational(r.abs()),
             Parameters::Identifier(s) => match ram {
                 None => Parameters::Null,
