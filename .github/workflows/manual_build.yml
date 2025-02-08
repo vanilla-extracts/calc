@@ -4,6 +4,7 @@ on:
     paths:
       - manual/main.typ
   workflow_dispatch:
+
 permissions:
   contents: write
 jobs:
