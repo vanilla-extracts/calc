@@ -30,7 +30,7 @@ mod lexing;
 mod parsing;
 mod utils;
 
-thread_local! {static FLOAT_MODE: RefCell<FloatMode> = RefCell::new(FloatMode::Exact)}
+thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
 
 fn show_config(config: Config) -> (String, Option<Config>) {
     let loaded = load_config(config.clone());
@@ -395,7 +395,7 @@ fn main() {
             str if str.starts_with("toggle_float") => {
                 let p = str.replace("toggle_float ", "");
                 match p.as_str().trim() {
-                    "exact" => FLOAT_MODE.with(|fm| {
+                    "exact" | "rational" => FLOAT_MODE.with(|fm| {
                         *fm.borrow_mut() = FloatMode::Exact;
                         let message = loaded
                             .general_color
@@ -404,7 +404,7 @@ fn main() {
                         let message3 = loaded.general_color.paint("Example: 1.5=3/2");
                         println!("{} {}\n{}", message, message2, message3);
                     }),
-                    "science" => FLOAT_MODE.with(|fm| {
+                    "science" | "scientific" => FLOAT_MODE.with(|fm| {
                         *fm.borrow_mut() = FloatMode::Science;
                         let message = loaded
                             .general_color
@@ -492,6 +492,7 @@ static CMD: &[&str] = &[
     "toggle_float",
 ];
 static CONFIG_CMD: &[&str] = &["reload", "reset", "set", "show"];
+static TOGGLE_FLOAT_CMD: &[&str] = &["normal", "science", "scientific", "exact", "rational"];
 static SET_CMD: &[&str] = &[
     "general_color",
     "greeting_color",
@@ -526,6 +527,20 @@ impl<Term: Terminal> Completer<Term> for CalcCompleter {
 
                 Some(co)
             }
+
+            Some("toggle_float") => match words.next() {
+                _ => {
+                    let mut co = Vec::new();
+                    for cmd in TOGGLE_FLOAT_CMD {
+                        if cmd.starts_with(word) {
+                            co.push(Completion::simple(cmd.to_string()));
+                        }
+                    }
+
+                    Some(co)
+                }
+            },
+
             Some("config") => match words.next() {
                 None => {
                     let mut co = Vec::new();
