@@ -1,4 +1,4 @@
-# Version 3.4.0 : Scientific mode, Float mode
+# Version 3.4.1 : Scientific mode, Float mode
 This version implements the scientific mode and have revamped the float
 displaying system.
 
