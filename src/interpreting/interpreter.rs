@@ -101,8 +101,8 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                     }
                 },
                 Parameters::Float(f) => FLOAT_MODE.with(|fm| match *fm.borrow() {
-                    FloatMode::Exact => Parameters::Rational(Rationals::rationalize(f.clone())),
-                    _ => Parameters::Float(f.clone()),
+                    FloatMode::Exact => Parameters::Rational(Rationals::rationalize(*f)),
+                    _ => Parameters::Float(*f),
                 }),
                 Parameters::Int(i) => Parameters::Int(*i),
                 Parameters::Identifier(s) => {
@@ -123,7 +123,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                     Parameters::InterpreterVector(Box::from(vec))
                 }
                 Parameters::InterpreterVector(a) => Parameters::InterpreterVector(a.clone()),
-                Parameters::Var(x, y, z) => Parameters::Var(x.clone(), y.clone(), z.clone()),
+                Parameters::Var(x, y, z) => Parameters::Var(x.clone(), *y, z.clone()),
                 Parameters::Plus(x, y) => add(*x.clone(), *y.clone(), Some(&ram)),
                 Parameters::Mul(x, y) => mult(*x.clone(), *y.clone(), Some(&ram)),
                 Parameters::Div(x, y) => divide(*x.clone(), *y.clone(), Some(&ram)),
