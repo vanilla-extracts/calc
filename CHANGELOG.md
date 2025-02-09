@@ -1,3 +1,37 @@
+# Version 3.4.1 : Scientific mode, Float mode
+This version implements the scientific mode and have revamped the float
+displaying system.
+
+It adds the `toggle_float <normal|science|exact>` REPL command which changes the
+float display.
+
+In `normal` mode the float is displayed with 10 decimal digits. Even when a
+rational solution is available.
+For example if you input 
+```
+> 1/3 
+```
+
+It displays
+```
+val: float = 0.3333333333
+```
+
+In `exact` mode it displays 
+```
+val: rational = 1/3 
+```
+
+And in `science` mode it displays 
+```
+val: float = 3.333333333333*10⁻¹
+```
+
+Science mode prints with this pattern:
+```
+[0-9]*10^(([0-9]*)|(-[0-9]*))
+```
+
 # Version 3.3.5 : Code refactoring
 Refactoring of Code for simpler type usage
 

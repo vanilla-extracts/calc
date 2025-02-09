@@ -3,11 +3,14 @@ use std::fmt::{Display, Formatter};
 
 use ansi_term::Color;
 
+use crate::exact_math::float_mode::FloatMode;
 use crate::exact_math::rationals::Rationals;
+use crate::exact_math::scientific_mode::from_float;
 use crate::lexing::token::{Operator, Token};
 use crate::parsing::ast::Ast::{Nil, Node};
 use crate::parsing::ast::Parameters::*;
 use crate::utils::matrix_utils::transpose;
+use crate::FLOAT_MODE;
 
 pub type Ram = HashMap<String, Parameters>;
 pub type Functions = HashMap<String, (Vec<Ast>, Ast)>;
@@ -58,7 +61,7 @@ pub enum Ast {
     },
 }
 
-fn int_to_superscript_string(i: i64) -> String {
+pub fn int_to_superscript_string(i: i64) -> String {
     fn digit_to_superscript_char(i: &str) -> &str {
         match i {
             "-" => "⁻",
@@ -97,7 +100,11 @@ impl Display for Parameters {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Int(i) => write!(f, "{}", i),
-            Float(fl) => write!(f, "{:.10}", fl),
+            Float(fs) => FLOAT_MODE.with(|fm| match *fm.borrow() {
+                FloatMode::Normal => write!(f, "{:.10}", fs),
+                FloatMode::Exact => write!(f, "{}", fs),
+                FloatMode::Science => write!(f, "{}", from_float(*fs)),
+            }),
             Identifier(s) => write!(f, "{}", s),
             PlusOperation => write!(f, "+"),
             MinusOperation => write!(f, "-"),
@@ -159,10 +166,12 @@ impl Parameters {
                 if s.starts_with("@") {
                     match s.strip_prefix("@") {
                         None => format!(""),
-                        Some(c) => format!("Error: {}", Color::Red.paint(c)),
+                        Some(c) => {
+                            format!("{} {}", Color::Purple.paint("Error:"), Color::Red.paint(c))
+                        }
                     }
                 } else {
-                    if ram == None {
+                    if ram.is_none() {
                         return self.to_string();
                     } else {
                         match ram.as_mut().unwrap().get(s) {
@@ -178,7 +187,7 @@ impl Parameters {
 
             Var(x, y, z) => {
                 let l = int_to_superscript_string(*y);
-                if l == "error".to_string() {
+                if l == *"error".to_string() {
                     format!("{}", x.clone())
                 } else {
                     let division = l.starts_with("⁻");
@@ -197,7 +206,7 @@ impl Parameters {
                                 ""
                             }
                         }
-                        Float(f) if f >= 1.0 - 1e10 && f <= 1.0 + 1e10 => {
+                        Float(f) if f >= 1.0 - 1e-10 && f <= 1.0 + 1e-10 => {
                             if division {
                                 "1"
                             } else {
@@ -218,7 +227,7 @@ impl Parameters {
                                 "-"
                             }
                         }
-                        Float(f) if f <= -1.0 - 1e10 && f >= -1.0 + 1e10 => {
+                        Float(f) if f >= -1.0 - 1e-10 && f <= -1.0 + 1e-10 => {
                             if division {
                                 "-1"
                             } else {
@@ -407,12 +416,24 @@ impl Parameters {
                 Color::Green.paint("int"),
                 Color::Green.paint(self.pretty_print(ram, function))
             ),
-            Float(_) => format!(
-                "{}: {} = {}",
-                Color::Cyan.paint("val"),
-                Color::RGB(186, 214, 152).paint("float"),
-                Color::RGB(186, 214, 152).paint(self.pretty_print(ram, function))
-            ),
+            Float(_) => {
+                let val = self.pretty_print(ram, function);
+                if val.contains("/") {
+                    format!(
+                        "{}: {} = {}",
+                        Color::Cyan.paint("val"),
+                        Color::RGB(237, 144, 144).paint("rational"),
+                        Color::RGB(237, 144, 144).paint(val)
+                    )
+                } else {
+                    format!(
+                        "{}: {} = {}",
+                        Color::Cyan.paint("val"),
+                        Color::RGB(186, 214, 152).paint("float"),
+                        Color::RGB(186, 214, 152).paint(val)
+                    )
+                }
+            }
             Identifier(s) => {
                 if s.starts_with("@") {
                     self.pretty_print(ram, function)

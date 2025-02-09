@@ -1491,7 +1491,7 @@ pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             let r = lup_decompose(&mut res, &mut p, n, ram.as_deref());
 
             match r {
-                0 => Null,
+                0 => Identifier("@Determinant is zero, matrice is not invertible".to_string()),
                 _ => {
                     let mut vec_ia = Vec::new();
                     for _ in 0..n {
@@ -1504,13 +1504,19 @@ pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                     let det = lup_determinant(&mut res, &mut p, n, ram.as_deref());
                     match det {
                         Int(0) => {
-                            return Str("Determinant is zero, matrix is not invertible".to_string())
+                            return Identifier(
+                                "@Determinant is zero, matrix is not invertible".to_string(),
+                            )
                         }
                         Float(s) if s.abs() < 1e-10 => {
-                            return Str("Determinant is zero, matrix is not invertible".to_string())
+                            return Identifier(
+                                "@Determinant is zero, matrix is not invertible".to_string(),
+                            )
                         }
                         Rational(s) if s.clone().is_null() => {
-                            return Str("Determinant is zero, matrix is not invertible".to_string())
+                            return Identifier(
+                                "@Determinant is zero, matrix is not invertible".to_string(),
+                            )
                         }
                         _ => (),
                     }
