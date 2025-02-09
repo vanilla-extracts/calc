@@ -50,4 +50,4 @@ It then displays a message telling you in which mode you toggled.
 By default it is in `exact` mode.
 
 ## Example
-![float_mode]("/assets/float_mode.png")
+![float_mode](/assets/float_mode.png)
