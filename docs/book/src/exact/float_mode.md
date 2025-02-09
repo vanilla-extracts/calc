@@ -1,4 +1,4 @@
-# Float display
+# Section VII.4. Float display
 With `v3.4.0` there is now a way to chose how you want your floats to be
 displayed.
 

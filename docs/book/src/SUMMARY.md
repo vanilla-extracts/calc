@@ -20,3 +20,4 @@
   - [Section VII.1. Rational Reduction](exact/rational.md)
   - [Section VII.2. Symbolic Reduction](exact/symbolic.md)
   - [Section VII.3. Function differentiation](exact/diff.md)
+  - [Section VII.4. Float Mode](exact/float_mode.md)
