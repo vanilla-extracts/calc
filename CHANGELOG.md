@@ -24,16 +24,13 @@ val: rational = 1/3
 
 And in `science` mode it displays 
 ```
-val: float = 333.3333333333*10⁻³
+val: float = 3.333333333333*10⁻¹
 ```
 
 Science mode prints with this pattern:
 ```
-[0-9]{0,3}*10^(([0-9]*)|(-[0-9]*))
+[0-9]*10^(([0-9]*)|(-[0-9]*))
 ```
-
-The number in group 2 or 3 is always a multiple of 3. And `*10⁰` is simplified
-to nothing. 
 
 # Version 3.3.5 : Code refactoring
 Refactoring of Code for simpler type usage
