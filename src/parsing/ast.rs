@@ -5,6 +5,7 @@ use ansi_term::Color;
 
 use crate::exact_math::float_mode::FloatMode;
 use crate::exact_math::rationals::Rationals;
+use crate::exact_math::scientific_mode::from_float;
 use crate::lexing::token::{Operator, Token};
 use crate::parsing::ast::Ast::{Nil, Node};
 use crate::parsing::ast::Parameters::*;
@@ -60,7 +61,7 @@ pub enum Ast {
     },
 }
 
-fn int_to_superscript_string(i: i64) -> String {
+pub fn int_to_superscript_string(i: i64) -> String {
     fn digit_to_superscript_char(i: &str) -> &str {
         match i {
             "-" => "⁻",
@@ -99,7 +100,11 @@ impl Display for Parameters {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Int(i) => write!(f, "{}", i),
-            Float(fl) => write!(f, "{:.10}", fl),
+            Float(fs) => FLOAT_MODE.with(|fm| match *fm.borrow() {
+                FloatMode::Normal => write!(f, "{:.10}", fs),
+                FloatMode::Exact => write!(f, "{}", fs),
+                FloatMode::Science => write!(f, "{}", from_float(*fs)),
+            }),
             Identifier(s) => write!(f, "{}", s),
             PlusOperation => write!(f, "+"),
             MinusOperation => write!(f, "-"),
@@ -179,12 +184,6 @@ impl Parameters {
                     }
                 }
             }
-
-            Float(f) => FLOAT_MODE.with(|fm| match *fm.borrow() {
-                FloatMode::Normal => format!("{:.10}", f),
-                FloatMode::Exact => format!("{}", f),
-                FloatMode::Science => format!("{}", f),
-            }),
 
             Var(x, y, z) => {
                 let l = int_to_superscript_string(*y);

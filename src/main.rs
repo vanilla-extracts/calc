@@ -30,7 +30,7 @@ mod lexing;
 mod parsing;
 mod utils;
 
-thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
+thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Science)}}
 
 fn show_config(config: Config) -> (String, Option<Config>) {
     let loaded = load_config(config.clone());

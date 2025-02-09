@@ -2,7 +2,7 @@ use std::{fmt::Display, ops};
 
 use crate::{utils::integer_utils::gcd, FLOAT_MODE};
 
-use super::float_mode::FloatMode;
+use super::{float_mode::FloatMode, scientific_mode::from_float};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Rationals {
@@ -102,7 +102,8 @@ impl Display for Rationals {
             write!(f, "{}", fs.over)
         } else {
             FLOAT_MODE.with(|fm| match *fm.borrow() {
-                FloatMode::Normal | FloatMode::Science => write!(f, "{:.10}", fs.approx()),
+                FloatMode::Normal => write!(f, "{:.10}", fs.approx()),
+                FloatMode::Science => write!(f, "{}", from_float(fs.approx())),
                 FloatMode::Exact => write!(f, "{}/{}", fs.over, fs.under),
             })
         }
