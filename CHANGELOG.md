@@ -1,3 +1,12 @@
+# Version 3.4.2 : Default float mode in config
+This version adds the `default_float_mode` entry in the `mini-calc.toml`
+configuration file.
+
+It loads the default float mode, until now the default float mode was `exact`.
+It will be the _default_ float mode in the **config** but now the user will be
+able to configure the default float mode they want. And it will persist between
+sessions.
+
 # Version 3.4.1 : Scientific mode, Float mode
 This version implements the scientific mode and have revamped the float
 displaying system.
