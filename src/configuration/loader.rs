@@ -17,6 +17,7 @@ pub struct Prompt {
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Config {
     pub general_color: String,
+    pub default_float_mode: String,
     pub greeting: Greeting,
     pub prompt: Prompt,
 }
@@ -53,6 +54,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             general_color: "purple".to_string(),
+            default_float_mode: "exact".to_string(),
             greeting: Greeting::default(),
             prompt: Prompt::default(),
         }

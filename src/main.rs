@@ -86,6 +86,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                     s => {
                         let cfg = Config {
                             general_color: (s.to_string()),
+                            default_float_mode: (config.default_float_mode),
                             greeting: (config.greeting),
                             prompt: (config.prompt),
                         };
@@ -108,6 +109,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                         let cfg = Config {
                             general_color: config.general_color,
                             greeting: (config.greeting),
+                            default_float_mode: (config.default_float_mode),
                             prompt: Prompt {
                                 prompt: s.to_string(),
                                 prompt_color: config.prompt.prompt_color,
@@ -144,6 +146,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                         let cfg = Config {
                             general_color: config.general_color,
                             greeting: (config.greeting),
+                            default_float_mode: (config.default_float_mode),
                             prompt: Prompt {
                                 prompt: config.prompt.prompt,
                                 prompt_color: s.to_string(),
@@ -170,6 +173,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                     s => {
                         let cfg = Config {
                             general_color: config.general_color,
+                            default_float_mode: config.default_float_mode,
                             greeting: Greeting {
                                 greeting_color: s.to_string(),
                                 greeting_message: config.greeting.greeting_message,
@@ -201,6 +205,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                                 greeting_message: s.to_string(),
                                 greeting_color: config.greeting.greeting_color,
                             },
+                            default_float_mode: config.default_float_mode,
                             prompt: config.prompt,
                         };
 
