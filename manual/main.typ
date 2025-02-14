@@ -599,3 +599,18 @@ By default it is in `exact` mode.
 image("assets/float_mode.png"),
 caption: "The different float modes"
 )
+
+== Default float mode
+As of `v3.4.2` you can alter the default float mode.
+By default it is `exact`
+
+You can alter it by modifying the config file directly or by using the `config set` command.
+
+```
+> config set float_mode exact|normal|science
+```
+
+And then reload the config with
+```
+config reload
+```
