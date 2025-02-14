@@ -353,6 +353,11 @@ fn main() {
     };
 
     let mut loaded: Loaded = load_config(config.clone());
+
+    FLOAT_MODE.with(|fm| {
+        *fm.borrow_mut() = loaded.clone().float_mode;
+    });
+
     let message = &loaded.greeting_message;
     println!("{}", message.to_string());
 
