@@ -189,13 +189,26 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                     }
                 }
             }
+            Some("float_mode") | Some("default_float_mode") => {
+                let raw_mode: Option<&str> = args.next();
+                if raw_mode.is_none() {
+                    return ("Not enough parameters".to_string(), None);
+                }
+                let mode = raw_mode.unwrap();
+                let mut cfg: Config = config.clone();
+                cfg.default_float_mode = mode.trim().to_string();
+                match write_config(&cfg) {
+                    Ok(_) => (format!("You updated the default float mode to {}, reload for this to take effect\n",mode),None),
+                    _ => ("An error occured while updating config\n".to_string(),None)
+                }
+            }
             Some("greeting_message") => {
                 let mut st = "".to_string();
                 args.into_iter().for_each(|x| st = st.clone() + x + " ");
 
                 match st {
                     s if s.trim() == "" => (
-                        "You need more argument for this command\n".to_string(),
+                        "You need more arguments for this command\n".to_string(),
                         None,
                     ),
                     s => {
