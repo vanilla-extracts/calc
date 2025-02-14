@@ -525,6 +525,7 @@ static SET_CMD: &[&str] = &[
     "greeting_message",
     "prompt",
     "prompt_color",
+    "float_mode",
 ];
 static CMD_COLOR: &[&str] = &[
     "black", "purple", "cyan", "blue", "red", "yellow", "green", "white",
