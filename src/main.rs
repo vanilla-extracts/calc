@@ -441,6 +441,9 @@ fn main() {
                         Some(q) => {
                             config = q.clone();
                             loaded = load_config(q);
+                            FLOAT_MODE.with(|fm| {
+                                *fm.borrow_mut() = loaded.float_mode;
+                            });
                             text = &loaded.prompt;
                             interface
                                 .set_prompt(&format!(
