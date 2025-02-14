@@ -44,8 +44,8 @@ fn show_config(config: Config) -> (String, Option<Config>) {
     let prompt_color_message = loaded.prompt_style.paint(config.prompt.prompt_color);
     let general_message_color = loaded.general_color.paint(config.general_color);
     let general_message = loaded.general_color.paint("This is the general colour");
-    println!(" The greeting colour is set to {} which prints \n {} \n The prompt is {} in {} \n Main color is {} which looks like \n {} \n If you've modified your config and it doesn't look good, the author (Charlotte Thomas) declines any responsabilities.\n",color_message,
-    show_message,prompt,prompt_color_message,general_message_color,general_message);
+    let float_mode = loaded.general_color.paint(config.default_float_mode);
+    println!("The greeting colour is set to {} which prints \n {} \nThe prompt is \"{}\" in {} \nDefault Float Mode is currently {} \nMain colour is {} which looks like \n {} \nIf you've modified your config and it doesn't look good, the author (Charlotte Thomas) declines any responsabilities.\n", color_message, show_message,prompt,prompt_color_message,float_mode,general_message_color,general_message);
     ("".to_string(), None)
 }
 
@@ -86,6 +86,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                     s => {
                         let cfg = Config {
                             general_color: (s.to_string()),
+                            default_float_mode: (config.default_float_mode),
                             greeting: (config.greeting),
                             prompt: (config.prompt),
                         };
@@ -108,6 +109,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                         let cfg = Config {
                             general_color: config.general_color,
                             greeting: (config.greeting),
+                            default_float_mode: (config.default_float_mode),
                             prompt: Prompt {
                                 prompt: s.to_string(),
                                 prompt_color: config.prompt.prompt_color,
@@ -144,6 +146,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                         let cfg = Config {
                             general_color: config.general_color,
                             greeting: (config.greeting),
+                            default_float_mode: (config.default_float_mode),
                             prompt: Prompt {
                                 prompt: config.prompt.prompt,
                                 prompt_color: s.to_string(),
@@ -170,6 +173,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                     s => {
                         let cfg = Config {
                             general_color: config.general_color,
+                            default_float_mode: config.default_float_mode,
                             greeting: Greeting {
                                 greeting_color: s.to_string(),
                                 greeting_message: config.greeting.greeting_message,
@@ -185,13 +189,26 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                     }
                 }
             }
+            Some("float_mode") | Some("default_float_mode") => {
+                let raw_mode: Option<&str> = args.next();
+                if raw_mode.is_none() {
+                    return ("Not enough parameters".to_string(), None);
+                }
+                let mode = raw_mode.unwrap();
+                let mut cfg: Config = config.clone();
+                cfg.default_float_mode = mode.trim().to_string();
+                match write_config(&cfg) {
+                    Ok(_) => (format!("You updated the default float mode to {}, reload for this to take effect\n",mode),None),
+                    _ => ("An error occured while updating config\n".to_string(),None)
+                }
+            }
             Some("greeting_message") => {
                 let mut st = "".to_string();
                 args.into_iter().for_each(|x| st = st.clone() + x + " ");
 
                 match st {
                     s if s.trim() == "" => (
-                        "You need more argument for this command\n".to_string(),
+                        "You need more arguments for this command\n".to_string(),
                         None,
                     ),
                     s => {
@@ -201,6 +218,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                                 greeting_message: s.to_string(),
                                 greeting_color: config.greeting.greeting_color,
                             },
+                            default_float_mode: config.default_float_mode,
                             prompt: config.prompt,
                         };
 
@@ -267,7 +285,7 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 fn main() {
     let mut args: Args = env::args();
 
-    let version: String = "v3.4.1".to_string();
+    let version: String = "v3.4.2-alpha".to_string();
     if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
 
@@ -348,6 +366,11 @@ fn main() {
     };
 
     let mut loaded: Loaded = load_config(config.clone());
+
+    FLOAT_MODE.with(|fm| {
+        *fm.borrow_mut() = loaded.clone().float_mode;
+    });
+
     let message = &loaded.greeting_message;
     println!("{}", message.to_string());
 
@@ -431,6 +454,9 @@ fn main() {
                         Some(q) => {
                             config = q.clone();
                             loaded = load_config(q);
+                            FLOAT_MODE.with(|fm| {
+                                *fm.borrow_mut() = loaded.float_mode;
+                            });
                             text = &loaded.prompt;
                             interface
                                 .set_prompt(&format!(
@@ -499,6 +525,7 @@ static SET_CMD: &[&str] = &[
     "greeting_message",
     "prompt",
     "prompt_color",
+    "float_mode",
 ];
 static CMD_COLOR: &[&str] = &[
     "black", "purple", "cyan", "blue", "red", "yellow", "green", "white",
