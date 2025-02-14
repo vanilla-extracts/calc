@@ -44,8 +44,8 @@ fn show_config(config: Config) -> (String, Option<Config>) {
     let prompt_color_message = loaded.prompt_style.paint(config.prompt.prompt_color);
     let general_message_color = loaded.general_color.paint(config.general_color);
     let general_message = loaded.general_color.paint("This is the general colour");
-    println!(" The greeting colour is set to {} which prints \n {} \n The prompt is {} in {} \n Main color is {} which looks like \n {} \n If you've modified your config and it doesn't look good, the author (Charlotte Thomas) declines any responsabilities.\n",color_message,
-    show_message,prompt,prompt_color_message,general_message_color,general_message);
+    let float_mode = loaded.general_color.paint(config.default_float_mode);
+    println!("The greeting colour is set to {} which prints \n {} \nThe prompt is \"{}\" in {} \nDefault Float Mode is currently {} \nMain colour is {} which looks like \n {} \nIf you've modified your config and it doesn't look good, the author (Charlotte Thomas) declines any responsabilities.\n", color_message, show_message,prompt,prompt_color_message,float_mode,general_message_color,general_message);
     ("".to_string(), None)
 }
 
