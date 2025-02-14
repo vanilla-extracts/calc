@@ -31,6 +31,7 @@ mod parsing;
 mod utils;
 
 thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
+static VERSION: &str = "v3.4.2";
 
 fn show_config(config: Config) -> (String, Option<Config>) {
     let loaded = load_config(config.clone());
@@ -285,7 +286,6 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
 fn main() {
     let mut args: Args = env::args();
 
-    let version: String = "v3.4.2-alpha".to_string();
     if args.len() > 1 || !atty::is(Stream::Stdin) {
         let mut a = vec![];
 
@@ -312,8 +312,8 @@ fn main() {
             exit(0);
         }
 
-        if arg_final == "-v" || arg_final == "--version" {
-            println!("Calc {version}");
+        if arg_final == "-v" || arg_final == "--VERSION" {
+            println!("Calc {VERSION}");
             exit(0);
         }
 
@@ -330,7 +330,7 @@ fn main() {
                     .output()
                     .expect("update failed")
             };
-            println!("mini-calc has been succesfully updated to the latest version");
+            println!("mini-calc has been succesfully updated to the latest VERSION");
             exit(0);
         }
 
@@ -395,18 +395,18 @@ fn main() {
     while let ReadResult::Input(line) = interface.read_line().unwrap() {
         match line.as_str().trim() {
             "info" => {
-                let message = loaded.general_color.paint(format!(" Calc {version} \n Author: Charlotte Thomas \n Written in Rust \n Repo: https://github.com/vanilla-extracts/calc\n"));
+                let message = loaded.general_color.paint(format!(" Calc {VERSION} \n Author: Charlotte Thomas \n Written in Rust \n Repo: https://github.com/vanilla-extracts/calc\n"));
                 println!("{}", message)
             }
             "exit" => break,
             "help" => {
                 let message = loaded.general_color.paint(format!(
-                    " Calc {version} Help \n > info : show infos \n > exit : exit the program \n > help : print this help \n > verbose : toggle the verbose \n > version : prints the version \n > config : root of the config \n toggle_float <exact|science|normal> : toggle the float mode"
+                    " Calc {VERSION} Help \n > info : show infos \n > exit : exit the program \n > help : print this help \n > verbose : toggle the verbose \n > version : prints the version \n > config : root of the config \n toggle_float <exact|science|normal> : toggle the float mode"
                 ));
                 println!("{}", message)
             }
-            "version" => {
-                let message = loaded.general_color.paint(format!(" Calc {version}\n"));
+            "VERSION" => {
+                let message = loaded.general_color.paint(format!(" Calc {VERSION}\n"));
                 println!("{}", message)
             }
             "verbose" => {
