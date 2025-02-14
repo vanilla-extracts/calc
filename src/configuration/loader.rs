@@ -2,7 +2,7 @@ use ansi_term::{ANSIGenericString, Color};
 use confy::ConfyError;
 use serde::{Deserialize, Serialize};
 
-use crate::exact_math::float_mode::FloatMode;
+use crate::{exact_math::float_mode::FloatMode, VERSION};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Greeting {
@@ -149,7 +149,7 @@ fn load_float_mode(dfm: String) -> FloatMode {
 
 pub fn replace_variable(str: String) -> String {
     str.replace("%author%", "Charlotte Thomas")
-        .replace("%version%", "v3.4.2-alpha")
+        .replace("%version%", VERSION)
         .to_string()
 }
 
