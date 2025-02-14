@@ -65,8 +65,11 @@ impl Default for Config {
 }
 
 pub fn load() -> Result<Config, confy::ConfyError> {
-    let cfg: Config = confy::load("mini-calc", Some("mini-calc"))?;
-    Ok(cfg)
+    let cfg = confy::load("mini-calc", Some("mini-calc"));
+    match cfg {
+        Ok(config) => Ok(config),
+        _ => Ok(Config::default()),
+    }
 }
 
 pub fn write_config(c: &Config) -> Result<(), ConfyError> {
