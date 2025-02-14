@@ -38,7 +38,7 @@ val: float = 3.333333333333*10⁻¹
 
 Science mode prints with this pattern:
 ```
-[0-9]*10^(([0-9]*)|(-[0-9]*))
+[0-9].[0-9]{10}\*10^(([0-9]*)|(-[0-9]*))
 ```
 
 # Version 3.3.5 : Code refactoring
