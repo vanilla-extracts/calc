@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>mini-calc Changelog</title><link>http://127.0.0.1:7979/changelog</link><description>Changelog information for mini-calc</description><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><atom:link href="http://127.0.0.1:7979/changelog.rss" rel="self"/><item><title>Version 3.4.2 : Default float mode in config</title><link>http://127.0.0.1:7979/changelog/3.4.2</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.4.2</guid><content:encoded><![CDATA[<p>This version adds the <code>default_float_mode</code> entry in the <code>mini-calc.toml</code>
+configuration file.</p>
+<p>It loads the default float mode, until now the default float mode was <code>exact</code>.
+It will be the <em>default</em> float mode in the <strong>config</strong> but now the user will be
+able to configure the default float mode they want. And it will persist between
+sessions.</p>
+<h2><em><strong>WARNING:</strong></em></h2>
+<p>This version adds something to the config, and as such it resets your config to
+add it, if you DON'T want your config to be overwritten add</p>
+<pre style="background-color:#263238;"><span style="color:#eeffff;">default_float_mode = 'normal|science|exact'
+</span></pre>
+
+<p>To your config!</p>
+]]></content:encoded></item><item><title>Version 3.4.1 : Scientific mode, Float mode</title><link>http://127.0.0.1:7979/changelog/3.4.1</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.4.1</guid><content:encoded><![CDATA[<p>This version implements the scientific mode and have revamped the float
+displaying system.</p>
+<p>It adds the <code>toggle_float &lt;normal|science|exact&gt;</code> REPL command which changes the
+float display.</p>
+<p>In <code>normal</code> mode the float is displayed with 10 decimal digits. Even when a
+rational solution is available.
+For example if you input</p>
+<pre style="background-color:#263238;"><span style="color:#eeffff;">&gt; 1/3 
+</span></pre>
+
+<p>It displays</p>
+<pre style="background-color:#263238;"><span style="color:#eeffff;">val: float = 0.3333333333
+</span></pre>
+
+<p>In <code>exact</code> mode it displays</p>
+<pre style="background-color:#263238;"><span style="color:#eeffff;">val: rational = 1/3 
+</span></pre>
+
+<p>And in <code>science</code> mode it displays</p>
+<pre style="background-color:#263238;"><span style="color:#eeffff;">val: float = 3.333333333333*10⁻¹
+</span></pre>
+
+<p>Science mode prints with this pattern:</p>
+<pre style="background-color:#263238;"><span style="color:#eeffff;">[0-9].[0-9]{10}\*10^(([0-9]*)|(-[0-9]*))
+</span></pre>
+
+]]></content:encoded></item><item><title>Version 3.3.5 : Code refactoring</title><link>http://127.0.0.1:7979/changelog/3.3.5</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.3.5</guid><content:encoded><![CDATA[<p>Refactoring of Code for simpler type usage</p>
+]]></content:encoded></item><item><title>3.3.4</title><link>http://127.0.0.1:7979/changelog/3.3.4</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.3.4</guid><content:encoded><![CDATA[<p>Fix bug #61 and #59</p>
+]]></content:encoded></item><item><title>3.3.3</title><link>http://127.0.0.1:7979/changelog/3.3.3</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.3.3</guid><content:encoded><![CDATA[]]></content:encoded></item><item><title>Version 3.3.2 : CI</title><link>http://127.0.0.1:7979/changelog/3.3.2</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.3.2</guid><content:encoded><![CDATA[]]></content:encoded></item><item><title>Version 3.2.0 : Differentiation #2</title><link>http://127.0.0.1:7979/changelog/3.2.0</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.2.0</guid><content:encoded><![CDATA[<p>Differentiates all functions</p>
+]]></content:encoded></item><item><title>Version 3.1.0 : Differentiation #1</title><link>http://127.0.0.1:7979/changelog/3.1.0</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.1.0</guid><content:encoded><![CDATA[<p>First differentiation version, it differentiates classic and user defined
+polynomials</p>
+]]></content:encoded></item><item><title>Version 3.0.1 : Bug fix</title><link>http://127.0.0.1:7979/changelog/3.0.1</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.0.1</guid><content:encoded><![CDATA[<p>Fix stackoverflow on custom function call with same name</p>
+]]></content:encoded></item><item><title>Version 3.0.0 : Symbolic calculation!</title><link>http://127.0.0.1:7979/changelog/3.0.0</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/3.0.0</guid><content:encoded><![CDATA[<p>Version 3.0.0, at last! (if you've seen the PR for it it's been sitting for more
+than three weeks!)</p>
+<p>Symbolic computation was added you can compute expressions with symbols (such as
+x,y,whatever) and more !</p>
+]]></content:encoded></item><item><title>Version 2.13.2 : Bug fix</title><link>http://127.0.0.1:7979/changelog/2.13.2</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.13.2</guid><content:encoded><![CDATA[<p>Fix #43</p>
+]]></content:encoded></item><item><title>Version 2.13.1 : Bug fix</title><link>http://127.0.0.1:7979/changelog/2.13.1</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.13.1</guid><content:encoded><![CDATA[<p>Fix the issue of the function never used (moved implementation to the test
+module)</p>
+]]></content:encoded></item><item><title>Version 2.13.0 : Update!</title><link>http://127.0.0.1:7979/changelog/2.13.0</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.13.0</guid><content:encoded><![CDATA[<p>You can upgrade the calculator with <code>mini-calc --update</code></p>
+]]></content:encoded></item><item><title>Version 2.12.4 : Fix bug</title><link>http://127.0.0.1:7979/changelog/2.12.4</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.12.4</guid><content:encoded><![CDATA[<p>Fix the bug where the calculated vectors for plotting appeared when plotting</p>
+]]></content:encoded></item><item><title>Version 2.12.3 : Piping</title><link>http://127.0.0.1:7979/changelog/2.12.3</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.12.3</guid><content:encoded><![CDATA[<p>Piping has been added to the calculator</p>
+]]></content:encoded></item><item><title>Version 2.12.2 : Non interactive use</title><link>http://127.0.0.1:7979/changelog/2.12.2</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.12.2</guid><content:encoded><![CDATA[<p>Added non interactive use</p>
+]]></content:encoded></item><item><title>Version 2.11.6 : Fix bug</title><link>http://127.0.0.1:7979/changelog/2.11.6</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.11.6</guid><content:encoded><![CDATA[<h2>Bug fix</h2>
+<ul>
+<li>fix bug with lup-decomposition of rationals (an abs missing)</li>
+</ul>
+]]></content:encoded></item><item><title>Version 2.11.5 : Pretty print</title><link>http://127.0.0.1:7979/changelog/2.11.5</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.11.5</guid><content:encoded><![CDATA[<h2>Bug fix</h2>
+<ul>
+<li>improve display of floats precision to 10 decimal points (with rationalization
+it's possible)</li>
+</ul>
+<h2>Pretty print matrices</h2>
+<ul>
+<li>change the way of matrices pretty printed, matrices are aligned</li>
+</ul>
+<p><img src="docs/assets/align_matrices.png" alt="">
+<img src="assets/align_matrices.png" alt=""></p>
+]]></content:encoded></item><item><title>Version 2.11.4 : Exact rational math</title><link>http://127.0.0.1:7979/changelog/2.11.4</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.11.4</guid><content:encoded><![CDATA[<h2>Exact math</h2>
+<ul>
+<li>add automatic rationalization of floats (with 10 decimal point of precision)</li>
+</ul>
+<h2>Preparation</h2>
+<ul>
+<li>preparation for litteral calculations</li>
+</ul>
+<h2>Bug fix</h2>
+<ul>
+<li>remove prior forgotten debug message while allocating variable</li>
+</ul>
+]]></content:encoded></item><item><title>Version 2.11.3</title><link>http://127.0.0.1:7979/changelog/2.11.3</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.11.3</guid><content:encoded><![CDATA[<h2>Matrices</h2>
+<p>-- change the matrix pretty print</p>
+<h2>Bug fix</h2>
+<p>-- fix bug when re-allocating the variable (i.e you can't)</p>
+]]></content:encoded></item><item><title>Version 2.11.2 : Pretty print</title><link>http://127.0.0.1:7979/changelog/2.11.2</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.11.2</guid><content:encoded><![CDATA[<h2>Matrices</h2>
+<ul>
+<li>matrices and vectors pretty print</li>
+</ul>
+]]></content:encoded></item><item><title>Version 2.11.1 : Exact rational math</title><link>http://127.0.0.1:7979/changelog/2.11.1</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.11.1</guid><content:encoded><![CDATA[<h2>Bug fix</h2>
+<ul>
+<li>Fix bug when reducing rational with two minus or two whole numbers</li>
+</ul>
+<h2>Modification</h2>
+<ul>
+<li>Int and not floats to the matrix inversion algorithm, so it can invert with exact values</li>
+</ul>
+]]></content:encoded></item><item><title>Version 2.11.0 : Exact rational math</title><link>http://127.0.0.1:7979/changelog/2.11.0</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.11.0</guid><content:encoded><![CDATA[<h2>Exact math</h2>
+<ul>
+<li>Added exact rational math</li>
+<li>Rational operation</li>
+<li>Rational reduction</li>
+</ul>
+<h2>Bug fix</h2>
+<ul>
+<li>fix bug with acos,asin,atan functions while vectorize</li>
+</ul>
+]]></content:encoded></item><item><title>Version 2.10.0 : Add function vectorization</title><link>http://127.0.0.1:7979/changelog/2.10.0</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.10.0</guid><content:encoded><![CDATA[<h2>Function</h2>
+<p>Add vectorization to</p>
+<ul>
+<li>cos</li>
+<li>sin</li>
+<li>tan</li>
+<li>cosh</li>
+<li>sinh</li>
+<li>tanh</li>
+<li>acos</li>
+<li>asin</li>
+<li>atan</li>
+<li>exp</li>
+<li>ln/log</li>
+<li>sqrt</li>
+</ul>
+]]></content:encoded></item><item><title>Version 2.9.10 : Fix bug, vector plotting</title><link>http://127.0.0.1:7979/changelog/2.9.10</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.9.10</guid><content:encoded><![CDATA[<h2>Plot</h2>
+<ul>
+<li>add vector plotting</li>
+</ul>
+<h2>Terminal plot</h2>
+<ul>
+<li>fix edge case by changing the coefficient a little bit</li>
+<li>add vector termploting</li>
+</ul>
+]]></content:encoded></item><item><title>Version 2.9.9 : Terminal plot</title><link>http://127.0.0.1:7979/changelog/2.9.9</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.9.9</guid><content:encoded><![CDATA[<ul>
+<li>fix bug if yscale or xscale is 0</li>
+</ul>
+]]></content:encoded></item><item><title>2.9.8</title><link>http://127.0.0.1:7979/changelog/2.9.8</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.9.8</guid><content:encoded><![CDATA[<ul>
+<li>Test</li>
+</ul>
+]]></content:encoded></item><item><title>2.9.6</title><link>http://127.0.0.1:7979/changelog/2.9.6</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.9.6</guid><content:encoded><![CDATA[<ul>
+<li>Adds supports for dist-upgrade</li>
+</ul>
+]]></content:encoded></item><item><title>v2.9.4 Terminal plot</title><link>http://127.0.0.1:7979/changelog/2.9.4</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.9.4</guid><content:encoded><![CDATA[<h2>Terminal plot</h2>
+<ul>
+<li>fix bug while updating ymax and ymin</li>
+</ul>
+]]></content:encoded></item><item><title>v2.9.3 Terminal plot</title><link>http://127.0.0.1:7979/changelog/2.9.3</link><category domain="https://github.com/vanilla-extracts/calc">mini-calc Changelog</category><guid>http://127.0.0.1:7979/changelog/2.9.3</guid><content:encoded><![CDATA[<h2>Terminal plot</h2>
+<ul>
+<li>fix bug with the x axis row</li>
+</ul>
+]]></content:encoded></item></channel></rss>

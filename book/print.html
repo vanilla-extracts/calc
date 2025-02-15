@@ -1,0 +1,531 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js oranda-dark">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Calc Book</title>
+        <meta name="robots" content="noindex" />
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="oranda-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "oranda-dark" : "oranda-dark";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('orandamdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('orandamdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('orandamdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('oranda-dark')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">Basic Usage</li><li class="chapter-item expanded "><a href="install.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">2.</strong> Chapter I. Usage</a></li><li class="chapter-item expanded affix "><li class="part-title">Advanced Usage</li><li class="chapter-item expanded "><a href="function.html"><strong aria-hidden="true">3.</strong> Chapter II. Functions</a></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">4.</strong> Chapter III. Configuration</a></li><li class="chapter-item expanded "><a href="logic.html"><strong aria-hidden="true">5.</strong> Chapter IV. Logic</a></li><li class="chapter-item expanded "><a href="plot.html"><strong aria-hidden="true">6.</strong> Chapter V. Plot</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="plot/gui.html"><strong aria-hidden="true">6.1.</strong> Section V.1. GUI</a></li><li class="chapter-item expanded "><a href="plot/term.html"><strong aria-hidden="true">6.2.</strong> Section V.2. Terminal</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Algebra</li><li class="chapter-item expanded "><a href="algebra/index.html"><strong aria-hidden="true">7.</strong> Chapter VI. Algebra</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algebra/vectors.html"><strong aria-hidden="true">7.1.</strong> Section VI.1. Vectors</a></li><li class="chapter-item expanded "><a href="algebra/matrices.html"><strong aria-hidden="true">7.2.</strong> Section VI.2. Matrices</a></li></ol></li><li class="chapter-item expanded "><a href="exact/index.html"><strong aria-hidden="true">8.</strong> Chapter VII. Exact math</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="exact/rational.html"><strong aria-hidden="true">8.1.</strong> Section VII.1. Rational Reduction</a></li><li class="chapter-item expanded "><a href="exact/symbolic.html"><strong aria-hidden="true">8.2.</strong> Section VII.2. Symbolic Reduction</a></li><li class="chapter-item expanded "><a href="exact/diff.html"><strong aria-hidden="true">8.3.</strong> Section VII.3. Function differentiation</a></li><li class="chapter-item expanded "><a href="exact/float_mode.html"><strong aria-hidden="true">8.4.</strong> Section VII.4. Float Mode</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="oranda-dark">Axo Dark</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="oranda-light">Axo Light</button></li>
+
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Calc Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p>You can install <code>mini-calc</code> via several methods</p>
+<h3 id="cargo"><a class="header" href="#cargo">Cargo</a></h3>
+<pre><code class="language-sh">cargo install mini-calc
+</code></pre>
+<h3 id="source"><a class="header" href="#source">Source</a></h3>
+<pre><code class="language-sh">git clone https://github.com/vanilla-extracts/calc
+cd calc 
+cargo build --release
+./target/release/mini-calc
+</code></pre>
+<h3 id="nix"><a class="header" href="#nix">Nix</a></h3>
+<pre><code class="language-sh">nix run github.com:vanilla-extracts/calc
+</code></pre>
+<h2 id="contributors"><a class="header" href="#contributors">Contributors</a></h2>
+<p><a href="https://www.charlotte-thomas.me">I am</a> the main maintainer and developer of Calc.</p>
+<p>Thanks to my friends, who helped me along the way </p>
+<ul>
+<li><a href="https://earth2077.fr">Léana</a>, for her help and code cleanup</li>
+<li><a href="https://sigmaficient.github.io">Sigmaficient</a>, for his help to nixify the repo</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-i-usage"><a class="header" href="#chapter-i-usage">Chapter I. Usage</a></h1>
+<h2 id="basic-operators"><a class="header" href="#basic-operators">Basic Operators</a></h2>
+<p>Calc supports basic arithmetic operators such as:</p>
+<ul>
+<li><code>+</code> </li>
+<li><code>*</code></li>
+<li><code>-</code></li>
+<li><code>/</code></li>
+<li><code>^</code></li>
+</ul>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<p>The calculators also implements a system of (for the moment all global)
+variables.</p>
+<p>The syntax is simple, close to python. Its type-abilities are close to python
+too, you can re-assign a variable with another value of another type.</p>
+<pre><code>var = 5 
+</code></pre>
+<p><img src="/assets/image.png" alt="Example" /></p>
+<h3 id="built-in-variable"><a class="header" href="#built-in-variable">Built-in variable</a></h3>
+<ul>
+<li><code>pi</code> is a double precision float representation of pi </li>
+<li><code>e</code> is a double precision float representation of e</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-ii-functions"><a class="header" href="#chapter-ii-functions">Chapter II. Functions</a></h1>
+<h2 id="built-in-functions"><a class="header" href="#built-in-functions">Built-in functions</a></h2>
+<p>The following functions are currently (as of <code>3.3.0</code>) built-in</p>
+<ul>
+<li>Trigonometry 
+<ul>
+<li><code>sin</code> (vectorised)</li>
+<li><code>cos</code> (vectorised)</li>
+<li><code>tan</code> (vectorised)</li>
+</ul>
+</li>
+<li>Hyperbolic trigonometry
+<ul>
+<li><code>sinh</code> (vectorised)</li>
+<li><code>cosh</code> (vectorised)</li>
+<li><code>tanh</code> (vectorised)</li>
+</ul>
+</li>
+<li>Reverse trigonometry
+<ul>
+<li><code>asin</code> (vectorised)</li>
+<li><code>acos</code> (vectorised)</li>
+<li><code>atan</code> (vectorised)</li>
+</ul>
+</li>
+<li>Exponentiation
+<ul>
+<li><code>exp</code> (vectorised)</li>
+<li><code>ln</code> (alias <code>log</code>) (vectorised)</li>
+</ul>
+</li>
+<li>Vectors
+<ul>
+<li><code>norm</code> </li>
+</ul>
+</li>
+<li>Matrices
+<ul>
+<li><code>det</code></li>
+<li><code>invert</code></li>
+</ul>
+</li>
+<li>Plot 
+<ul>
+<li><code>plot</code></li>
+<li><code>termplot</code></li>
+</ul>
+</li>
+<li>Other
+<ul>
+<li><code>sqrt</code> (vectorised)</li>
+<li><code>factorial</code> (alias <code>fact</code>)</li>
+<li><code>abs</code></li>
+<li><code>ceil</code> </li>
+<li><code>floor</code></li>
+<li><code>round</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="trigonometry"><a class="header" href="#trigonometry">Trigonometry</a></h2>
+<p>For trigonometry, the input is assumed to to in <code>radians</code>, if it is in <code>degrees</code>
+you need to add a second argument (can be anything, like <code>true</code>) to the function
+call.</p>
+<p><img src="/assets/trigo.png" alt="example" /></p>
+<h2 id="expln"><a class="header" href="#expln">Exp/ln</a></h2>
+<p>If you use the <code>exp</code> function you can pass the base you want to work with 
+as a second argument. If nothing is supplied, we assume natural base.</p>
+<p><img src="/assets/expln.png" alt="example" /></p>
+<h2 id="root"><a class="header" href="#root">Root</a></h2>
+<p>You can add a second argument to <code>sqrt</code> for the <code>nth</code> root instead 
+of the 2nd root.</p>
+<p><img src="/assets/nth_root.png" alt="example" /></p>
+<h2 id="user-defined-functions"><a class="header" href="#user-defined-functions">User defined functions</a></h2>
+<p>You can define your own functions with the following syntax
+(warning: it might change in <code>4.0.0</code>)</p>
+<p><img src="/assets/user_defined.png" alt="example" /></p>
+<h2 id="partial-functions"><a class="header" href="#partial-functions">Partial functions</a></h2>
+<p>You can use a user-defined function to declare a partial function, 
+to have a cos in degrees for example.</p>
+<p><img src="/assets/function.png" alt="example" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-iii-configuration"><a class="header" href="#chapter-iii-configuration">Chapter III. Configuration</a></h1>
+<p>The calculator is completely configurable, you can change the general color,
+the greeting message, the greeting color, the prompt and prompt color
+in a toml file found in your config folder.</p>
+<pre><code class="language-sh">$HOME/.config/mini-calc/mini-calc.toml
+</code></pre>
+<p>On most GNU+Linux distros.</p>
+<p><img src="/assets/img.png" alt="config" /></p>
+<h2 id="colors"><a class="header" href="#colors">Colors</a></h2>
+<p>You can use the following colors:</p>
+<ul>
+<li>blue</li>
+<li>black</li>
+<li>purple</li>
+<li>green</li>
+<li>cyan</li>
+<li>red</li>
+<li>yellow</li>
+<li>white</li>
+<li>an hexadecimal color (ex: #f7a8d8)</li>
+</ul>
+<p>The default color (or if it can't be parsed) is <code>cyan</code>.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<p>A modified config might looks like this </p>
+<p><img src="/assets/config_modified.png" alt="mod_config" /></p>
+<p>And produce the following output </p>
+<p><img src="/assets/config_looks.png" alt="mod_config_look" /></p>
+<h2 id="command-line-interaction"><a class="header" href="#command-line-interaction">Command line interaction</a></h2>
+<p>You can interact in the REPL with the config the commands are:</p>
+<ul>
+<li><code>config</code>: shows the config help.</li>
+<li><code>config reload</code>: reloads the configuration from the file.</li>
+<li><code>config reset</code>: resets the configuration to its default.</li>
+<li><code>config show</code>: shows the current configuration.</li>
+<li><code>config set &lt;category&gt; &lt;value&gt;</code>: modifies the configuration. </li>
+</ul>
+<p>Categories are </p>
+<ul>
+<li><code>greeting_message</code>: string </li>
+<li><code>greeting_color</code>: color </li>
+<li><code>prompt_color</code>: color</li>
+<li><code>prompt</code>: string</li>
+<li><code>general_color</code>: color</li>
+</ul>
+<p><img src="/assets/config.png" alt="conf_inter" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-iv-logic"><a class="header" href="#chapter-iv-logic">Chapter IV. Logic</a></h1>
+<h2 id="infix-operators"><a class="header" href="#infix-operators">Infix Operators</a></h2>
+<ul>
+<li><code>or</code> (alias <code>||</code>)</li>
+<li><code>and</code> (alias <code>&amp;&amp;</code>)</li>
+<li><code>geq</code> (alias <code>&gt;=</code>)</li>
+<li><code>leq</code> (alias <code>&lt;=</code>)</li>
+<li><code>gt</code> (alias <code>&gt;</code>)</li>
+<li><code>lt</code> (alias <code>&lt;</code>)</li>
+</ul>
+<p><img src="/assets/logic.png" alt="example" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-v-plot"><a class="header" href="#chapter-v-plot">Chapter V. Plot</a></h1>
+<p>You can plot, provided you have <code>gnuplot</code> installed, 
+which the backend relies on.</p>
+<p>It works great on Linux and macOS, but it's not tested on Windows.</p>
+<h2 id="help"><a class="header" href="#help">Help</a></h2>
+<p>As the <code>plot</code> function is a little difficult you can call it without 
+parameters to show the help <code>plot()</code></p>
+<p><img src="/assets/plot_help.png" alt="plot_help" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="section-v1-gui"><a class="header" href="#section-v1-gui">Section V.1. GUI</a></h1>
+<h2 id="default"><a class="header" href="#default">Default</a></h2>
+<p>To plot a function <code>f</code> you just need to do <code>plot(f)</code></p>
+<p><img src="plot//assets/plot_cos_default.png" alt="plot_default" /></p>
+<h2 id="options"><a class="header" href="#options">Options</a></h2>
+<p>You can pass parameters to the function.</p>
+<pre><code>&gt; plot(sin,-pi,pi,0.01,&quot;sin&quot;,&quot;x(rad)&quot;,&quot;y&quot;,&quot;line&quot;)
+</code></pre>
+<p>Let's unpack, we have ploting the <code>sin</code> function, from <code>x=-pi</code> to <code>x=pi</code>
+with a step of <code>0.01 rad</code>, the title of the graph is <code>sin</code>, the x_axis 
+label is <code>x(rad)</code>, the y_axis label is <code>y</code> and we want a line.</p>
+<p><img src="plot//assets/plot_sin_custom.png" alt="plot_custom" /></p>
+<h2 id="user-defined-functions-1"><a class="header" href="#user-defined-functions-1">User-defined functions</a></h2>
+<p>You can plot your own functions with the same call. 
+Here is the example for <code>f(x) = x*x</code></p>
+<p><img src="plot//assets/plot_f.png" alt="plot_f" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="section-v2-terminal"><a class="header" href="#section-v2-terminal">Section V.2. Terminal</a></h1>
+<p>You can also plot right into the terminal, without need for the <code>gnuplot</code>
+backend.</p>
+<h2 id="default-1"><a class="header" href="#default-1">Default</a></h2>
+<p>The best example to show it to you (before the auto-scaling) is the square
+function, from <code>x=-5</code> to <code>x=5</code> with a step of <code>0.1</code>.</p>
+<p><img src="plot//assets/plot_term_x_squared.png" alt="plot_term" /></p>
+<h2 id="options-1"><a class="header" href="#options-1">Options</a></h2>
+<p>Like the GUI plotting, the terminal supports options</p>
+<p><img src="plot//assets/plot_term_x_squared_labels.png" alt="plot_term_option" /></p>
+<h2 id="auto-scaling"><a class="header" href="#auto-scaling">Auto scaling</a></h2>
+<p>Both the <code>x</code> and <code>y</code> axis supports <em>auto-scaling</em> </p>
+<p><img src="plot//assets/termplot_cos.png" alt="plot_term_scaling" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-vi-algebra"><a class="header" href="#chapter-vi-algebra">Chapter VI. Algebra</a></h1>
+<p>The calculator supports basic algebraic calculations, including</p>
+<ul>
+<li>Vectors
+<ul>
+<li>Dot product (operator <code>*</code> - with another vector.)</li>
+<li>Scalar product (operator <code>*</code> - with a scalar.)</li>
+<li>Norm (function <code>norm</code>)</li>
+<li>Addition (operator <code>+</code>)</li>
+</ul>
+</li>
+<li>Matrices
+<ul>
+<li>Addition (operator <code>+</code>)</li>
+<li>Multiplication (operator <code>*</code> - with another matrix.)</li>
+<li>Scalar multiplication (operator <code>*</code> - with a scalar.)</li>
+<li>Transposition (function <code>transpose</code>)</li>
+<li>Determinant (via <em>LUP-decomposition</em> function <code>det</code>)</li>
+<li>Inversion (via <em>LUP-decomposition</em> function <code>invert</code>)</li>
+</ul>
+</li>
+</ul>
+<p>The matrices (and vectors) are pretty printed (and aligned) (since <code>v2.11.5</code>)</p>
+<p><img src="algebra//assets/aligned_matrices.png" alt="matrix_pretty_printed" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="section-vi1-vectors"><a class="header" href="#section-vi1-vectors">Section VI.1. Vectors</a></h1>
+<p>Basic vector calculation supports</p>
+<ul>
+<li>Addition (operator <code>+</code>)</li>
+<li>Dot product (operator <code>*</code> - with another vector.)</li>
+<li>Scalar product (operator <code>*</code> - with a scalar.)</li>
+<li>Norm (function <code>norm</code>)</li>
+</ul>
+<p><img src="algebra//assets/vector.png" alt="vector_calc" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="section-vi2-matrices"><a class="header" href="#section-vi2-matrices">Section VI.2. Matrices</a></h1>
+<p>As of <code>v2.7.0</code> matrix algebra supports</p>
+<ul>
+<li>Addition (operator <code>+</code>)</li>
+<li>Multiplication (operator <code>*</code> - with another matrix.)</li>
+<li>Scalar multiplication (operator <code>*</code> - with a scalar.)</li>
+<li>Transposition (function <code>transpose</code>)</li>
+<li>Determinant (via <em>LUP-decomposition</em> function <code>det</code>)</li>
+<li>Inversion (via <em>LUP-decomposition</em> function <code>invert</code>)</li>
+</ul>
+<p><img src="algebra//assets/matrix.png" alt="matrix" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-vii-exact-math"><a class="header" href="#chapter-vii-exact-math">Chapter VII. Exact math</a></h1>
+<p>Exact math has been added between version <code>v2.11.0</code> to version <code>v3.3.3</code></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="section-vii1-rational-reduction"><a class="header" href="#section-vii1-rational-reduction">Section VII.1. Rational Reduction</a></h1>
+<p>As of version <code>v2.11.0</code> rational exact math reduction was added, it supports.</p>
+<ul>
+<li>Rational operations
+<ul>
+<li><code>+</code></li>
+<li><code>-</code></li>
+<li><code>*</code></li>
+<li><code>/</code></li>
+</ul>
+</li>
+<li>Rational reductions</li>
+<li>Float rationalization (with 10 digits of precision)</li>
+</ul>
+<h2 id="operations"><a class="header" href="#operations">Operations</a></h2>
+<p><img src="exact//assets/exact_rationals.png" alt="operations" /></p>
+<h2 id="in-matrices"><a class="header" href="#in-matrices">In matrices</a></h2>
+<p><img src="exact//assets/exact_inverse.png" alt="matrix" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="section-vii2-symbolic-reduction"><a class="header" href="#section-vii2-symbolic-reduction">Section VII.2. Symbolic Reduction</a></h1>
+<p>As of <code>v3.0.0</code> the support for symbolic reduction has been added to calc. 
+It supports multi-variables multi-operations reductions, you can reduce 
+expressions using it, fair warning, it uses <em>a lot</em> of parentheses</p>
+<p><img src="exact//assets/multi_variable.png" alt="symbolic reduction" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="section-vii3-function-differentiation"><a class="header" href="#section-vii3-function-differentiation">Section VII.3. Function differentiation</a></h1>
+<p>As of <code>v3.2.0</code>, the calculator can differentiate both known functions (built-in)
+and user-defined functions constructed using known functions and operations.</p>
+<h2 style="color:red;">Warning</h2> 
+<p>Beware, as of <code>v3.3.3</code> there is some bugs to iron out. It doesn't 
+differentiate variables (for example <code>x*x</code> works but not <code>x²</code>). 
+And differentiation of function referencing each other 
+(for example <code>v(x) = f(x) + x*x</code>) doesn't work either.</p>
+<p>It's currently being fixed, and will be fixed before stable release <code>v3.4.0</code> 
+which is currently in <code>alpha</code> development-testing (it will implements basic languages
+features 
+such as flow control and condition.)</p>
+<p>The release <code>v3.3.4</code>, which correct those bugs is currently in <code>beta</code> dev-testing 
+and will be released before <code>v3.4.0</code>.</p>
+<h2 id="examples-1"><a class="header" href="#examples-1">Examples</a></h2>
+<h3 id="built-in"><a class="header" href="#built-in">Built-in</a></h3>
+<p><img src="exact//assets/diff_builtin.png" alt="diff_bi" /></p>
+<h3 id="user-defined"><a class="header" href="#user-defined">User defined</a></h3>
+<p><img src="exact//assets/diff_ud.png" alt="ud" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="section-vii4-float-display"><a class="header" href="#section-vii4-float-display">Section VII.4. Float display</a></h1>
+<p>With <code>v3.4.0</code> there is now a way to chose how you want your floats to be
+displayed.</p>
+<h2 id="modes"><a class="header" href="#modes">Modes</a></h2>
+<p>For example in <code>normal</code> mode if you type </p>
+<pre><code>&gt; 1.5
+</code></pre>
+<p>It outputs: </p>
+<pre><code>val: float = 1.5000000000
+</code></pre>
+<p>In <code>exact</code> mode, that</p>
+<pre><code>&gt; 1.5
+</code></pre>
+<p>Outputs:</p>
+<pre><code>val: rational = 3/2
+</code></pre>
+<p>And finally in <code>science</code> mode, this</p>
+<pre><code>&gt; 150.2
+</code></pre>
+<p>Outputs</p>
+<pre><code>val: float = 1.502*10²
+</code></pre>
+<h2 id="toggle-float"><a class="header" href="#toggle-float">Toggle float</a></h2>
+<p>There is a <code>toggle_float</code> command in the REPL now.</p>
+<p>Its usage is easy and it is auto-completed.</p>
+<pre><code>toggle_float &lt;normal|science|exact&gt;
+</code></pre>
+<p>It then displays a message telling you in which mode you toggled.</p>
+<p>By default it is in <code>exact</code> mode.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<p><img src="exact//assets/float_mode.png" alt="float_mode" /></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>

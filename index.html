@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en" id="oranda" class="dark axo">
+  <head>
+    <title>mini-calc</title>
+    
+      <meta property="og:url" content="https://calc.charlotte-thomas.me" />
+    
+    
+      <link rel="icon" href="/favicon.ico" />
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+      <meta name="description" content="A Fully-Featured Configurable (mini) Rust Calculator" />
+      <meta property="og:description" content="A Fully-Featured Configurable (mini) Rust Calculator" />
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="mini-calc" />
+    
+    
+    
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+    <link rel="stylesheet" href="/oranda-v0.6.1.css" />
+    
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-body">
+        
+          <div class="repo_banner">
+            <a href="https://github.com/vanilla-extracts/calc">
+              <div class="github-icon" aria-hidden="true"></div>
+              Check out our GitHub!
+            </a>
+          </div>
+        
+
+        <main>
+          <header>
+            
+            <h1 class="title">mini-calc</h1>
+            
+  <nav class="nav">
+    <ul>
+      <li><a href="/">Home</a></li>
+
+      
+
+      
+        <li><a href="/artifacts/">Install</a></li>
+      
+
+      
+        <li><a href="/book/">Docs</a></li>
+      
+
+      
+
+      
+        <li><a href="/changelog/">Changelog</a></li>
+      
+    </ul>
+  </nav>
+
+          </header>
+
+          
+
+    
+
+
+
+<div class="artifacts" data-tag="3.4.2">
+  <div class="artifact-header target">
+    <h4>Install 3.4.2</h4>
+    
+      <div><small class="published-date">Published on Feb 14 2025 at 09:11 UTC</small></div>
+    
+
+    <ul class="arches">
+      
+        <li class="arch hidden" data-arch="aarch64-apple-darwin">
+          
+            <ul class="tabs">
+              
+                
+                
+                <li class="install-tab" data-id="2" data-triple="aarch64-apple-darwin">
+                  shell
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="0" data-triple="aarch64-apple-darwin">
+                  crates.io
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="1" data-triple="aarch64-apple-darwin">
+                  tarball
+
+                  
+                </li>
+              
+            </ul>
+          
+
+          <ul class="contents">
+            
+              
+              <li data-id="2" data-triple="aarch64-apple-darwin" class="install-content">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">curl</span><span style="color:#89ddff;"> --</span><span style="color:#f78c6c;">proto </span><span style="color:#89ddff;">&#39;</span><span style="color:#c3e88d;">=https</span><span style="color:#89ddff;">&#39; --</span><span style="color:#f78c6c;">tlsv1</span><span style="color:#82aaff;">.2</span><span style="color:#89ddff;"> -</span><span style="color:#f78c6c;">LsSf</span><span style="color:#82aaff;"> https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-installer.sh </span><span style="color:#89ddff;">| </span><span style="color:#82aaff;">sh</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="curl --proto '=https' --tlsv1.2 -LsSf https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-installer.sh | sh">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+    
+    
+      
+    
+    <a class="button primary" href="/mini-calc-installer.sh.txt">Source</a>
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="0" data-triple="aarch64-apple-darwin" class="install-content hidden">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">cargo install mini-calc</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="cargo install mini-calc">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="1" data-triple="aarch64-apple-darwin" class="install-content hidden">
+                
+
+                
+                  
+                  <div class="download-wrapper">
+                    <a href="https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-aarch64-apple-darwin.tar.xz">
+                      <button class="button primary">
+                        <span>Download</span>
+                        <span class="button-subtitle">mini-calc-aarch64-apple-darwin.tar.xz</span>
+                      </button>
+                    </a>
+                  </div>
+                
+              </li>
+            
+          </ul>
+        </li>
+      
+        <li class="arch hidden" data-arch="x86_64-apple-darwin">
+          
+            <ul class="tabs">
+              
+                
+                
+                <li class="install-tab" data-id="2" data-triple="x86_64-apple-darwin">
+                  shell
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="0" data-triple="x86_64-apple-darwin">
+                  crates.io
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="3" data-triple="x86_64-apple-darwin">
+                  tarball
+
+                  
+                </li>
+              
+            </ul>
+          
+
+          <ul class="contents">
+            
+              
+              <li data-id="2" data-triple="x86_64-apple-darwin" class="install-content">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">curl</span><span style="color:#89ddff;"> --</span><span style="color:#f78c6c;">proto </span><span style="color:#89ddff;">&#39;</span><span style="color:#c3e88d;">=https</span><span style="color:#89ddff;">&#39; --</span><span style="color:#f78c6c;">tlsv1</span><span style="color:#82aaff;">.2</span><span style="color:#89ddff;"> -</span><span style="color:#f78c6c;">LsSf</span><span style="color:#82aaff;"> https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-installer.sh </span><span style="color:#89ddff;">| </span><span style="color:#82aaff;">sh</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="curl --proto '=https' --tlsv1.2 -LsSf https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-installer.sh | sh">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+    
+    
+      
+    
+    <a class="button primary" href="/mini-calc-installer.sh.txt">Source</a>
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="0" data-triple="x86_64-apple-darwin" class="install-content hidden">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">cargo install mini-calc</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="cargo install mini-calc">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="3" data-triple="x86_64-apple-darwin" class="install-content hidden">
+                
+
+                
+                  
+                  <div class="download-wrapper">
+                    <a href="https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-x86_64-apple-darwin.tar.xz">
+                      <button class="button primary">
+                        <span>Download</span>
+                        <span class="button-subtitle">mini-calc-x86_64-apple-darwin.tar.xz</span>
+                      </button>
+                    </a>
+                  </div>
+                
+              </li>
+            
+          </ul>
+        </li>
+      
+        <li class="arch hidden" data-arch="x86_64-pc-windows-msvc">
+          
+            <ul class="tabs">
+              
+                
+                
+                <li class="install-tab" data-id="0" data-triple="x86_64-pc-windows-msvc">
+                  crates.io
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="4" data-triple="x86_64-pc-windows-msvc">
+                  zip
+
+                  
+                </li>
+              
+            </ul>
+          
+
+          <ul class="contents">
+            
+              
+              <li data-id="0" data-triple="x86_64-pc-windows-msvc" class="install-content">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">cargo install mini-calc</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="cargo install mini-calc">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="4" data-triple="x86_64-pc-windows-msvc" class="install-content hidden">
+                
+
+                
+                  
+                  <div class="download-wrapper">
+                    <a href="https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-x86_64-pc-windows-msvc.zip">
+                      <button class="button primary">
+                        <span>Download</span>
+                        <span class="button-subtitle">mini-calc-x86_64-pc-windows-msvc.zip</span>
+                      </button>
+                    </a>
+                  </div>
+                
+              </li>
+            
+          </ul>
+        </li>
+      
+        <li class="arch hidden" data-arch="x86_64-unknown-linux-gnu">
+          
+            <ul class="tabs">
+              
+                
+                
+                <li class="install-tab" data-id="2" data-triple="x86_64-unknown-linux-gnu">
+                  shell
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="0" data-triple="x86_64-unknown-linux-gnu">
+                  crates.io
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="5" data-triple="x86_64-unknown-linux-gnu">
+                  tarball
+
+                  
+                </li>
+              
+            </ul>
+          
+
+          <ul class="contents">
+            
+              
+              <li data-id="2" data-triple="x86_64-unknown-linux-gnu" class="install-content">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">curl</span><span style="color:#89ddff;"> --</span><span style="color:#f78c6c;">proto </span><span style="color:#89ddff;">&#39;</span><span style="color:#c3e88d;">=https</span><span style="color:#89ddff;">&#39; --</span><span style="color:#f78c6c;">tlsv1</span><span style="color:#82aaff;">.2</span><span style="color:#89ddff;"> -</span><span style="color:#f78c6c;">LsSf</span><span style="color:#82aaff;"> https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-installer.sh </span><span style="color:#89ddff;">| </span><span style="color:#82aaff;">sh</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="curl --proto '=https' --tlsv1.2 -LsSf https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-installer.sh | sh">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+    
+    
+      
+    
+    <a class="button primary" href="/mini-calc-installer.sh.txt">Source</a>
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="0" data-triple="x86_64-unknown-linux-gnu" class="install-content hidden">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">cargo install mini-calc</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="cargo install mini-calc">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="5" data-triple="x86_64-unknown-linux-gnu" class="install-content hidden">
+                
+
+                
+                  
+                  <div class="download-wrapper">
+                    <a href="https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-x86_64-unknown-linux-gnu.tar.xz">
+                      <button class="button primary">
+                        <span>Download</span>
+                        <span class="button-subtitle">mini-calc-x86_64-unknown-linux-gnu.tar.xz</span>
+                      </button>
+                    </a>
+                  </div>
+                
+              </li>
+            
+          </ul>
+        </li>
+      
+        <li class="arch hidden" data-arch="x86_64-unknown-linux-musl">
+          
+            <ul class="tabs">
+              
+                
+                
+                <li class="install-tab" data-id="2" data-triple="x86_64-unknown-linux-musl">
+                  shell
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="0" data-triple="x86_64-unknown-linux-musl">
+                  crates.io
+
+                  
+                </li>
+              
+                
+                
+                <li class="install-tab" data-id="6" data-triple="x86_64-unknown-linux-musl">
+                  tarball
+
+                  
+                </li>
+              
+            </ul>
+          
+
+          <ul class="contents">
+            
+              
+              <li data-id="2" data-triple="x86_64-unknown-linux-musl" class="install-content">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">curl</span><span style="color:#89ddff;"> --</span><span style="color:#f78c6c;">proto </span><span style="color:#89ddff;">&#39;</span><span style="color:#c3e88d;">=https</span><span style="color:#89ddff;">&#39; --</span><span style="color:#f78c6c;">tlsv1</span><span style="color:#82aaff;">.2</span><span style="color:#89ddff;"> -</span><span style="color:#f78c6c;">LsSf</span><span style="color:#82aaff;"> https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-installer.sh </span><span style="color:#89ddff;">| </span><span style="color:#82aaff;">sh</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="curl --proto '=https' --tlsv1.2 -LsSf https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-installer.sh | sh">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+    
+    
+      
+    
+    <a class="button primary" href="/mini-calc-installer.sh.txt">Source</a>
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="0" data-triple="x86_64-unknown-linux-musl" class="install-content hidden">
+                
+                  
+                  <div class="install-code-wrapper">
+  <pre style="background-color:#263238;">
+<span style="color:#82aaff;">cargo install mini-calc</span></pre>
+
+  <button class="button copy-clipboard-button primary" data-copy="cargo install mini-calc">
+    <svg stroke='currentColor' fill='currentColor' stroke-width='0' viewBox='0 0 20 20' height='1em' width='1em' xmlns='http://www.w3.org/2000/svg'><path d='M8 2a1 1 0 000 2h2a1 1 0 100-2H8z'></path><path d='M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z'></path></svg>
+  </button>
+  
+  
+</div>
+                
+
+                
+              </li>
+            
+              
+              <li data-id="6" data-triple="x86_64-unknown-linux-musl" class="install-content hidden">
+                
+
+                
+                  
+                  <div class="download-wrapper">
+                    <a href="https://github.com/vanilla-extracts/calc/releases/download/3.4.2/mini-calc-x86_64-unknown-linux-musl.tar.xz">
+                      <button class="button primary">
+                        <span>Download</span>
+                        <span class="button-subtitle">mini-calc-x86_64-unknown-linux-musl.tar.xz</span>
+                      </button>
+                    </a>
+                  </div>
+                
+              </li>
+            
+          </ul>
+        </li>
+      
+    </ul>
+  </div>
+
+  
+    <div class="no-autodetect hidden">
+      <span class="no-autodetect-details">We weren't able to detect your OS.</span>
+    </div>
+    <noscript>
+      <a href="/artifacts/">View all installation options</a>
+    </noscript>
+  
+  <div class="mac-switch hidden">This project doesn't offer Apple Silicon downloads, but you can run Intel macOS binaries via Rosetta 2.</div>
+
+  
+  
+  <div class="bottom-options ">
+    <a href="/artifacts/" class="backup-download primary">View all installation options</a>
+    
+      <div class="arch-select hidden">
+        <select id="install-arch-select">
+          <option disabled="true" selected="true" value=""></option>
+          
+            <option value="x86_64-unknown-linux-gnu">Linux x64</option>
+          
+            <option value="aarch64-apple-darwin">macOS Apple Silicon</option>
+          
+            <option value="x86_64-apple-darwin">macOS Intel</option>
+          
+            <option value="x86_64-unknown-linux-musl">musl Linux x64</option>
+          
+            <option value="x86_64-pc-windows-msvc">Windows x64</option>
+          
+        </select>
+      </div>
+    
+  </div>
+</div>
+
+<a href="/artifacts/" class="button mobile-download primary">View all installation options</a>
+
+
+    <h1>Calc</h1>
+<div>
+<p><em><strong>Calc: A Fully-Featured Configurable (mini) Rust Algebric Calculator</strong></em></p>
+<p><a href="https://github.com/coco33920/calc/actions/workflows/rust-test.yml" rel="noopener noreferrer"><img src="https://github.com/coco33920/calc/actions/workflows/rust-test.yml/badge.svg" alt="Rust Test"></a>
+<a href="https://github.com/coco33920/calc/releases/latest" rel="noopener noreferrer"><img src="https://img.shields.io/github/v/release/coco33920/calc.svg?include_prereleases=&amp;sort=semver&amp;color=f7a8d8" alt="Release"></a>
+<a href="https://crates.io/crates/mini-calc" rel="noopener noreferrer"><img src="https://img.shields.io/crates/v/mini-calc?link=https%3A%2F%2Fcrates.io%2Fcrates%2Fmini-calc" alt=""></a>
+<img src="https://img.shields.io/crates/l/mini-calc?link=https%3A%2F%2Fgithub.com%2coco33920%2Fcalc%2Fblob%2Fmaster%2FLICENCE" alt="">
+<a href="https://crates.io/crates/mini-calc" rel="noopener noreferrer"><img src="https://img.shields.io/crates/d/mini-calc" alt=""></a></p>
+</div>
+<h2>Install</h2>
+<h3>Source</h3>
+<p>You can install the latest version from source</p>
+<pre style="background-color:#263238;"><span style="color:#82aaff;">git clone https://github.com/vanilla-extracts/calc
+</span><span style="color:#82aaff;">cd calc
+</span><span style="color:#82aaff;">cargo build</span><span style="color:#89ddff;"> --</span><span style="color:#f78c6c;">release
+</span><span style="color:#82aaff;">./target/release/mini-calc
+</span></pre>
+
+<h3>Cargo</h3>
+<pre style="background-color:#263238;"><span style="color:#82aaff;">cargo install mini-calc
+</span></pre>
+
+<h3>using Nix</h3>
+<p>Alternatively, you can use <a href="https://nixos.org" rel="noopener noreferrer">nix</a> to build or run this project.</p>
+<p>Running directly:</p>
+<pre style="background-color:#263238;"><span style="color:#82aaff;">nix run github:vanilla-extracts/calc
+</span></pre>
+
+<blockquote>
+<p>You may need to enable nix experimental features. In that case, execute the following command: <code>mkdir -p ~/.config/nix &amp;&amp; echo "experimental-features = nix-command flakes" | tee ~/.config/nix/nix.conf</code></p>
+</blockquote>
+<h3>From packaged version</h3>
+<p>Both <code>.deb</code> and <code>.rpm</code> packages are availables in the download page</p>
+<h2>Website</h2>
+<p>The website (powered by oranda) is available for more informations <a href="https://calc.charlotte-thomas.me" rel="noopener noreferrer">the website</a> for more informations.
+There is a <em>MD Book</em> <a href="https://calc.charlotte-thomas.me/book" rel="noopener noreferrer">there</a></p>
+<h2>Manual</h2>
+<p>If you prefer a PDF, there is a <a href="https://calc.charlotte-thomas.me/assets/manual.pdf" rel="noopener noreferrer">manual</a></p>
+<h2>Contributors</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th align="left">Name</th>
+<th align="left">Role</th>
+<th align="left">Website</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/vanilla-extracts" rel="noopener noreferrer"><img src="https://avatars.githubusercontent.com/u/17108449?v=4" style="border-radius: 50%;height:90pt;width:auto"></a></td>
+<td align="left">Charlotte THOMAS</td>
+<td align="left">Main developer/Maintener</td>
+<td align="left"><a href="https://www.charlotte-thomas.me" rel="noopener noreferrer">Main page</a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/leana8959" rel="noopener noreferrer"><img src="https://avatars.githubusercontent.com/u/87855546?v=4" style="border-radius: 50%;height:90pt;width:auto"></a></td>
+<td align="left">Léana 江</td>
+<td align="left">Help, cleanup</td>
+<td align="left"><a href="https://earth2077.fr" rel="noopener noreferrer">Website/Blog</a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/Sigmaficient" rel="noopener noreferrer"><img src="https://avatars.githubusercontent.com/u/53050011?v=4" style="border-radius:50%;height:90pt;width:auto"></a></td>
+<td align="left">Sigmaficient</td>
+<td align="left">Nixify</td>
+<td align="left"><a href="https://sigmanificient.github.io/" rel="noopener noreferrer">Website</a></td>
+</tr>
+</tbody>
+</table>
+
+
+
+        </main>
+      </div>
+
+      <footer>
+        
+          <a href="https://github.com/vanilla-extracts/calc"><div class="github-icon" aria-hidden="true"></div></a>
+        
+        <span>
+          mini-calc, GPL-3.0-or-later
+        </span>
+      </footer>
+    </div>
+
+    
+    
+
+    
+
+    <script src="/artifacts.js"></script>
+
+
+  </body>
+</html>
