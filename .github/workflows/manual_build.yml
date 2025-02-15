@@ -1,6 +1,6 @@
 name: Compile Manual
 on:
-  push:
+  pull_request:
     paths:
       - manual/main.typ
   workflow_dispatch:

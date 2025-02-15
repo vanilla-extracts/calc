@@ -2,6 +2,8 @@ use ansi_term::{ANSIGenericString, Color};
 use confy::ConfyError;
 use serde::{Deserialize, Serialize};
 
+use crate::{exact_math::float_mode::FloatMode, VERSION};
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Greeting {
     pub greeting_message: String,
@@ -17,6 +19,7 @@ pub struct Prompt {
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Config {
     pub general_color: String,
+    pub default_float_mode: String,
     pub greeting: Greeting,
     pub prompt: Prompt,
 }
@@ -28,6 +31,7 @@ pub struct Loaded<'a> {
     pub greeting_color: Color,
     pub prompt: String,
     pub prompt_style: Color,
+    pub float_mode: FloatMode,
 }
 
 impl Default for Greeting {
@@ -53,6 +57,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             general_color: "purple".to_string(),
+            default_float_mode: "exact".to_string(),
             greeting: Greeting::default(),
             prompt: Prompt::default(),
         }
@@ -60,8 +65,11 @@ impl Default for Config {
 }
 
 pub fn load() -> Result<Config, confy::ConfyError> {
-    let cfg: Config = confy::load("mini-calc", Some("mini-calc"))?;
-    Ok(cfg)
+    let cfg = confy::load("mini-calc", Some("mini-calc"));
+    match cfg {
+        Ok(config) => Ok(config),
+        _ => Ok(Config::default()),
+    }
 }
 
 pub fn write_config(c: &Config) -> Result<(), ConfyError> {
@@ -129,9 +137,19 @@ pub fn load_color(string: String) -> Color {
     }
 }
 
+fn load_float_mode(dfm: String) -> FloatMode {
+    match dfm.to_lowercase().as_str().trim() {
+        "exact" => FloatMode::Exact,
+        "rational" => FloatMode::Exact,
+        "science" => FloatMode::Science,
+        "scientific" => FloatMode::Science,
+        _ => FloatMode::Normal,
+    }
+}
+
 pub fn replace_variable(str: String) -> String {
     str.replace("%author%", "Charlotte Thomas")
-        .replace("%version%", "v3.4.1")
+        .replace("%version%", VERSION)
         .to_string()
 }
 
@@ -142,6 +160,7 @@ pub fn load_config<'a>(config: Config) -> Loaded<'a> {
         greeting_message: load_color(config.greeting.greeting_color)
             .paint(replace_variable(config.greeting.greeting_message)),
         prompt: config.prompt.prompt,
+        float_mode: load_float_mode(config.default_float_mode),
         prompt_style: load_color(config.prompt.prompt_color),
     }
 }

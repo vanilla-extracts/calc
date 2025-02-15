@@ -587,7 +587,7 @@ There is a `toggle_float` command in the REPL now.
 
 Its usage is easy and it is auto-completed.
 ```
-toggle_float <normal|science|exact>
+> toggle_float <normal|science|exact>
 ```
 
 It then displays a message telling you in which mode you toggled.
@@ -599,3 +599,29 @@ By default it is in `exact` mode.
 image("assets/float_mode.png"),
 caption: "The different float modes"
 )
+
+== Default float mode
+As of `v3.4.2` you can alter the default float mode.
+By default it is `exact`
+
+You can alter it by modifying the config file directly or by using the `config set` command.
+
+```
+> config set float_mode exact|normal|science
+```
+
+And then reload the config with
+```
+> config reload
+```
+
+#colorbox(color: "red", title: "Warning")[
+  The addition of `default_float_mode` in config *resets* your config.
+  
+  If you don't want your config to be overwritten, add the following in your
+  config (e.g `$HOME/.config/mini-calc/mini-calc.toml`)
+
+  ```toml
+  default_float_mode = 'exact|science|normal'
+  ```
+]
