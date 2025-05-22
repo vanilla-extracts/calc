@@ -35,6 +35,9 @@ pub enum Token {
     WHITESPACE,
     PreAnd,
     PreOr,
+    IF,
+    THEN,
+    ELSE,
 }
 
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
@@ -65,6 +68,9 @@ pub enum TokenType {
     WHITESPACE,
     EXPO,
     QUOTE,
+    IF,
+    THEN,
+    ELSE,
 }
 
 pub enum Precedence {
@@ -119,6 +125,9 @@ impl Display for Token {
             Token::LBRACKET => write!(f, "["),
             Token::QUOTE => write!(f, "\""),
             Token::WHITESPACE => write!(f, " "),
+            Token::IF => write!(f, "if"),
+            Token::THEN => write!(f, "then"),
+            Token::ELSE => write!(f, "else"),
         }
     }
 }
@@ -154,6 +163,9 @@ impl Token {
             Token::RBRACKET => TokenType::RBRACKET,
             Token::QUOTE => TokenType::QUOTE,
             Token::WHITESPACE => TokenType::WHITESPACE,
+            Token::IF => TokenType::IF,
+            Token::ELSE => TokenType::ELSE,
+            Token::THEN => TokenType::THEN,
             _ => TokenType::Null,
         }
     }

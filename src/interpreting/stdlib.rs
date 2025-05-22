@@ -69,6 +69,8 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
                         match v {
                             Ast::Nil => (),
                             Ast::Call { .. } => (),
+                            // TODO: what are the implications of this
+                            Ast::Conditional { .. } => (),
                             Ast::Node {
                                 value: v,
                                 left: _l,
@@ -2048,6 +2050,8 @@ pub fn plot_fn(
                     match v {
                         Ast::Nil => (),
                         Ast::Call { .. } => (),
+                        // TODO: What are the implications of this
+                        Ast::Conditional { .. } => (),
                         Ast::Node {
                             value: v,
                             left: _l,
