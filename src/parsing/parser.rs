@@ -10,7 +10,7 @@ use crate::parsing::parselets::prefix_parselet::{
     GroupParselet, NullParselet, OperatorPrefixParselet, PrefixParselet, ValueParselet,
 };
 
-use super::parselets::prefix_parselet::{QuoteParselet, VecParselet};
+use super::parselets::prefix_parselet::{IfThenElseParselet, QuoteParselet, VecParselet};
 
 #[derive(Clone)]
 pub struct CalcParser<'a> {
@@ -184,6 +184,7 @@ impl CalcParser<'_> {
             TokenType::GREATEREQ => Some(Box::from(OperatorPrefixParselet {})),
             TokenType::LBRACKET => Some(Box::from(VecParselet {})),
             TokenType::QUOTE => Some(Box::from(QuoteParselet {})),
+            TokenType::IF => Some(Box::from(IfThenElseParselet {})),
             _ => Some(Box::from(NullParselet {})),
         }
     }
