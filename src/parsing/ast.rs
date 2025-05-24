@@ -69,6 +69,9 @@ pub enum Ast {
         condition: Box<Ast>,
         body: Box<Ast>,
     },
+    Ignore {
+        body: Box<Ast>,
+    },
 }
 
 pub fn int_to_superscript_string(i: i64) -> String {
@@ -171,6 +174,9 @@ impl Display for Ast {
             }
             Ast::While { condition, body } => {
                 write!(f, "while {condition} do {body}")
+            }
+            Ast::Ignore { body } => {
+                write!(f, "{body};")
             }
         }
     }

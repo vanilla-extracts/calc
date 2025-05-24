@@ -170,6 +170,10 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                 }
             }
         }
+        Ast::Ignore { body } => {
+            let _ = interpret(body, ram, function);
+            Parameters::Null
+        }
     }
 }
 

@@ -40,6 +40,9 @@ pub enum Token {
     ELSE,
     WHILE,
     DO,
+    IGNORE,
+    RSB,
+    LSB,
 }
 
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
@@ -75,6 +78,9 @@ pub enum TokenType {
     ELSE,
     WHILE,
     DO,
+    IGNORE,
+    RSB,
+    LSB,
 }
 
 pub enum Precedence {
@@ -85,8 +91,8 @@ pub enum Precedence {
     PRODUCT = 6,
     DIVIDE = 5,
     EXPONENT = 7,
-    //PREFIX = 8,
-    //POSTFIX = 9,
+    PREFIX = 8,
+    POSTFIX = 9,
     CALL = 10,
 }
 
@@ -134,6 +140,9 @@ impl Display for Token {
             Token::ELSE => write!(f, "else"),
             Token::WHILE => write!(f, "while"),
             Token::DO => write!(f, "do"),
+            Token::IGNORE => write!(f, "!"),
+            Token::RSB => write!(f, "{{"),
+            Token::LSB => write!(f, "}}"),
         }
     }
 }
@@ -174,6 +183,9 @@ impl Token {
             Token::THEN => TokenType::THEN,
             Token::WHILE => TokenType::WHILE,
             Token::DO => TokenType::DO,
+            Token::IGNORE => TokenType::IGNORE,
+            Token::LSB => TokenType::LSB,
+            Token::RSB => TokenType::RSB,
             _ => TokenType::Null,
         }
     }

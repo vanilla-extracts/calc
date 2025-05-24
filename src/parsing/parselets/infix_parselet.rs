@@ -15,6 +15,8 @@ pub struct CallParselet {}
 
 pub struct NullParset {}
 
+pub struct IgnorePostfixParselet {}
+
 pub struct OperatorInfixParselet {
     pub is_right: bool,
     pub precedence: i64,
