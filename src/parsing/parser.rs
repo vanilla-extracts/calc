@@ -164,6 +164,7 @@ impl CalcParser<'_> {
                 is_right: false,
                 precedence: (Precedence::CONDITIONAL as i64),
             })),
+            TokenType::IGNORE => Some(Box::from(IgnorePostfixParselet {})),
             _ => Some(Box::from(NullParset {})),
         }
     }
@@ -189,7 +190,6 @@ impl CalcParser<'_> {
             TokenType::QUOTE => Some(Box::from(QuoteParselet {})),
             TokenType::IF => Some(Box::from(IfThenElseParselet {})),
             TokenType::WHILE => Some(Box::from(WhileParselet {})),
-            TokenType::IGNORE => Some(Box::from(IgnorePostfixParselet {})),
             TokenType::LSB => Some(Box::from(ScopeParselet {})),
             _ => Some(Box::from(NullParselet {})),
         }

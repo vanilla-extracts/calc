@@ -22,6 +22,19 @@ pub struct OperatorInfixParselet {
     pub precedence: i64,
 }
 
+impl InfixParselet for IgnorePostfixParselet {
+    fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: Token) -> Ast {
+        let right = parser.parse_expression(self.get_precedence());
+        Ast::Ignore {
+            left: left.clone().into(),
+            right: right.into(),
+        }
+    }
+    fn get_precedence(&self) -> i64 {
+        Precedence::POSTFIX as i64
+    }
+}
+
 impl InfixParselet for OperatorInfixParselet {
     fn parse(&self, parser: &mut CalcParser, left: &Ast, token: Token) -> Ast {
         let right = parser.parse_expression(if self.is_right {

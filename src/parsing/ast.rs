@@ -70,7 +70,8 @@ pub enum Ast {
         body: Box<Ast>,
     },
     Ignore {
-        body: Box<Ast>,
+        left: Box<Ast>,
+        right: Box<Ast>,
     },
 }
 
@@ -175,8 +176,8 @@ impl Display for Ast {
             Ast::While { condition, body } => {
                 write!(f, "while {condition} do {body}")
             }
-            Ast::Ignore { body } => {
-                write!(f, "{body};")
+            Ast::Ignore { left, right } => {
+                write!(f, "{left}; {right}")
             }
         }
     }
