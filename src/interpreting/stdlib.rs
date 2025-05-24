@@ -70,6 +70,7 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
                             Ast::Nil => (),
                             Ast::Call { .. } => (),
                             Ast::Conditional { .. } => (),
+                            Ast::While { .. } => (),
                             Ast::Node {
                                 value: v,
                                 left: _l,
@@ -2050,6 +2051,7 @@ pub fn plot_fn(
                         Ast::Nil => (),
                         Ast::Call { .. } => (),
                         Ast::Conditional { .. } => (),
+                        Ast::While { .. } => (),
                         Ast::Node {
                             value: v,
                             left: _l,
