@@ -137,6 +137,23 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
             let v: Vec<Parameters> = list.iter().map(|x| interpret(x, ram, function)).collect();
             exec(n.to_string(), v, Some(&mut ram), Some(&mut function))
         }
+        Ast::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => {
+            if let Parameters::Bool(condition_bool) = interpret(condition, ram, function) {
+                if condition_bool {
+                    interpret(then_branch, ram, function)
+                } else {
+                    interpret(else_branch, ram, function)
+                }
+            } else {
+                Parameters::Identifier(
+                    "@Runtime exception, condition did not collapse to a bool".to_string(),
+                )
+            }
+        }
     }
 }
 

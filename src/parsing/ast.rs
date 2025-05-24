@@ -59,6 +59,11 @@ pub enum Ast {
         name: String,
         lst: Vec<Ast>,
     },
+    Conditional {
+        condition: Box<Ast>,
+        then_branch: Box<Ast>,
+        else_branch: Box<Ast>,
+    },
 }
 
 pub fn int_to_superscript_string(i: i64) -> String {
@@ -150,6 +155,13 @@ impl Display for Ast {
                 let mut vs = Vec::new();
                 s.iter().for_each(|x1| vs.push(x1.to_string()));
                 write!(f, "{}({})", v, vs.join(",").to_string())
+            }
+            Ast::Conditional {
+                condition,
+                then_branch,
+                else_branch,
+            } => {
+                write!(f, "if {condition} then {then_branch} else {else_branch}")
             }
         }
     }

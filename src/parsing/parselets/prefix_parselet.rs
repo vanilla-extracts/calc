@@ -24,6 +24,9 @@ pub struct VecParselet {}
 #[derive(Clone)]
 pub struct QuoteParselet {}
 
+#[derive(Clone)]
+pub struct IfThenElseParselet {}
+
 impl PrefixParselet for ValueParselet {
     fn parse(&self, _parser: &mut CalcParser, token: Token) -> Ast {
         Ast::Node {
@@ -99,6 +102,22 @@ impl PrefixParselet for QuoteParselet {
             value: crate::parsing::ast::Parameters::Str(str.trim().to_string()),
             left: Box::new(Ast::Nil),
             right: Box::new(Ast::Nil),
+        }
+    }
+}
+
+impl PrefixParselet for IfThenElseParselet {
+    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+        let cond_expr = parser.parse_expression_empty();
+        parser.consume_expected(TokenType::THEN);
+        let lhs = parser.parse_expression_empty();
+        parser.consume_expected(TokenType::ELSE);
+        let rhs = parser.parse_expression_empty();
+
+        Ast::Conditional {
+            condition: cond_expr.into(),
+            then_branch: lhs.into(),
+            else_branch: rhs.into(),
         }
     }
 }
