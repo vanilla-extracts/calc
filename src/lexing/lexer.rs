@@ -271,32 +271,22 @@ pub fn lex(input: String) -> Vec<Token> {
                 if ch.is_alphabetic() || ch == '_' {
                     let (a, b) = lex_string(current_character, &mut chars, current_pos, length);
                     current_pos = b;
-                    if &a == "false" {
-                        vec.push(Token::BOOL(false))
-                    } else if &a == "true" {
-                        vec.push(Token::BOOL(true))
-                    } else if &a == "or" {
-                        vec.push(Token::OPE(Or))
-                    } else if &a == "and" {
-                        vec.push(Token::OPE(And))
-                    } else if &a == "geq" {
-                        vec.push(Token::OPE(GreaterOrEqual))
-                    } else if &a == "leq" {
-                        vec.push(Token::OPE(LesserOrEqual))
-                    } else if &a == "lt" {
-                        vec.push(Token::OPE(LesserThan))
-                    } else if &a == "gt" {
-                        vec.push(Token::OPE(GreaterThan))
-                    } else if &a == "eq" {
-                        vec.push(Token::OPE(EQUALITY))
-                    } else if &a == "if" {
-                        vec.push(Token::IF)
-                    } else if &a == "then" {
-                        vec.push(Token::THEN)
-                    } else if &a == "else" {
-                        vec.push(Token::ELSE)
-                    } else {
-                        vec.push(Token::IDENTIFIER(a))
+                    match a.as_str() {
+                        "false" => vec.push(Token::BOOL(false)),
+                        "true" => vec.push(Token::BOOL(true)),
+                        "or" => vec.push(Token::OPE(Or)),
+                        "and" => vec.push(Token::OPE(And)),
+                        "geq" => vec.push(Token::OPE(GreaterOrEqual)),
+                        "leq" => vec.push(Token::OPE(LesserOrEqual)),
+                        "lt" => vec.push(Token::OPE(LesserThan)),
+                        "gt" => vec.push(Token::OPE(GreaterThan)),
+                        "eq" => vec.push(Token::OPE(EQUALITY)),
+                        "if" => vec.push(Token::IF),
+                        "then" => vec.push(Token::THEN),
+                        "else" => vec.push(Token::ELSE),
+                        "while" => vec.push(Token::WHILE),
+                        "do" => vec.push(Token::DO),
+                        _ => vec.push(Token::IDENTIFIER(a)),
                     }
                 }
                 if ch == '.' {

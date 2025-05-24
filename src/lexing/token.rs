@@ -38,6 +38,8 @@ pub enum Token {
     IF,
     THEN,
     ELSE,
+    WHILE,
+    DO,
 }
 
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
@@ -71,6 +73,8 @@ pub enum TokenType {
     IF,
     THEN,
     ELSE,
+    WHILE,
+    DO,
 }
 
 pub enum Precedence {
@@ -128,6 +132,8 @@ impl Display for Token {
             Token::IF => write!(f, "if"),
             Token::THEN => write!(f, "then"),
             Token::ELSE => write!(f, "else"),
+            Token::WHILE => write!(f, "while"),
+            Token::DO => write!(f, "do"),
         }
     }
 }
@@ -166,6 +172,8 @@ impl Token {
             Token::IF => TokenType::IF,
             Token::ELSE => TokenType::ELSE,
             Token::THEN => TokenType::THEN,
+            Token::WHILE => TokenType::WHILE,
+            Token::DO => TokenType::DO,
             _ => TokenType::Null,
         }
     }
