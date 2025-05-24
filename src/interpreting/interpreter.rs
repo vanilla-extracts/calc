@@ -50,18 +50,6 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                             if n.as_str() != "" {
                                 (function).insert(n.to_string(), (list.clone(), *r.clone()));
                             }
-                            println!(
-                                "{}: {} = {}",
-                                ansi_term::Color::Cyan.paint("fun"),
-                                ansi_term::Color::RGB(255, 215, 0).paint(format!(
-                                    "{}",
-                                    Ast::Call {
-                                        name: n.clone(),
-                                        lst: list.clone()
-                                    }
-                                )),
-                                ansi_term::Color::RGB(255, 215, 0).paint(format!("{}", *r.clone()))
-                            );
                             Parameters::Null
                         }
                     }
@@ -84,16 +72,6 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                                 ram.remove(&a);
                             }
                             (ram).insert(a.clone(), b.clone());
-
-                            println!(
-                                "{}: {} = {}",
-                                ansi_term::Color::Cyan.paint("assign"),
-                                ansi_term::Color::Yellow.paint(format!("{}", a.clone())),
-                                ansi_term::Color::Yellow.paint(format!(
-                                    "{}",
-                                    b.clone().pretty_print(Some(ram), Some(function))
-                                ))
-                            );
 
                             return Parameters::Null;
                         }
