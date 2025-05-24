@@ -27,6 +27,9 @@ pub struct QuoteParselet {}
 #[derive(Clone)]
 pub struct IfThenElseParselet {}
 
+#[derive(Clone)]
+pub struct WhileParselet {}
+
 impl PrefixParselet for ValueParselet {
     fn parse(&self, _parser: &mut CalcParser, token: Token) -> Ast {
         Ast::Node {
@@ -118,6 +121,19 @@ impl PrefixParselet for IfThenElseParselet {
             condition: cond_expr.into(),
             then_branch: lhs.into(),
             else_branch: rhs.into(),
+        }
+    }
+}
+
+impl PrefixParselet for WhileParselet {
+    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+        let cond_expr = parser.parse_expression_empty();
+        parser.consume_expected(TokenType::DO);
+        let body = parser.parse_expression_empty();
+
+        Ast::While {
+            condition: cond_expr.into(),
+            body: body.into(),
         }
     }
 }

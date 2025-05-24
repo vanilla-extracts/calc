@@ -40,6 +40,7 @@ pub enum Parameters {
     ExpoOperation,
     Vector(Box<Vec<Ast>>),
     InterpreterVector(Box<Vec<Parameters>>),
+    ResultVector(Box<Vec<Parameters>>),
     Var(Box<Parameters>, i64, String),
     Plus(Box<Parameters>, Box<Parameters>),
     Mul(Box<Parameters>, Box<Parameters>),
@@ -63,6 +64,10 @@ pub enum Ast {
         condition: Box<Ast>,
         then_branch: Box<Ast>,
         else_branch: Box<Ast>,
+    },
+    While {
+        condition: Box<Ast>,
+        body: Box<Ast>,
     },
 }
 
@@ -129,6 +134,7 @@ impl Display for Parameters {
             OrOperation => write!(f, "||"),
             Vector(a) => write!(f, "{:?}", a),
             InterpreterVector(a) => write!(f, "{:?}", a),
+            ResultVector(a) => write!(f, "{:?}", a),
             Str(s) => write!(f, "{s}"),
             Rational(s) => write!(f, "{s}"),
             Plus(x, y) => write!(f, "(({x})+({y}))"),
@@ -162,6 +168,9 @@ impl Display for Ast {
                 else_branch,
             } => {
                 write!(f, "if {condition} then {then_branch} else {else_branch}")
+            }
+            Ast::While { condition, body } => {
+                write!(f, "while {condition} do {body}")
             }
         }
     }
@@ -320,6 +329,17 @@ impl Parameters {
 
                 format!("({x_printed})/({y_printed})")
             }
+
+            ResultVector(lst) => lst
+                .iter()
+                .map(|f| {
+                    f.pretty_print(
+                        Some(&mut ram.as_deref().unwrap().clone()),
+                        Some(&mut function.as_deref().unwrap().clone()),
+                    )
+                })
+                .collect::<Vec<String>>()
+                .join("\n"),
 
             InterpreterVector(lst) => {
                 let mut vec = Vec::new();
