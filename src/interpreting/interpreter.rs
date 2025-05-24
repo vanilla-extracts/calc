@@ -149,8 +149,9 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                     interpret(else_branch, ram, function)
                 }
             } else {
-                // HACK: how to propagate this error upwards
-                panic!("dodo")
+                Parameters::Identifier(
+                    "@Runtime exception, condition did not collapse to a bool".to_string(),
+                )
             }
         }
     }
