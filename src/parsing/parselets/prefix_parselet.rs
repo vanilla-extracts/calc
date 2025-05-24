@@ -2,6 +2,8 @@ use crate::lexing::token::{Token, TokenType};
 use crate::parsing::ast::{token_to_parameter, Ast};
 use crate::parsing::parser::CalcParser;
 
+use super::infix_parselet::IgnorePostfixParselet;
+
 pub trait PrefixParselet {
     fn parse(&self, parser: &mut CalcParser, token: Token) -> Ast;
 }
@@ -19,6 +21,9 @@ pub struct NullParselet {}
 pub struct GroupParselet {}
 
 #[derive(Clone)]
+pub struct ScopeParselet {}
+
+#[derive(Clone)]
 pub struct VecParselet {}
 
 #[derive(Clone)]
@@ -29,6 +34,15 @@ pub struct IfThenElseParselet {}
 
 #[derive(Clone)]
 pub struct WhileParselet {}
+
+impl PrefixParselet for IgnorePostfixParselet {
+    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+        let ignored = parser.parse_expression_empty();
+        Ast::Ignore {
+            body: ignored.into(),
+        }
+    }
+}
 
 impl PrefixParselet for ValueParselet {
     fn parse(&self, _parser: &mut CalcParser, token: Token) -> Ast {
@@ -61,6 +75,14 @@ impl PrefixParselet for GroupParselet {
     fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
         let expression = parser.parse_expression_empty();
         parser.consume_expected(TokenType::RPAR);
+        expression
+    }
+}
+
+impl PrefixParselet for ScopeParselet {
+    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+        let expression = parser.parse_expression_empty();
+        parser.consume_expected(TokenType::RSB);
         expression
     }
 }

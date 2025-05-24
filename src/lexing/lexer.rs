@@ -12,10 +12,13 @@ pub fn is_an_allowed_char(character: char) -> bool {
         || character == '/'
         || character == '('
         || character == ')'
+        || character == '}'
+        || character == '{'
         || character == '"'
         || character == '.'
         || character == '='
         || character == '^'
+        || character == ';'
         || character == ','
         || character == '!'
         || character == '<'
@@ -154,6 +157,14 @@ pub fn lex(input: String) -> Vec<Token> {
                 vec.push(Token::LPAR);
                 current_pos += 1
             }
+            '{' => {
+                vec.push(Token::LSB);
+                current_pos += 1
+            }
+            '}' => {
+                vec.push(Token::RSB);
+                current_pos += 1
+            }
             '>' => {
                 vec.push(Token::OPE(GreaterThan));
                 current_pos += 1
@@ -165,6 +176,10 @@ pub fn lex(input: String) -> Vec<Token> {
             '"' => {
                 vec.push(Token::QUOTE);
                 quote_i += 1;
+                current_pos += 1
+            }
+            ';' => {
+                vec.push(Token::IGNORE);
                 current_pos += 1
             }
             '=' => match vec.pop() {
