@@ -626,6 +626,20 @@ mod test {
     }
 
     #[test]
+    pub fn test_condition_else_ignore() {
+        let b = lex("if true then 1 else (2;)".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Conditional {
+            condition: Box::new(Ast::new(Parameters::Bool(true))),
+            then_branch: Box::new(Ast::new(Parameters::Int(1))),
+            else_branch: Box::new(Ast::Ignore {
+                left: Box::new(Ast::new(Parameters::Int(2))),
+                right: Box::new(Ast::Nil),
+            }),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+    #[test]
     pub fn test_ignore_parsing_assignment() {
         let b = lex("i=1;".to_string());
         let parser = &mut init_calc_parser(&b);
