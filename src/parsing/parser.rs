@@ -12,7 +12,8 @@ use crate::parsing::parselets::prefix_parselet::{
 
 use super::parselets::infix_parselet::IgnoreParselet;
 use super::parselets::prefix_parselet::{
-    IfThenElseParselet, QuoteParselet, ScopeParselet, VecParselet, WhileParselet,
+    IfThenElseParselet, IgnorePrefixParselet, QuoteParselet, ScopeParselet, VecParselet,
+    WhileParselet,
 };
 
 #[derive(Clone)]
@@ -103,7 +104,7 @@ impl CalcParser<'_> {
         let token_type = self.look_ahead(0).to_token_type();
         match self.get_infix_parselet(&token_type) {
             Some(t) => t.get_precedence(),
-            None => 0,
+            None => Precedence::PREFIX as i64,
         }
     }
 
@@ -190,6 +191,7 @@ impl CalcParser<'_> {
             TokenType::IF => Some(Box::from(IfThenElseParselet {})),
             TokenType::WHILE => Some(Box::from(WhileParselet {})),
             TokenType::LSB => Some(Box::from(ScopeParselet {})),
+            TokenType::IGNORE => Some(Box::from(IgnorePrefixParselet {})),
             _ => None,
         }
     }
