@@ -490,4 +490,153 @@ mod test {
         };
         assert_eq!(parser.parse(), expected);
     }
+
+    #[test]
+    pub fn test_ignore_parsing_plus() {
+        let b = lex("1+1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::PlusOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_minus() {
+        let b = lex("1-1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::MinusOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_mul() {
+        let b = lex("1*1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::MultiplicationOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_div() {
+        let b = lex("1/1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::DivideOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_sup() {
+        let b = lex("x>5;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::GreaterOperation,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_less() {
+        let b = lex("x<5;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::LesserOperation,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+    #[test]
+    pub fn test_ignore_parsing_sup_or_equal() {
+        let b = lex("x>=5;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::GreaterOrEqualOperation,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_less_or_equal() {
+        let b = lex("x<=5;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::LesserOrEqualOperation,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_condition() {
+        let b = lex("if true then 1 else 2;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Conditional {
+                condition: Box::new(Ast::new(Parameters::Bool(true))),
+                then_branch: Box::new(Ast::new(Parameters::Int(1))),
+                else_branch: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_assignment() {
+        let b = lex("i=1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::Assign,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
 }
