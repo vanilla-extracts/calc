@@ -537,11 +537,11 @@ impl Parameters {
     }
 }
 
-pub fn token_to_parameter(token: Token) -> Parameters {
+pub fn token_to_parameter(token: &Token) -> Parameters {
     match token {
-        Token::INT(i) => Int(i),
-        Token::FLOAT(f) => Float(f),
-        Token::IDENTIFIER(s) => Identifier(s),
+        Token::INT(i) => Int(*i),
+        Token::FLOAT(f) => Float(*f),
+        Token::IDENTIFIER(s) => Identifier(s.clone()),
         Token::OPE(Operator::PLUS) => PlusOperation,
         Token::OPE(Operator::MINUS) => MinusOperation,
         Token::OPE(Operator::MULTIPLICATION) => MultiplicationOperation,
@@ -556,7 +556,7 @@ pub fn token_to_parameter(token: Token) -> Parameters {
         Token::OPE(Operator::Or) => OrOperation,
         Token::OPE(Operator::And) => AndOperation,
         Token::EQUAL => Assign,
-        Token::BOOL(b) => Bool(b),
+        Token::BOOL(b) => Bool(*b),
         Token::RBRACKET => Vector(Box::from(Vec::new())),
         _ => Null,
     }

@@ -92,6 +92,8 @@ pub enum Precedence {
     DIVIDE = 45,
     PRODUCT = 50,
     EXPONENT = 60,
+    PREFIX = 80,
+    POSTFIX = 90,
     CALL = 100,
 }
 

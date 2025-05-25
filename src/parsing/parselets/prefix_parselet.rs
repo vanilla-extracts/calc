@@ -3,7 +3,7 @@ use crate::parsing::ast::{token_to_parameter, Ast};
 use crate::parsing::parser::CalcParser;
 
 pub trait PrefixParselet {
-    fn parse(&self, parser: &mut CalcParser, token: Token) -> Ast;
+    fn parse(&self, parser: &mut CalcParser, token: &Token) -> Ast;
 }
 
 #[derive(Clone)]
@@ -11,9 +11,6 @@ pub struct ValueParselet {}
 
 #[derive(Clone)]
 pub struct OperatorPrefixParselet {}
-
-#[derive(Clone)]
-pub struct NullParselet {}
 
 #[derive(Clone)]
 pub struct GroupParselet {}
@@ -34,7 +31,7 @@ pub struct IfThenElseParselet {}
 pub struct WhileParselet {}
 
 impl PrefixParselet for ValueParselet {
-    fn parse(&self, _parser: &mut CalcParser, token: Token) -> Ast {
+    fn parse(&self, _parser: &mut CalcParser, token: &Token) -> Ast {
         Ast::Node {
             value: token_to_parameter(token),
             left: Box::from(Ast::Nil),
@@ -44,7 +41,7 @@ impl PrefixParselet for ValueParselet {
 }
 
 impl PrefixParselet for OperatorPrefixParselet {
-    fn parse(&self, parser: &mut CalcParser, token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, token: &Token) -> Ast {
         let operand = parser.parse_expression_empty();
         Ast::Node {
             value: token_to_parameter(token),
@@ -54,14 +51,8 @@ impl PrefixParselet for OperatorPrefixParselet {
     }
 }
 
-impl PrefixParselet for NullParselet {
-    fn parse(&self, _parser: &mut CalcParser, _token: Token) -> Ast {
-        Ast::Nil
-    }
-}
-
 impl PrefixParselet for GroupParselet {
-    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let expression = parser.parse_expression_empty();
         parser.consume_expected(TokenType::RPAR);
         expression
@@ -69,7 +60,7 @@ impl PrefixParselet for GroupParselet {
 }
 
 impl PrefixParselet for ScopeParselet {
-    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let expression = parser.parse_expression_empty();
         parser.consume_expected(TokenType::RSB);
         expression
@@ -77,7 +68,7 @@ impl PrefixParselet for ScopeParselet {
 }
 
 impl PrefixParselet for VecParselet {
-    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let mut vec: Vec<Ast> = Vec::new();
 
         if !parser.match_token(TokenType::RBRACKET) {
@@ -98,7 +89,7 @@ impl PrefixParselet for VecParselet {
 }
 
 impl PrefixParselet for QuoteParselet {
-    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let mut str: String = String::new();
 
         if !parser.match_token(TokenType::QUOTE) {
@@ -121,7 +112,7 @@ impl PrefixParselet for QuoteParselet {
 }
 
 impl PrefixParselet for IfThenElseParselet {
-    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let cond_expr = parser.parse_expression_empty();
         parser.consume_expected(TokenType::THEN);
         let lhs = parser.parse_expression_empty();
@@ -137,7 +128,7 @@ impl PrefixParselet for IfThenElseParselet {
 }
 
 impl PrefixParselet for WhileParselet {
-    fn parse(&self, parser: &mut CalcParser, _token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let cond_expr = parser.parse_expression_empty();
         parser.consume_expected(TokenType::DO);
         let body = parser.parse_expression_empty();
