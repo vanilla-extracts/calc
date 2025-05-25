@@ -4,13 +4,13 @@ use crate::lexing::token::Token::*;
 use crate::lexing::token::{Precedence, Token, TokenType};
 use crate::parsing::ast::Ast;
 use crate::parsing::parselets::infix_parselet::{
-    AssignParselet, CallParselet, InfixParselet, NullParset, OperatorInfixParselet,
+    AssignParselet, CallParselet, InfixParselet, OperatorInfixParselet,
 };
 use crate::parsing::parselets::prefix_parselet::{
-    GroupParselet, NullParselet, OperatorPrefixParselet, PrefixParselet, ValueParselet,
+    GroupParselet, OperatorPrefixParselet, PrefixParselet, ValueParselet,
 };
 
-use super::parselets::infix_parselet::IgnorePostfixParselet;
+use super::parselets::postfix_parselet::{IgnoreParselet, PostfixParselet};
 use super::parselets::prefix_parselet::{
     IfThenElseParselet, QuoteParselet, ScopeParselet, VecParselet, WhileParselet,
 };
@@ -34,18 +34,24 @@ impl CalcParser<'_> {
     }
     pub fn parse_expression(&mut self, precedence: i64) -> Ast {
         let mut token = self.consume();
-        let prefix = self
-            .clone()
-            .get_prefix_parselet(token.clone().to_token_type());
+        let prefix = self.get_prefix_parselet(&token.to_token_type());
 
-        let mut left = prefix.unwrap().parse(self, token.clone());
+        let mut left = match prefix {
+            Some(p) => p.parse(self, &token),
+            None => Ast::Nil,
+        };
+
+        /*left = match self.get_postfix_parselet(&token.to_token_type()) {
+            None => left,
+            Some(p) => p.parse(self, &left, &token),
+        };*/
+
         while precedence < self.get_precedence() {
             token = self.consume();
-            let parser = self
-                .clone()
-                .get_infix_parselet(token.clone().to_token_type())
-                .unwrap();
-            left = parser.parse(self, &left, token);
+            left = match self.get_infix_parselet(&token.to_token_type()) {
+                Some(p) => p.parse(self, &left, &token),
+                None => left,
+            };
         }
         left
     }
@@ -99,16 +105,17 @@ impl CalcParser<'_> {
     }
 
     fn get_precedence(&mut self) -> i64 {
-        let p: Option<Box<dyn InfixParselet>> = self
-            .clone()
-            .get_infix_parselet(self.look_ahead(0).to_token_type());
-        match p {
-            None => 0,
-            Some(t) => (*t).get_precedence(),
+        let token_type = self.look_ahead(0).to_token_type();
+        match self.get_infix_parselet(&token_type) {
+            Some(t) => t.get_precedence(),
+            None => match self.get_postfix_parselet(&token_type) {
+                Some(_) => Precedence::POSTFIX as i64,
+                None => 0,
+            },
         }
     }
 
-    pub fn get_infix_parselet(self, token_type: TokenType) -> Option<Box<dyn InfixParselet>> {
+    pub fn get_infix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn InfixParselet>> {
         match token_type {
             TokenType::PLUS => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
@@ -164,12 +171,11 @@ impl CalcParser<'_> {
                 is_right: false,
                 precedence: (Precedence::CONDITIONAL as i64),
             })),
-            TokenType::IGNORE => Some(Box::from(IgnorePostfixParselet {})),
-            _ => Some(Box::from(NullParset {})),
+            _ => None,
         }
     }
 
-    pub fn get_prefix_parselet(self, token_type: TokenType) -> Option<Box<dyn PrefixParselet>> {
+    pub fn get_prefix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn PrefixParselet>> {
         match token_type {
             TokenType::PLUS => Some(Box::from(OperatorPrefixParselet {})),
             TokenType::MINUS => Some(Box::from(OperatorPrefixParselet {})),
@@ -191,7 +197,14 @@ impl CalcParser<'_> {
             TokenType::IF => Some(Box::from(IfThenElseParselet {})),
             TokenType::WHILE => Some(Box::from(WhileParselet {})),
             TokenType::LSB => Some(Box::from(ScopeParselet {})),
-            _ => Some(Box::from(NullParselet {})),
+            _ => None,
+        }
+    }
+
+    pub fn get_postfix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn PostfixParselet>> {
+        match token_type {
+            TokenType::IGNORE => Some(Box::from(IgnoreParselet {})),
+            _ => None,
         }
     }
 }
@@ -379,7 +392,6 @@ mod test {
         let parser: &mut CalcParser = &mut init_calc_parser(&b);
         let expected = Ast::Node {
             value: Parameters::PlusOperation,
-            left: Box::from(Ast::new(Parameters::Int(1))),
             right: Box::from(Ast::Node {
                 value: Parameters::MultiplicationOperation,
                 left: Box::from(Ast::new(Parameters::Int(1))),
@@ -389,6 +401,7 @@ mod test {
                     right: Box::from(Ast::new(Parameters::Int(1))),
                 }),
             }),
+            left: Box::from(Ast::new(Parameters::Int(1))),
         };
         let result = parser.parse();
         assert_eq!(result, expected)

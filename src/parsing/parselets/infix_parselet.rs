@@ -4,7 +4,7 @@ use crate::parsing::ast::{token_to_parameter, Ast, Parameters};
 use crate::parsing::parser::CalcParser;
 
 pub trait InfixParselet {
-    fn parse(&self, parser: &mut CalcParser, left: &Ast, token: Token) -> Ast;
+    fn parse(&self, parser: &mut CalcParser, left: &Ast, token: &Token) -> Ast;
     fn get_precedence(&self) -> i64;
 }
 
@@ -15,28 +15,28 @@ pub struct CallParselet {}
 
 pub struct NullParset {}
 
-pub struct IgnorePostfixParselet {}
+//pub struct IgnorePostfixParselet {}
 
 pub struct OperatorInfixParselet {
     pub is_right: bool,
     pub precedence: i64,
 }
 
-impl InfixParselet for IgnorePostfixParselet {
-    fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: Token) -> Ast {
-        let right = parser.parse_expression(self.get_precedence());
-        Ast::Ignore {
-            left: left.clone().into(),
-            right: right.into(),
-        }
-    }
-    fn get_precedence(&self) -> i64 {
-        Precedence::IGNORE as i64
-    }
-}
+// impl InfixParselet for IgnorePostfixParselet {
+//     fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: Token) -> Ast {
+//         let right = parser.parse_expression(self.get_precedence());
+//         Ast::Ignore {
+//             left: left.clone().into(),
+//             right: right.into(),
+//         }
+//     }
+//     fn get_precedence(&self) -> i64 {
+//         Precedence::IGNORE as i64
+//     }
+// }
 
 impl InfixParselet for OperatorInfixParselet {
-    fn parse(&self, parser: &mut CalcParser, left: &Ast, token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, left: &Ast, token: &Token) -> Ast {
         let right = parser.parse_expression(if self.is_right {
             self.get_precedence() - 1
         } else {
@@ -56,7 +56,7 @@ impl InfixParselet for OperatorInfixParselet {
 }
 
 impl InfixParselet for AssignParselet {
-    fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: &Token) -> Ast {
         let right = parser.parse_expression_empty();
         Ast::Node {
             value: Parameters::Assign,
@@ -71,7 +71,7 @@ impl InfixParselet for AssignParselet {
 }
 
 impl InfixParselet for CallParselet {
-    fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: Token) -> Ast {
+    fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: &Token) -> Ast {
         let name = match left {
             Ast::Nil => "",
             Ast::Node {
@@ -103,15 +103,5 @@ impl InfixParselet for CallParselet {
 
     fn get_precedence(&self) -> i64 {
         Precedence::CALL as i64
-    }
-}
-
-impl InfixParselet for NullParset {
-    fn parse(&self, _parser: &mut CalcParser, left: &Ast, _token: Token) -> Ast {
-        left.clone()
-    }
-
-    fn get_precedence(&self) -> i64 {
-        0
     }
 }
