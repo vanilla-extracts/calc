@@ -187,7 +187,9 @@ impl CalcParser<'_> {
             TokenType::GREATEREQ => Some(Box::from(OperatorPrefixParselet {})),
             TokenType::LBRACKET => Some(Box::from(VecParselet {})),
             TokenType::QUOTE => Some(Box::from(QuoteParselet {})),
-            TokenType::IF => Some(Box::from(IfThenElseParselet {})),
+            TokenType::IF => Some(Box::from(IfThenElseParselet {
+                precedence: Precedence::IFTHENELSE as i64
+            })),
             TokenType::WHILE => Some(Box::from(WhileParselet {})),
             TokenType::LSB => Some(Box::from(ScopeParselet {})),
             _ => None,
