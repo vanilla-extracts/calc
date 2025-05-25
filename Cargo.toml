@@ -41,4 +41,3 @@ assets = [{source="target/release/mini-calc", dest="/usr/bin/mini-calc", mode = 
 [profile.dist]
 inherits = "release"
 lto = "thin"
-
