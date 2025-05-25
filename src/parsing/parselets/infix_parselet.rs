@@ -55,7 +55,7 @@ impl InfixParselet for OperatorInfixParselet {
 
 impl InfixParselet for AssignParselet {
     fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: &Token) -> Ast {
-        let right = parser.parse_expression_empty();
+        let right = parser.parse_expression(self.get_precedence());
         Ast::Node {
             value: Parameters::Assign,
             left: Box::new(left.clone()),
