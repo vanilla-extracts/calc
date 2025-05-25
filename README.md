@@ -56,3 +56,6 @@ If you prefer a PDF, there is a [manual](manual.pdf)
 | [<img src="https://avatars.githubusercontent.com/u/17108449?v=4" style="border-radius: 50%;height:90pt;width:auto">](https://github.com/vanilla-extracts)        |Charlotte THOMAS          | Main developer/Maintener | [Main page](https://www.charlotte-thomas.me)         | 
 | [<img src="https://avatars.githubusercontent.com/u/87855546?v=4" style="border-radius: 50%;height:90pt;width:auto">](https://github.com/leana8959)        |Léana 江                  | Help, cleanup            | [Website/Blog](https://earth2077.fr)        |
 | [<img src="https://avatars.githubusercontent.com/u/53050011?v=4" style="border-radius:50%;height:90pt;width:auto">](https://github.com/Sigmaficient)      |Sigmaficient              | Nixify                   | [Website](https://sigmanificient.github.io/)|
+
+### Known bugs
+If you try to assign an algebraic expression to a non initialised variable it panics into a stack-overflow.
