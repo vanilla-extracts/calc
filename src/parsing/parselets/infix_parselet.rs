@@ -13,27 +13,10 @@ pub struct AssignParselet {}
 
 pub struct CallParselet {}
 
-pub struct NullParset {}
-
-//pub struct IgnorePostfixParselet {}
-
 pub struct OperatorInfixParselet {
     pub is_right: bool,
     pub precedence: i64,
 }
-
-// impl InfixParselet for IgnorePostfixParselet {
-//     fn parse(&self, parser: &mut CalcParser, left: &Ast, _token: Token) -> Ast {
-//         let right = parser.parse_expression(self.get_precedence());
-//         Ast::Ignore {
-//             left: left.clone().into(),
-//             right: right.into(),
-//         }
-//     }
-//     fn get_precedence(&self) -> i64 {
-//         Precedence::IGNORE as i64
-//     }
-// }
 
 impl InfixParselet for OperatorInfixParselet {
     fn parse(&self, parser: &mut CalcParser, left: &Ast, token: &Token) -> Ast {

@@ -41,10 +41,10 @@ impl CalcParser<'_> {
             None => Ast::Nil,
         };
 
-        /*left = match self.get_postfix_parselet(&token.to_token_type()) {
+        left = match self.get_postfix_parselet(&token.to_token_type()) {
             None => left,
             Some(p) => p.parse(self, &left, &token),
-        };*/
+        };
 
         while precedence < self.get_precedence() {
             token = self.consume();
@@ -53,7 +53,10 @@ impl CalcParser<'_> {
                 None => left,
             };
         }
-        left
+        match self.get_postfix_parselet(&token.to_token_type()) {
+            None => left,
+            Some(p) => p.parse(self, &left, &token),
+        }
     }
 
     pub fn parse_expression_empty(&mut self) -> Ast {
