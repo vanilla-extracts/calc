@@ -31,7 +31,7 @@ impl InfixParselet for IgnorePostfixParselet {
         }
     }
     fn get_precedence(&self) -> i64 {
-        Precedence::POSTFIX as i64
+        Precedence::IGNORE as i64
     }
 }
 
