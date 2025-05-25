@@ -1,4 +1,4 @@
-use crate::lexing::token::{Token, TokenType};
+use crate::lexing::token::{Precedence, Token, TokenType};
 use crate::parsing::ast::{token_to_parameter, Ast};
 use crate::parsing::parser::CalcParser;
 
@@ -25,7 +25,9 @@ pub struct VecParselet {}
 pub struct QuoteParselet {}
 
 #[derive(Clone)]
-pub struct IfThenElseParselet {}
+pub struct IfThenElseParselet {
+    pub precedence: i64
+}
 
 #[derive(Clone)]
 pub struct WhileParselet {}
