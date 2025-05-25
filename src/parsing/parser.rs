@@ -10,7 +10,7 @@ use crate::parsing::parselets::prefix_parselet::{
     GroupParselet, OperatorPrefixParselet, PrefixParselet, ValueParselet,
 };
 
-use super::parselets::postfix_parselet::{IgnoreParselet, PostfixParselet};
+use super::parselets::infix_parselet::IgnoreParselet;
 use super::parselets::prefix_parselet::{
     IfThenElseParselet, QuoteParselet, ScopeParselet, VecParselet, WhileParselet,
 };
@@ -41,11 +41,6 @@ impl CalcParser<'_> {
             None => Ast::Nil,
         };
 
-        left = match self.get_postfix_parselet(&token.to_token_type()) {
-            None => left,
-            Some(p) => p.parse(self, &left, &token),
-        };
-
         while precedence < self.get_precedence() {
             token = self.consume();
             left = match self.get_infix_parselet(&token.to_token_type()) {
@@ -53,10 +48,7 @@ impl CalcParser<'_> {
                 None => left,
             };
         }
-        match self.get_postfix_parselet(&token.to_token_type()) {
-            None => left,
-            Some(p) => p.parse(self, &left, &token),
-        }
+        left
     }
 
     pub fn parse_expression_empty(&mut self) -> Ast {
@@ -111,10 +103,7 @@ impl CalcParser<'_> {
         let token_type = self.look_ahead(0).to_token_type();
         match self.get_infix_parselet(&token_type) {
             Some(t) => t.get_precedence(),
-            None => match self.get_postfix_parselet(&token_type) {
-                Some(_) => Precedence::POSTFIX as i64,
-                None => 0,
-            },
+            None => 0,
         }
     }
 
@@ -174,6 +163,7 @@ impl CalcParser<'_> {
                 is_right: false,
                 precedence: (Precedence::CONDITIONAL as i64),
             })),
+            TokenType::IGNORE => Some(Box::from(IgnoreParselet {})),
             _ => None,
         }
     }
@@ -200,13 +190,6 @@ impl CalcParser<'_> {
             TokenType::IF => Some(Box::from(IfThenElseParselet {})),
             TokenType::WHILE => Some(Box::from(WhileParselet {})),
             TokenType::LSB => Some(Box::from(ScopeParselet {})),
-            _ => None,
-        }
-    }
-
-    pub fn get_postfix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn PostfixParselet>> {
-        match token_type {
-            TokenType::IGNORE => Some(Box::from(IgnoreParselet {})),
             _ => None,
         }
     }
