@@ -12,6 +12,9 @@ pub struct ValueParselet {}
 #[derive(Clone)]
 pub struct OperatorPrefixParselet {}
 
+#[derive(Debug, Clone)]
+pub struct IgnorePrefixParselet {}
+
 #[derive(Clone)]
 pub struct GroupParselet {}
 
@@ -136,6 +139,16 @@ impl PrefixParselet for WhileParselet {
         Ast::While {
             condition: cond_expr.into(),
             body: body.into(),
+        }
+    }
+}
+
+impl PrefixParselet for IgnorePrefixParselet {
+    fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
+        let left = parser.parse_expression_empty();
+        Ast::Ignore {
+            left: left.into(),
+            right: Box::from(Ast::Nil),
         }
     }
 }

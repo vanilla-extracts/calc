@@ -85,6 +85,7 @@ pub enum TokenType {
 
 pub enum Precedence {
     IGNORE = 5,
+    PREFIX = 0,
     ASSIGNMENT = 10,
     CONDITIONAL = 20,
     MINUS = 30,
