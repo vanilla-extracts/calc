@@ -84,14 +84,14 @@ pub enum TokenType {
 }
 
 pub enum Precedence {
+    IGNORE = 5,
     ASSIGNMENT = 10,
     CONDITIONAL = 20,
-    SUM = 40,
     MINUS = 30,
-    PRODUCT = 50,
+    SUM = 40,
     DIVIDE = 45,
+    PRODUCT = 50,
     EXPONENT = 60,
-    IGNORE = 70,
     CALL = 100,
 }
 
