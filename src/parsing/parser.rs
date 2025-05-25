@@ -619,7 +619,7 @@ mod test {
             left: Box::new(Ast::Conditional {
                 condition: Box::new(Ast::new(Parameters::Bool(true))),
                 then_branch: Box::new(Ast::new(Parameters::Int(1))),
-                else_branch: Box::new(Ast::new(Parameters::Int(5))),
+                else_branch: Box::new(Ast::new(Parameters::Int(2))),
             }),
             right: Box::new(Ast::Nil),
         };
@@ -647,7 +647,7 @@ mod test {
         let expected = Ast::Ignore {
             left: Box::new(Ast::Node {
                 value: Parameters::Assign,
-                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                left: Box::new(Ast::new(Parameters::Identifier("i".to_string()))),
                 right: Box::new(Ast::new(Parameters::Int(1))),
             }),
             right: Box::new(Ast::Nil),
