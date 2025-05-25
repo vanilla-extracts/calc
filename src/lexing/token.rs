@@ -93,7 +93,7 @@ pub enum Precedence {
     PRODUCT = 50,
     EXPONENT = 60,
     PREFIX = 80,
-    POSTFIX = 90,
+    POSTFIX = 1,
     CALL = 100,
 }
 

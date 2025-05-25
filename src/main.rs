@@ -377,7 +377,7 @@ fn main() {
     let interface = Interface::new("calc").unwrap();
     let style = &loaded.clone().prompt_style;
     let mut text = &loaded.clone().prompt;
-    let mut verbose = true;
+    let mut verbose = false;
     interface.set_completer(Arc::new(CalcCompleter));
     interface
         .set_prompt(&format!(
