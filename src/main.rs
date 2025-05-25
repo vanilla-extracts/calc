@@ -31,7 +31,7 @@ mod parsing;
 mod utils;
 
 thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
-static VERSION: &str = "v3.4.2";
+static VERSION: &str = "v3.5.0-alpha";
 
 fn show_config(config: Config) -> (String, Option<Config>) {
     let loaded = load_config(config.clone());
@@ -377,7 +377,7 @@ fn main() {
     let interface = Interface::new("calc").unwrap();
     let style = &loaded.clone().prompt_style;
     let mut text = &loaded.clone().prompt;
-    let mut verbose = false;
+    let mut verbose = true;
     interface.set_completer(Arc::new(CalcCompleter));
     interface
         .set_prompt(&format!(
