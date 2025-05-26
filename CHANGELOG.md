@@ -12,6 +12,8 @@ Planned (as of merging #73):
 - String manipulation (join,concat,to_array)
 - Array manipulation (extract,add to array,concat)
 
+Thanks Léana for the huge help!
+
 # Version 3.4.2 : Default float mode in config
 This version adds the `default_float_mode` entry in the `mini-calc.toml`
 configuration file.
