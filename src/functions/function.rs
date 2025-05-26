@@ -486,6 +486,22 @@ pub fn or(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+pub fn select(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
+    match (i, i2) {
+        (InterpreterVector(v), Int(i)) => match v.get(i as usize) {
+            Some(opt) => opt.clone(),
+            None => Parameters::Identifier("@Runtime Exception: Index out of bound.".to_string()),
+        },
+        (Identifier(s), Int(i)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Int(i), ram, select),
+            None => {
+                Parameters::Identifier("@Runtime Exception: identifier does not exist".to_string())
+            }
+        },
+        _ => Parameters::Identifier("@Runtime Exception: types are incompatible.".to_string()),
+    }
+}
+
 #[cfg(test)]
 mod test {
     use crate::functions::add::add;
