@@ -14,8 +14,6 @@ exclude = [
 ]
 
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 ansi_term = "0.12.1"
 linefeed = "0.6"

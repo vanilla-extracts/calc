@@ -101,7 +101,6 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                     Parameters::InterpreterVector(Box::from(vec))
                 }
                 Parameters::InterpreterVector(a) => Parameters::InterpreterVector(a.clone()),
-                Parameters::ResultVector(a) => Parameters::ResultVector(a.clone()),
                 Parameters::Var(x, y, z) => Parameters::Var(x.clone(), *y, z.clone()),
                 Parameters::Plus(x, y) => add(*x.clone(), *y.clone(), Some(&ram)),
                 Parameters::Mul(x, y) => mult(*x.clone(), *y.clone(), Some(&ram)),
@@ -138,7 +137,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
             loop {
                 if let Parameters::Bool(condition_bool) = interpret(condition, ram, function) {
                     if !condition_bool {
-                        return Parameters::ResultVector(vec.into());
+                        return Parameters::InterpreterVector(vec.into());
                     }
                     vec.push(interpret(body, ram, function));
                 } else {
