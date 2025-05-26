@@ -34,6 +34,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                 Parameters::LesserOrEqualOperation => lesser_or_equal(param1, param2, Some(&ram)),
                 Parameters::AndOperation => and(param1, param2, Some(&ram)),
                 Parameters::OrOperation => or(param1, param2, Some(&ram)),
+                Parameters::SelectionOperation => select(param1, param2, Some(&ram)),
                 Parameters::Rational(s) => Parameters::Rational(s.clone()),
                 Parameters::Str(s) => Parameters::Str(s.to_string()),
                 Parameters::Assign => match *(l.clone()) {
@@ -50,18 +51,6 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                             if n.as_str() != "" {
                                 (function).insert(n.to_string(), (list.clone(), *r.clone()));
                             }
-                            println!(
-                                "{}: {} = {}",
-                                ansi_term::Color::Cyan.paint("fun"),
-                                ansi_term::Color::RGB(255, 215, 0).paint(format!(
-                                    "{}",
-                                    Ast::Call {
-                                        name: n.clone(),
-                                        lst: list.clone()
-                                    }
-                                )),
-                                ansi_term::Color::RGB(255, 215, 0).paint(format!("{}", *r.clone()))
-                            );
                             Parameters::Null
                         }
                     }
@@ -84,16 +73,6 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                                 ram.remove(&a);
                             }
                             (ram).insert(a.clone(), b.clone());
-
-                            println!(
-                                "{}: {} = {}",
-                                ansi_term::Color::Cyan.paint("assign"),
-                                ansi_term::Color::Yellow.paint(format!("{}", a.clone())),
-                                ansi_term::Color::Yellow.paint(format!(
-                                    "{}",
-                                    b.clone().pretty_print(Some(ram), Some(function))
-                                ))
-                            );
 
                             return Parameters::Null;
                         }
@@ -153,6 +132,25 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                     "@Runtime exception, condition did not collapse to a bool".to_string(),
                 )
             }
+        }
+        Ast::While { condition, body } => {
+            let mut vec = vec![];
+            loop {
+                if let Parameters::Bool(condition_bool) = interpret(condition, ram, function) {
+                    if !condition_bool {
+                        return Parameters::InterpreterVector(vec.into());
+                    }
+                    vec.push(interpret(body, ram, function));
+                } else {
+                    return Parameters::Identifier(
+                        "@Runtime exception, condition did not collapse to a bool".to_string(),
+                    );
+                }
+            }
+        }
+        Ast::Ignore { left, right } => {
+            let _ = interpret(left, ram, function);
+            interpret(right, ram, function)
         }
     }
 }

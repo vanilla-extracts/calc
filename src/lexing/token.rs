@@ -15,6 +15,7 @@ pub enum Operator {
     And,
     Or,
     NOT,
+    Selection,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -38,6 +39,11 @@ pub enum Token {
     IF,
     THEN,
     ELSE,
+    WHILE,
+    DO,
+    IGNORE,
+    RSB,
+    LSB,
 }
 
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
@@ -71,19 +77,30 @@ pub enum TokenType {
     IF,
     THEN,
     ELSE,
+    WHILE,
+    DO,
+    IGNORE,
+    RSB,
+    LSB,
+    SELECTION,
 }
 
 pub enum Precedence {
-    ASSIGNMENT = 1,
-    CONDITIONAL = 2,
-    SUM = 4,
-    MINUS = 3,
-    PRODUCT = 6,
-    DIVIDE = 5,
-    EXPONENT = 7,
-    //PREFIX = 8,
-    //POSTFIX = 9,
-    CALL = 10,
+    IGNORE = 5,
+    IFTHENELSE = 6,
+    WHILE = 7,
+    PREFIX = 9,
+    ASSIGNMENT = 10,
+
+    // TODO: maybe rename this
+    CONDITIONAL = 20,
+    SELECTION = 25,
+    MINUS = 30,
+    SUM = 40,
+    DIVIDE = 45,
+    PRODUCT = 50,
+    EXPONENT = 60,
+    CALL = 100,
 }
 
 impl Display for Operator {
@@ -102,6 +119,7 @@ impl Display for Operator {
             Operator::NOT => write!(f, "!"),
             Operator::Or => write!(f, "||"),
             Operator::And => write!(f, "&&"),
+            Operator::Selection => write!(f, "."),
         }
     }
 }
@@ -128,6 +146,11 @@ impl Display for Token {
             Token::IF => write!(f, "if"),
             Token::THEN => write!(f, "then"),
             Token::ELSE => write!(f, "else"),
+            Token::WHILE => write!(f, "while"),
+            Token::DO => write!(f, "do"),
+            Token::IGNORE => write!(f, "!"),
+            Token::RSB => write!(f, "{{"),
+            Token::LSB => write!(f, "}}"),
         }
     }
 }
@@ -149,6 +172,7 @@ impl Token {
                 Operator::NOT => TokenType::NOT,
                 Operator::And => TokenType::AND,
                 Operator::Or => TokenType::OR,
+                Operator::Selection => TokenType::SELECTION,
             },
             Token::IDENTIFIER(_) => TokenType::IDENTIFIER,
             Token::INT(_) => TokenType::INT,
@@ -166,6 +190,11 @@ impl Token {
             Token::IF => TokenType::IF,
             Token::ELSE => TokenType::ELSE,
             Token::THEN => TokenType::THEN,
+            Token::WHILE => TokenType::WHILE,
+            Token::DO => TokenType::DO,
+            Token::IGNORE => TokenType::IGNORE,
+            Token::LSB => TokenType::LSB,
+            Token::RSB => TokenType::RSB,
             _ => TokenType::Null,
         }
     }

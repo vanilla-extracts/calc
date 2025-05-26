@@ -12,10 +12,13 @@ pub fn is_an_allowed_char(character: char) -> bool {
         || character == '/'
         || character == '('
         || character == ')'
+        || character == '}'
+        || character == '{'
         || character == '"'
         || character == '.'
         || character == '='
         || character == '^'
+        || character == ';'
         || character == ','
         || character == '!'
         || character == '<'
@@ -154,6 +157,14 @@ pub fn lex(input: String) -> Vec<Token> {
                 vec.push(Token::LPAR);
                 current_pos += 1
             }
+            '{' => {
+                vec.push(Token::LSB);
+                current_pos += 1
+            }
+            '}' => {
+                vec.push(Token::RSB);
+                current_pos += 1
+            }
             '>' => {
                 vec.push(Token::OPE(GreaterThan));
                 current_pos += 1
@@ -165,6 +176,10 @@ pub fn lex(input: String) -> Vec<Token> {
             '"' => {
                 vec.push(Token::QUOTE);
                 quote_i += 1;
+                current_pos += 1
+            }
+            ';' => {
+                vec.push(Token::IGNORE);
                 current_pos += 1
             }
             '=' => match vec.pop() {
@@ -246,6 +261,10 @@ pub fn lex(input: String) -> Vec<Token> {
                 }
                 current_pos += 1
             }
+            '.' => {
+                vec.push(Token::OPE(Selection));
+                current_pos += 1
+            }
             ch => {
                 if ch.is_numeric() {
                     let (a, b) = lex_int(current_character, &mut chars, current_pos, length);
@@ -271,32 +290,22 @@ pub fn lex(input: String) -> Vec<Token> {
                 if ch.is_alphabetic() || ch == '_' {
                     let (a, b) = lex_string(current_character, &mut chars, current_pos, length);
                     current_pos = b;
-                    if &a == "false" {
-                        vec.push(Token::BOOL(false))
-                    } else if &a == "true" {
-                        vec.push(Token::BOOL(true))
-                    } else if &a == "or" {
-                        vec.push(Token::OPE(Or))
-                    } else if &a == "and" {
-                        vec.push(Token::OPE(And))
-                    } else if &a == "geq" {
-                        vec.push(Token::OPE(GreaterOrEqual))
-                    } else if &a == "leq" {
-                        vec.push(Token::OPE(LesserOrEqual))
-                    } else if &a == "lt" {
-                        vec.push(Token::OPE(LesserThan))
-                    } else if &a == "gt" {
-                        vec.push(Token::OPE(GreaterThan))
-                    } else if &a == "eq" {
-                        vec.push(Token::OPE(EQUALITY))
-                    } else if &a == "if" {
-                        vec.push(Token::IF)
-                    } else if &a == "then" {
-                        vec.push(Token::THEN)
-                    } else if &a == "else" {
-                        vec.push(Token::ELSE)
-                    } else {
-                        vec.push(Token::IDENTIFIER(a))
+                    match a.as_str() {
+                        "false" => vec.push(Token::BOOL(false)),
+                        "true" => vec.push(Token::BOOL(true)),
+                        "or" => vec.push(Token::OPE(Or)),
+                        "and" => vec.push(Token::OPE(And)),
+                        "geq" => vec.push(Token::OPE(GreaterOrEqual)),
+                        "leq" => vec.push(Token::OPE(LesserOrEqual)),
+                        "lt" => vec.push(Token::OPE(LesserThan)),
+                        "gt" => vec.push(Token::OPE(GreaterThan)),
+                        "eq" => vec.push(Token::OPE(EQUALITY)),
+                        "if" => vec.push(Token::IF),
+                        "then" => vec.push(Token::THEN),
+                        "else" => vec.push(Token::ELSE),
+                        "while" => vec.push(Token::WHILE),
+                        "do" => vec.push(Token::DO),
+                        _ => vec.push(Token::IDENTIFIER(a)),
                     }
                 }
                 if ch == '.' {
@@ -445,7 +454,7 @@ mod tests {
     fn test_simple_float() {
         let mut expected = Vec::new();
         expected.push(FLOAT(0.14));
-        let result = lex(".14".to_string());
+        let result = lex("0.14".to_string());
         assert_eq!(result, expected);
     }
 

@@ -4,13 +4,16 @@ use crate::lexing::token::Token::*;
 use crate::lexing::token::{Precedence, Token, TokenType};
 use crate::parsing::ast::Ast;
 use crate::parsing::parselets::infix_parselet::{
-    AssignParselet, CallParselet, InfixParselet, NullParset, OperatorInfixParselet,
+    AssignParselet, CallParselet, InfixParselet, OperatorInfixParselet,
 };
 use crate::parsing::parselets::prefix_parselet::{
-    GroupParselet, NullParselet, OperatorPrefixParselet, PrefixParselet, ValueParselet,
+    GroupParselet, OperatorPrefixParselet, PrefixParselet, ValueParselet,
 };
 
-use super::parselets::prefix_parselet::{IfThenElseParselet, QuoteParselet, VecParselet};
+use super::parselets::infix_parselet::IgnoreParselet;
+use super::parselets::prefix_parselet::{
+    IfThenElseParselet, QuoteParselet, ScopeParselet, VecParselet, WhileParselet,
+};
 
 #[derive(Clone)]
 pub struct CalcParser<'a> {
@@ -31,18 +34,19 @@ impl CalcParser<'_> {
     }
     pub fn parse_expression(&mut self, precedence: i64) -> Ast {
         let mut token = self.consume();
-        let prefix = self
-            .clone()
-            .get_prefix_parselet(token.clone().to_token_type());
+        let prefix = self.get_prefix_parselet(&token.to_token_type());
 
-        let mut left = prefix.unwrap().parse(self, token.clone());
+        let mut left = match prefix {
+            Some(p) => p.parse(self, &token),
+            None => Ast::Nil,
+        };
+
         while precedence < self.get_precedence() {
             token = self.consume();
-            let parser = self
-                .clone()
-                .get_infix_parselet(token.clone().to_token_type())
-                .unwrap();
-            left = parser.parse(self, &left, token);
+            left = match self.get_infix_parselet(&token.to_token_type()) {
+                Some(p) => p.parse(self, &left, &token),
+                None => left,
+            };
         }
         left
     }
@@ -96,16 +100,14 @@ impl CalcParser<'_> {
     }
 
     fn get_precedence(&mut self) -> i64 {
-        let p: Option<Box<dyn InfixParselet>> = self
-            .clone()
-            .get_infix_parselet(self.look_ahead(0).to_token_type());
-        match p {
+        let token_type = self.look_ahead(0).to_token_type();
+        match self.get_infix_parselet(&token_type) {
+            Some(t) => t.get_precedence(),
             None => 0,
-            Some(t) => (*t).get_precedence(),
         }
     }
 
-    pub fn get_infix_parselet(self, token_type: TokenType) -> Option<Box<dyn InfixParselet>> {
+    pub fn get_infix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn InfixParselet>> {
         match token_type {
             TokenType::PLUS => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
@@ -127,6 +129,10 @@ impl CalcParser<'_> {
             TokenType::EXPO => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
                 precedence: (Precedence::EXPONENT as i64),
+            })),
+            TokenType::SELECTION => Some(Box::from(OperatorInfixParselet {
+                is_right: false,
+                precedence: (Precedence::SELECTION as i64),
             })),
             TokenType::LPAR => Some(Box::from(CallParselet {})),
             TokenType::NOT => Some(Box::from(OperatorInfixParselet {
@@ -161,11 +167,12 @@ impl CalcParser<'_> {
                 is_right: false,
                 precedence: (Precedence::CONDITIONAL as i64),
             })),
-            _ => Some(Box::from(NullParset {})),
+            TokenType::IGNORE => Some(Box::from(IgnoreParselet {})),
+            _ => None,
         }
     }
 
-    pub fn get_prefix_parselet(self, token_type: TokenType) -> Option<Box<dyn PrefixParselet>> {
+    pub fn get_prefix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn PrefixParselet>> {
         match token_type {
             TokenType::PLUS => Some(Box::from(OperatorPrefixParselet {})),
             TokenType::MINUS => Some(Box::from(OperatorPrefixParselet {})),
@@ -184,8 +191,12 @@ impl CalcParser<'_> {
             TokenType::GREATEREQ => Some(Box::from(OperatorPrefixParselet {})),
             TokenType::LBRACKET => Some(Box::from(VecParselet {})),
             TokenType::QUOTE => Some(Box::from(QuoteParselet {})),
-            TokenType::IF => Some(Box::from(IfThenElseParselet {})),
-            _ => Some(Box::from(NullParselet {})),
+            TokenType::IF => Some(Box::from(IfThenElseParselet {
+                precedence: Precedence::IFTHENELSE as i64,
+            })),
+            TokenType::WHILE => Some(Box::from(WhileParselet {})),
+            TokenType::LSB => Some(Box::from(ScopeParselet {})),
+            _ => None,
         }
     }
 }
@@ -373,7 +384,6 @@ mod test {
         let parser: &mut CalcParser = &mut init_calc_parser(&b);
         let expected = Ast::Node {
             value: Parameters::PlusOperation,
-            left: Box::from(Ast::new(Parameters::Int(1))),
             right: Box::from(Ast::Node {
                 value: Parameters::MultiplicationOperation,
                 left: Box::from(Ast::new(Parameters::Int(1))),
@@ -383,6 +393,7 @@ mod test {
                     right: Box::from(Ast::new(Parameters::Int(1))),
                 }),
             }),
+            left: Box::from(Ast::new(Parameters::Int(1))),
         };
         let result = parser.parse();
         assert_eq!(result, expected)
@@ -481,6 +492,229 @@ mod test {
             value: Parameters::Str("test 1 2 1 2".to_string()),
             left: Box::new(Ast::Nil),
             right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_plus() {
+        let b = lex("1+1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::PlusOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_minus() {
+        let b = lex("1-1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::MinusOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_mul() {
+        let b = lex("1*1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::MultiplicationOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_div() {
+        let b = lex("1/1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::DivideOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_sup() {
+        let b = lex("x>5;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::GreaterOperation,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_less() {
+        let b = lex("x<5;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::LesserOperation,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+    #[test]
+    pub fn test_ignore_parsing_sup_or_equal() {
+        let b = lex("x>=5;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::GreaterOrEqualOperation,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_less_or_equal() {
+        let b = lex("x<=5;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::LesserOrEqualOperation,
+                left: Box::new(Ast::new(Parameters::Identifier("x".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(5))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_parsing_condition() {
+        let b = lex("if true then 1 else 2;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Conditional {
+                condition: Box::new(Ast::new(Parameters::Bool(true))),
+                then_branch: Box::new(Ast::new(Parameters::Int(1))),
+                else_branch: Box::new(Ast::new(Parameters::Int(2))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_condition_else_ignore() {
+        let b = lex("if true then 1 else (2;)".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Conditional {
+            condition: Box::new(Ast::new(Parameters::Bool(true))),
+            then_branch: Box::new(Ast::new(Parameters::Int(1))),
+            else_branch: Box::new(Ast::Ignore {
+                left: Box::new(Ast::new(Parameters::Int(2))),
+                right: Box::new(Ast::Nil),
+            }),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+    #[test]
+    pub fn test_ignore_parsing_assignment() {
+        let b = lex("i=1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::Assign,
+                left: Box::new(Ast::new(Parameters::Identifier("i".to_string()))),
+                right: Box::new(Ast::new(Parameters::Int(1))),
+            }),
+            right: Box::new(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_prefix() {
+        let b = lex("-1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::MinusOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::from(Ast::Nil),
+            }),
+            right: Box::from(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_prefix_add() {
+        let b = lex("+1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::PlusOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::from(Ast::Nil),
+            }),
+            right: Box::from(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_prefix_mul() {
+        let b = lex("*1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::MultiplicationOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::from(Ast::Nil),
+            }),
+            right: Box::from(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_prefix_div() {
+        let b = lex("/1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::DivideOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::from(Ast::Nil),
+            }),
+            right: Box::from(Ast::Nil),
         };
         assert_eq!(parser.parse(), expected);
     }

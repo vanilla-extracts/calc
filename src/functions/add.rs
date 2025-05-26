@@ -11,39 +11,57 @@ use super::mult::mult;
 pub type ORam<'a> = Option<&'a ast::Ram>;
 
 pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
-    match (i, i2) {
-        (Null, Int(v)) => Int(v),
-        (Null, Float(f)) => Float(f),
+    match (&i, &i2) {
+        (Null, Int(v)) => Int(*v),
+        (Null, Float(f)) => Float(*f),
+        (InterpreterVector(vec), p) => match p {
+            Int(_) | Float(_) | Rational(_) | Bool(_) => {
+                let mut s = vec.clone();
+                s.push(p.clone());
+                InterpreterVector(Box::from(s.clone()))
+            }
+            Null => InterpreterVector(vec.clone()),
+            InterpreterVector(vec2) => {
+                let mut res = Vec::new();
+                vec.clone()
+                    .into_iter()
+                    .zip(vec2.clone().into_iter())
+                    .map(|(x, y)| add(x.clone(), y.clone(), ram))
+                    .for_each(|s| res.push(s));
+                InterpreterVector(Box::from(res))
+            }
+            Identifier(s) => match ram {
+                None => Null,
+                Some(_) => apply_operator(
+                    Identifier(s.clone()),
+                    InterpreterVector(vec.clone()),
+                    ram,
+                    add,
+                ),
+            },
+            _ => add(i.clone(), i2.clone(), ram),
+        },
         (Null, InterpreterVector(vec)) => InterpreterVector(vec.clone()),
-        (InterpreterVector(vec), Null) => InterpreterVector(vec.clone()),
-        (Int(v), Null) => Int(v),
-        (Float(f), Null) => Float(f),
+        (Int(v), Null) => Int(*v),
+        (Float(f), Null) => Float(*f),
         (Rational(s), Null) => Rational(s.clone()),
         (Null, Rational(s)) => Rational(s.clone()),
-        (Rational(s), Rational(s2)) => Rational(s + s2),
-        (Rational(s), Int(i)) => Rational(s + Rationals::new(1, i)),
-        (Int(i), Rational(s)) => Rational(s + Rationals::new(1, i)),
+        (Rational(s), Rational(s2)) => Rational(s.clone() + s2.clone()),
+        (Rational(s), Int(i)) => Rational(s.clone() + Rationals::new(1, *i)),
+        (Int(i), Rational(s)) => Rational(s.clone() + Rationals::new(1, *i)),
         (Rational(s), Float(f)) => Float(s.approx() + f),
         (Float(f), Rational(s)) => Float(f + s.approx()),
         (Int(v), Int(v2)) => Int(v + v2),
-        (Int(v), Float(f)) => Float((v as f64) + f),
+        (Int(v), Float(f)) => Float((*v as f64) + f),
         (Float(v), Float(f)) => Float(v + f),
-        (Float(v), Int(i1)) => Float(v + (i1 as f64)),
-        (InterpreterVector(vec), InterpreterVector(vec2)) => {
-            let mut res = Vec::new();
-            vec.into_iter()
-                .zip(vec2.into_iter())
-                .map(|(x, y)| add(x.clone(), y.clone(), ram))
-                .for_each(|s| res.push(s));
-            InterpreterVector(Box::from(res))
-        }
-        (Bool(_), Int(i)) => Int(i),
-        (Bool(_), Float(i)) => Float(i),
-        (Int(i), Bool(_)) => Int(i),
-        (Float(i), Bool(_)) => Float(i),
-        (Bool(b), Null) => Bool(b),
-        (Null, Bool(b)) => Bool(b),
-        (Bool(b), Bool(b2)) => Bool(b && b2),
+        (Float(v), Int(i1)) => Float(v + (*i1 as f64)),
+        (Bool(_), Int(i)) => Int(*i),
+        (Bool(_), Float(i)) => Float(*i),
+        (Int(i), Bool(_)) => Int(*i),
+        (Float(i), Bool(_)) => Float(*i),
+        (Bool(b), Null) => Bool(*b),
+        (Null, Bool(b)) => Bool(*b),
+        (Bool(b), Bool(b2)) => Bool(*b && *b2),
         (Identifier(s), Identifier(s2)) => match ram {
             None => {
                 if s != s2 {
@@ -55,55 +73,64 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
                     Var(Box::from(Int(2)), 1, s.clone())
                 }
             }
-            Some(_) => apply_operator(Identifier(s), Identifier(s2), ram, add),
+            Some(_) => apply_operator(Identifier(s.clone()), Identifier(s2.clone()), ram, add),
         },
         (Identifier(s), Int(i)) => match ram {
-            None => Plus(Box::from(Identifier(s.clone())), Box::from(Int(i))),
-            Some(_) => apply_operator(Identifier(s), Int(i), ram, add),
+            None => Plus(Box::from(Identifier(s.clone())), Box::from(Int(*i))),
+            Some(_) => apply_operator(Identifier(s.clone()), Int(*i), ram, add),
         },
         (Null, Identifier(s)) => match ram {
             None => Identifier(s.clone()),
-            Some(_) => apply_operator(Identifier(s), Null, ram, add),
+            Some(_) => apply_operator(Identifier(s.clone()), Null, ram, add),
         },
         (Rational(r), Identifier(ss)) => match ram {
-            None => Plus(Box::from(Rational(r)), Box::from(Identifier(ss.clone()))),
-            Some(_) => apply_operator_reverse(Rational(r), Identifier(ss.clone()), ram, add),
+            None => Plus(
+                Box::from(Rational(r.clone())),
+                Box::from(Identifier(ss.clone())),
+            ),
+            Some(_) => {
+                apply_operator_reverse(Rational(r.clone()), Identifier(ss.clone()), ram, add)
+            }
         },
         (Identifier(ss), Rational(r)) => match ram {
-            None => Plus(Box::from(Identifier(ss.clone())), Box::from(Rational(r))),
-            Some(_) => apply_operator(Identifier(ss), Rational(r), ram, add),
+            None => Plus(
+                Box::from(Identifier(ss.clone())),
+                Box::from(Rational(r.clone())),
+            ),
+            Some(_) => apply_operator(Identifier(ss.clone()), Rational(r.clone()), ram, add),
         },
         (Identifier(s), Null) => match ram {
             None => Identifier(s.clone()),
-            Some(_) => apply_operator(Identifier(s), Null, ram, add),
+            Some(_) => apply_operator(Identifier(s.clone()), Null, ram, add),
         },
         (Int(i), Identifier(s)) => match ram {
-            None => Plus(Box::from(Identifier(s)), Box::from(Int(i.clone()))),
-            Some(_) => apply_operator(Identifier(s), Int(i), ram, add),
+            None => Plus(Box::from(Identifier(s.clone())), Box::from(Int(i.clone()))),
+            Some(_) => apply_operator(Identifier(s.clone()), Int(*i), ram, add),
         },
         (Identifier(s), Float(i)) => match ram {
-            None => Plus(Box::from(Identifier(s.clone())), Box::from(Float(i))),
-            Some(_) => apply_operator(Identifier(s), Float(i), ram, add),
+            None => Plus(Box::from(Identifier(s.clone())), Box::from(Float(*i))),
+            Some(_) => apply_operator(Identifier(s.clone()), Float(*i), ram, add),
         },
         (Float(i), Identifier(s)) => match ram {
-            None => Plus(Box::from(Identifier(s.clone())), Box::from(Float(i))),
-            Some(_) => apply_operator(Identifier(s), Float(i), ram, add),
+            None => Plus(Box::from(Identifier(s.clone())), Box::from(Float(*i))),
+            Some(_) => apply_operator(Identifier(s.clone()), Float(*i), ram, add),
         },
         (Identifier(s), InterpreterVector(vec)) => match ram {
             None => Null,
-            Some(_) => apply_operator(Identifier(s), InterpreterVector(vec.clone()), ram, add),
-        },
-        (InterpreterVector(vec), Identifier(s)) => match ram {
-            None => Null,
-            Some(_) => apply_operator(Identifier(s), InterpreterVector(vec.clone()), ram, add),
+            Some(_) => apply_operator(
+                Identifier(s.clone()),
+                InterpreterVector(vec.clone()),
+                ram,
+                add,
+            ),
         },
         (Bool(b), Identifier(s)) => match ram {
             None => Null,
-            Some(_) => apply_operator_reverse(Bool(b), Identifier(s), ram, add),
+            Some(_) => apply_operator_reverse(Bool(*b), Identifier(s.clone()), ram, add),
         },
         (Identifier(s), Bool(b)) => match ram {
             None => Null,
-            Some(_) => apply_operator(Identifier(s), Bool(b), ram, add),
+            Some(_) => apply_operator(Identifier(s.clone()), Bool(*b), ram, add),
         },
         (Plus(s1, s2), Plus(s3, s4)) => {
             let first = Plus(
@@ -158,8 +185,8 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         }
 
         (Int(i), Plus(s1, s2)) => {
-            let first = Plus(Box::from(add(*s1.clone(), Int(i), ram)), s2.clone());
-            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Int(i), ram)));
+            let first = Plus(Box::from(add(*s1.clone(), Int(*i), ram)), s2.clone());
+            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Int(*i), ram)));
 
             let (s1, s2) = (size(&first), size(&second));
             if s1 > s2 {
@@ -170,8 +197,8 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         }
 
         (Plus(s1, s2), Int(i)) => {
-            let first = Plus(Box::from(add(*s1.clone(), Int(i), ram)), s2.clone());
-            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Int(i), ram)));
+            let first = Plus(Box::from(add(*s1.clone(), Int(*i), ram)), s2.clone());
+            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Int(*i), ram)));
 
             let (s1, s2) = (size(&first), size(&second));
             if s1 > s2 {
@@ -182,8 +209,8 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         }
 
         (Plus(s1, s2), Float(f)) => {
-            let first = Plus(Box::from(add(*s1.clone(), Float(f), ram)), s2.clone());
-            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Float(f), ram)));
+            let first = Plus(Box::from(add(*s1.clone(), Float(*f), ram)), s2.clone());
+            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Float(*f), ram)));
 
             let (s1, s2) = (size(&first), size(&second));
             if s1 > s2 {
@@ -194,8 +221,8 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         }
 
         (Float(f), Plus(s1, s2)) => {
-            let first = Plus(Box::from(add(*s1.clone(), Float(f), ram)), s2.clone());
-            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Float(f), ram)));
+            let first = Plus(Box::from(add(*s1.clone(), Float(*f), ram)), s2.clone());
+            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Float(*f), ram)));
 
             let (s1, s2) = (size(&first), size(&second));
             if s1 > s2 {
@@ -206,8 +233,14 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         }
 
         (Plus(s1, s2), Rational(r)) => {
-            let first = Plus(Box::from(add(*s1.clone(), Rational(r), ram)), s2.clone());
-            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Rational(r), ram)));
+            let first = Plus(
+                Box::from(add(*s1.clone(), Rational(r.clone()), ram)),
+                s2.clone(),
+            );
+            let second = Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Rational(r.clone()), ram)),
+            );
 
             let (s1, s2) = (size(&first), size(&second));
             if s1 > s2 {
@@ -218,8 +251,14 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         }
 
         (Rational(r), Plus(s1, s2)) => {
-            let first = Plus(Box::from(add(*s1.clone(), Rational(r), ram)), s2.clone());
-            let second = Plus(s1.clone(), Box::from(add(*s2.clone(), Rational(r), ram)));
+            let first = Plus(
+                Box::from(add(*s1.clone(), Rational(r.clone()), ram)),
+                s2.clone(),
+            );
+            let second = Plus(
+                s1.clone(),
+                Box::from(add(*s2.clone(), Rational(r.clone()), ram)),
+            );
 
             let (s1, s2) = (size(&first), size(&second));
             if s1 > s2 {
@@ -231,12 +270,12 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Plus(s1, s2), Var(x, y, z)) => {
             let first = Plus(
-                Box::from(add(*s1.clone(), Var(x.clone(), y, z.clone()), ram)),
+                Box::from(add(*s1.clone(), Var(x.clone(), *y, z.clone()), ram)),
                 s2.clone(),
             );
             let second = Plus(
                 s1.clone(),
-                Box::from(add(*s2.clone(), Var(x.clone(), y, z.clone()), ram)),
+                Box::from(add(*s2.clone(), Var(x.clone(), *y, z.clone()), ram)),
             );
 
             let (s1, s2) = (size(&first), size(&second));
@@ -249,12 +288,12 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Var(x, y, z), Plus(s1, s2)) => {
             let first = Plus(
-                Box::from(add(Var(x.clone(), y, z.clone()), *s1.clone(), ram)),
+                Box::from(add(Var(x.clone(), *y, z.clone()), *s1.clone(), ram)),
                 s2.clone(),
             );
             let second = Plus(
                 s1.clone(),
-                Box::from(add(Var(x.clone(), y, z.clone()), *s2.clone(), ram)),
+                Box::from(add(Var(x.clone(), *y, z.clone()), *s2.clone(), ram)),
             );
 
             let (s1, s2) = (size(&first), size(&second));
@@ -285,36 +324,36 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
             Box::from(Mul(s1.clone(), s2.clone())),
         ),
 
-        (Mul(s1, s2), Int(i)) => Plus(Box::from(Mul(s1.clone(), s2.clone())), Box::from(Int(i))),
+        (Mul(s1, s2), Int(i)) => Plus(Box::from(Mul(s1.clone(), s2.clone())), Box::from(Int(*i))),
 
-        (Int(i), Mul(s1, s2)) => Plus(Box::from(Int(i)), Box::from(Mul(s1.clone(), s2.clone()))),
+        (Int(i), Mul(s1, s2)) => Plus(Box::from(Int(*i)), Box::from(Mul(s1.clone(), s2.clone()))),
 
         (Mul(s1, s2), Float(f)) => {
-            Plus(Box::from(Mul(s1.clone(), s2.clone())), Box::from(Float(f)))
+            Plus(Box::from(Mul(s1.clone(), s2.clone())), Box::from(Float(*f)))
         }
 
         (Float(f), Mul(s1, s2)) => {
-            Plus(Box::from(Float(f)), Box::from(Mul(s1.clone(), s2.clone())))
+            Plus(Box::from(Float(*f)), Box::from(Mul(s1.clone(), s2.clone())))
         }
 
         (Mul(s1, s2), Rational(r)) => Plus(
             Box::from(Mul(s1.clone(), s2.clone())),
-            Box::from(Rational(r)),
+            Box::from(Rational(r.clone())),
         ),
 
         (Rational(r), Mul(s1, s2)) => Plus(
-            Box::from(Rational(r)),
+            Box::from(Rational(r.clone())),
             Box::from(Mul(s1.clone(), s2.clone())),
         ),
 
         (Var(x, y, z), Mul(s1, s2)) => Plus(
-            Box::from(Var(x.clone(), y, z.clone())),
+            Box::from(Var(x.clone(), *y, z.clone())),
             Box::from(Mul(s1.clone(), s2.clone())),
         ),
 
         (Mul(s1, s2), Var(x, y, z)) => Plus(
             Box::from(Mul(s1.clone(), s2.clone())),
-            Box::from(Var(x.clone(), y, z.clone())),
+            Box::from(Var(x.clone(), *y, z.clone())),
         ),
 
         (Mul(s1, s2), Plus(s3, s4)) => Plus(
@@ -333,7 +372,7 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Var(x, y, z), Var(x1, y1, z1)) => {
             if z == z1 && y == y1 {
-                Var(Box::from(add(*x.clone(), *x1.clone(), ram)), y, z)
+                Var(Box::from(add(*x.clone(), *x1.clone(), ram)), *y, z.clone())
             } else {
                 Plus(
                     Box::from(Var(x.clone(), y.clone(), z.clone())),
@@ -343,8 +382,8 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         }
 
         (Var(x, y, z), Identifier(s)) => {
-            if z == s && y == 1 {
-                Var(Box::from(add(*x.clone(), Int(1), ram)), y, z)
+            if z == s && *y == 1 {
+                Var(Box::from(add(*x.clone(), Int(1), ram)), *y, z.clone())
             } else {
                 Plus(
                     Box::from(Var(x.clone(), y.clone(), z.clone())),
@@ -354,8 +393,8 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         }
 
         (Identifier(s), Var(x, y, z)) => {
-            if z == s && y == 1 {
-                Var(Box::from(add(*x.clone(), Int(1), ram)), y, z)
+            if z == s && *y == 1 {
+                Var(Box::from(add(*x.clone(), Int(1), ram)), *y, z.clone())
             } else {
                 Plus(
                     Box::from(Var(x.clone(), y.clone(), z.clone())),
@@ -364,22 +403,38 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
             }
         }
 
-        (Int(i), Var(x, y, z)) => Plus(Box::from(Int(i)), Box::from(Var(x, y, z))),
+        (Int(i), Var(x, y, z)) => {
+            Plus(Box::from(Int(*i)), Box::from(Var(x.clone(), *y, z.clone())))
+        }
 
-        (Var(x, y, z), Int(i)) => Plus(Box::from(Var(x, y, z)), Box::from(Int(i))),
+        (Var(x, y, z), Int(i)) => {
+            Plus(Box::from(Var(x.clone(), *y, z.clone())), Box::from(Int(*i)))
+        }
 
-        (Float(f), Var(x, y, z)) => Plus(Box::from(Float(f)), Box::from(Var(x, y, z))),
+        (Float(f), Var(x, y, z)) => Plus(
+            Box::from(Float(*f)),
+            Box::from(Var(x.clone(), *y, z.clone())),
+        ),
 
-        (Var(x, y, z), Float(f)) => Plus(Box::from(Var(x, y, z)), Box::from(Float(f))),
+        (Var(x, y, z), Float(f)) => Plus(
+            Box::from(Var(x.clone(), *y, z.clone())),
+            Box::from(Float(*f)),
+        ),
 
-        (Rational(r), Var(x, y, z)) => Plus(Box::from(Rational(r)), Box::from(Var(x, y, z))),
+        (Rational(r), Var(x, y, z)) => Plus(
+            Box::from(Rational(r.clone())),
+            Box::from(Var(x.clone(), *y, z.clone())),
+        ),
 
-        (Var(x, y, z), Rational(r)) => Plus(Box::from(Var(x, y, z)), Box::from(Rational(r))),
+        (Var(x, y, z), Rational(r)) => Plus(
+            Box::from(Var(x.clone(), *y, z.clone())),
+            Box::from(Rational(r.clone())),
+        ),
 
         (Var(x, y, z), Div(s1, s2)) => {
             let first = Div(
                 Box::from(add(
-                    mult(Var(x.clone(), y, z.clone()), *s2.clone(), ram),
+                    mult(Var(x.clone(), *y, z.clone()), *s2.clone(), ram),
                     *s1.clone(),
                     ram,
                 )),
@@ -391,7 +446,7 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         (Div(s1, s2), Var(x, y, z)) => {
             let first = Div(
                 Box::from(add(
-                    mult(Var(x.clone(), y, z.clone()), *s2.clone(), ram),
+                    mult(Var(x.clone(), *y, z.clone()), *s2.clone(), ram),
                     *s1.clone(),
                     ram,
                 )),
@@ -462,7 +517,7 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Div(s1, s2), Int(i)) => {
             let first = Div(
-                Box::from(add(mult(*s2.clone(), Int(i), ram), *s1.clone(), ram)),
+                Box::from(add(mult(*s2.clone(), Int(*i), ram), *s1.clone(), ram)),
                 s2.clone(),
             );
             first
@@ -470,7 +525,7 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Int(i), Div(s1, s2)) => {
             let first = Div(
-                Box::from(add(mult(Int(i), *s2.clone(), ram), *s1.clone(), ram)),
+                Box::from(add(mult(Int(*i), *s2.clone(), ram), *s1.clone(), ram)),
                 s2.clone(),
             );
             first
@@ -478,7 +533,7 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Div(s1, s2), Float(f)) => {
             let first = Div(
-                Box::from(add(mult(*s2.clone(), Float(f), ram), *s1.clone(), ram)),
+                Box::from(add(mult(*s2.clone(), Float(*f), ram), *s1.clone(), ram)),
                 s2.clone(),
             );
             first
@@ -486,7 +541,7 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Float(f), Div(s1, s2)) => {
             let first = Div(
-                Box::from(add(mult(Float(f), *s2.clone(), ram), *s1.clone(), ram)),
+                Box::from(add(mult(Float(*f), *s2.clone(), ram), *s1.clone(), ram)),
                 s2.clone(),
             );
             first
@@ -494,7 +549,11 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Div(s1, s2), Rational(r)) => {
             let first = Div(
-                Box::from(add(mult(*s2.clone(), Rational(r), ram), *s1.clone(), ram)),
+                Box::from(add(
+                    mult(*s2.clone(), Rational(r.clone()), ram),
+                    *s1.clone(),
+                    ram,
+                )),
                 s2.clone(),
             );
             first
@@ -502,7 +561,11 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Rational(r), Div(s1, s2)) => {
             let first = Div(
-                Box::from(add(mult(Rational(r), *s2.clone(), ram), *s1.clone(), ram)),
+                Box::from(add(
+                    mult(Rational(r.clone()), *s2.clone(), ram),
+                    *s1.clone(),
+                    ram,
+                )),
                 s2.clone(),
             );
             first
@@ -545,22 +608,22 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Null, Call(x, y)) => Call(x.clone(), y.clone()),
 
-        (Call(x, y), Int(i)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Int(i))),
+        (Call(x, y), Int(i)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Int(*i))),
 
-        (Call(x, y), Float(i)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Float(i))),
+        (Call(x, y), Float(i)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Float(*i))),
 
         (Call(x, y), Rational(i)) => Plus(
             Box::from(Call(x.clone(), y.clone())),
-            Box::from(Rational(i)),
+            Box::from(Rational(i.clone())),
         ),
 
-        (Int(i), Call(x, y)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Int(i))),
+        (Int(i), Call(x, y)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Int(*i))),
 
-        (Float(i), Call(x, y)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Float(i))),
+        (Float(i), Call(x, y)) => Plus(Box::from(Call(x.clone(), y.clone())), Box::from(Float(*i))),
 
         (Rational(i), Call(x, y)) => Plus(
             Box::from(Call(x.clone(), y.clone())),
-            Box::from(Rational(i)),
+            Box::from(Rational(i.clone())),
         ),
 
         (Call(x, y), Identifier(a)) => Plus(
@@ -575,11 +638,11 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Call(x, y), Var(a, b, c)) => Plus(
             Box::from(Call(x.clone(), y.clone())),
-            Box::from(Var(a.clone(), b, c.clone())),
+            Box::from(Var(a.clone(), *b, c.clone())),
         ),
 
         (Var(a, b, c), Call(x, y)) => Plus(
-            Box::from(Var(a.clone(), b, c.clone())),
+            Box::from(Var(a.clone(), *b, c.clone())),
             Box::from(Call(x.clone(), y.clone())),
         ),
 

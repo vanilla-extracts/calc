@@ -1,6 +1,6 @@
 [package]
 name = "mini-calc"
-version = "3.4.2"
+version = "4.0.0-beta"
 license = "GPL-3.0-or-later"
 description = "A Fully-Featured Configurable (mini) Rust Calculator"
 homepage = "https://calc.charlotte-thomas.me"
@@ -13,8 +13,6 @@ exclude = [
     "manual.pdf"
 ]
 
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 ansi_term = "0.12.1"

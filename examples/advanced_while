@@ -1,0 +1,12 @@
+x=0;
+y=0;
+while x<5 do
+{
+	while y<x do
+	{
+		y=y+x
+	};
+	x=x+1;
+	x
+};
+y

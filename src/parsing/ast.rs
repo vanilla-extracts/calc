@@ -33,6 +33,7 @@ pub enum Parameters {
     GreaterOperation,
     OrOperation,
     AndOperation,
+    SelectionOperation,
     Equal,
     Not,
     Assign,
@@ -63,6 +64,14 @@ pub enum Ast {
         condition: Box<Ast>,
         then_branch: Box<Ast>,
         else_branch: Box<Ast>,
+    },
+    While {
+        condition: Box<Ast>,
+        body: Box<Ast>,
+    },
+    Ignore {
+        left: Box<Ast>,
+        right: Box<Ast>,
     },
 }
 
@@ -127,6 +136,7 @@ impl Display for Parameters {
             Bool(b) => write!(f, "{b}"),
             AndOperation => write!(f, "&&"),
             OrOperation => write!(f, "||"),
+            SelectionOperation => write!(f, "."),
             Vector(a) => write!(f, "{:?}", a),
             InterpreterVector(a) => write!(f, "{:?}", a),
             Str(s) => write!(f, "{s}"),
@@ -162,6 +172,12 @@ impl Display for Ast {
                 else_branch,
             } => {
                 write!(f, "if {condition} then {then_branch} else {else_branch}")
+            }
+            Ast::While { condition, body } => {
+                write!(f, "while {condition} do {body}")
+            }
+            Ast::Ignore { left, right } => {
+                write!(f, "{left}; {right}")
             }
         }
     }
@@ -510,11 +526,11 @@ impl Parameters {
     }
 }
 
-pub fn token_to_parameter(token: Token) -> Parameters {
+pub fn token_to_parameter(token: &Token) -> Parameters {
     match token {
-        Token::INT(i) => Int(i),
-        Token::FLOAT(f) => Float(f),
-        Token::IDENTIFIER(s) => Identifier(s),
+        Token::INT(i) => Int(*i),
+        Token::FLOAT(f) => Float(*f),
+        Token::IDENTIFIER(s) => Identifier(s.clone()),
         Token::OPE(Operator::PLUS) => PlusOperation,
         Token::OPE(Operator::MINUS) => MinusOperation,
         Token::OPE(Operator::MULTIPLICATION) => MultiplicationOperation,
@@ -528,8 +544,9 @@ pub fn token_to_parameter(token: Token) -> Parameters {
         Token::OPE(Operator::NOT) => Not,
         Token::OPE(Operator::Or) => OrOperation,
         Token::OPE(Operator::And) => AndOperation,
+        Token::OPE(Operator::Selection) => SelectionOperation,
         Token::EQUAL => Assign,
-        Token::BOOL(b) => Bool(b),
+        Token::BOOL(b) => Bool(*b),
         Token::RBRACKET => Vector(Box::from(Vec::new())),
         _ => Null,
     }
