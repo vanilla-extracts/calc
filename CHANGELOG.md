@@ -1,3 +1,17 @@
+# Version 4.0.0 : A real programming language
+This version adds a lot of features which makes calc closer to a real programming language.
+
+Total changelog so far (as of merging #73):
+- `if-then-else` statements (for example `if x>5 then {3} else {4}`)
+- `while` loops (for example `while x>5 do x=x+1`)
+-  `{}` scopes (variables are still global) and `;` ignore operator (which executes and ignore `lhs` and executes and returns `rhs`)
+- `.` operator (extracting a value from an array)
+
+Planned (as of merging #73):
+- `debug` and `print` functions (finally!)
+- String manipulation (join,concat,to_array)
+- Array manipulation (extract,add to array,concat)
+
 # Version 3.4.2 : Default float mode in config
 This version adds the `default_float_mode` entry in the `mini-calc.toml`
 configuration file.
