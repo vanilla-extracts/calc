@@ -103,7 +103,7 @@ impl CalcParser<'_> {
         let token_type = self.look_ahead(0).to_token_type();
         match self.get_infix_parselet(&token_type) {
             Some(t) => t.get_precedence(),
-            None => Precedence::PREFIX as i64,
+            None => 0,
         }
     }
 

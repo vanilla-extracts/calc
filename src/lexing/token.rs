@@ -84,10 +84,12 @@ pub enum TokenType {
 }
 
 pub enum Precedence {
-    IFTHENELSE = 6,
     IGNORE = 5,
-    PREFIX = 0,
+    IFTHENELSE = 6,
+    WHILE = 7,
+    PREFIX = 9,
     ASSIGNMENT = 10,
+
     // TODO: maybe rename this
     CONDITIONAL = 20,
     MINUS = 30,

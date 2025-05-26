@@ -1,4 +1,4 @@
-use crate::lexing::token::{Token, TokenType};
+use crate::lexing::token::{Precedence, Token, TokenType};
 use crate::parsing::ast::{token_to_parameter, Ast};
 use crate::parsing::parser::CalcParser;
 
@@ -44,7 +44,7 @@ impl PrefixParselet for ValueParselet {
 
 impl PrefixParselet for OperatorPrefixParselet {
     fn parse(&self, parser: &mut CalcParser, token: &Token) -> Ast {
-        let operand = parser.parse_expression_empty();
+        let operand = parser.parse_expression(Precedence::PREFIX as i64);
         Ast::Node {
             value: token_to_parameter(token),
             left: Box::from(operand),
@@ -131,9 +131,9 @@ impl PrefixParselet for IfThenElseParselet {
 
 impl PrefixParselet for WhileParselet {
     fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
-        let cond_expr = parser.parse_expression_empty();
+        let cond_expr = parser.parse_expression(Precedence::WHILE as i64);
         parser.consume_expected(TokenType::DO);
-        let body = parser.parse_expression_empty();
+        let body = parser.parse_expression(Precedence::WHILE as i64);
 
         Ast::While {
             condition: cond_expr.into(),
