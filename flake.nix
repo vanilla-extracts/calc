@@ -1,5 +1,5 @@
 {
-  description = "A fully-featured minimalistic configurable rust calculator.";
+  description = "A Fully-Featured Configurable (mini) Rust Calculator.";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
