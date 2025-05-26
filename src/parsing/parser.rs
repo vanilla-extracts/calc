@@ -654,4 +654,64 @@ mod test {
         };
         assert_eq!(parser.parse(), expected);
     }
+
+    #[test]
+    pub fn test_ignore_prefix() {
+        let b = lex("-1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::MinusOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::from(Ast::Nil),
+            }),
+            right: Box::from(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_prefix_add() {
+        let b = lex("+1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::PlusOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::from(Ast::Nil),
+            }),
+            right: Box::from(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_prefix_mul() {
+        let b = lex("*1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::MultiplicationOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::from(Ast::Nil),
+            }),
+            right: Box::from(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
+
+    #[test]
+    pub fn test_ignore_prefix_div() {
+        let b = lex("/1;".to_string());
+        let parser = &mut init_calc_parser(&b);
+        let expected = Ast::Ignore {
+            left: Box::new(Ast::Node {
+                value: Parameters::DivideOperation,
+                left: Box::new(Ast::new(Parameters::Int(1))),
+                right: Box::from(Ast::Nil),
+            }),
+            right: Box::from(Ast::Nil),
+        };
+        assert_eq!(parser.parse(), expected);
+    }
 }
