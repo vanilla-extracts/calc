@@ -31,7 +31,7 @@ mod parsing;
 mod utils;
 
 thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
-static VERSION: &str = "v3.5.0-beta";
+static VERSION: &str = "v4.0.0-beta";
 
 fn show_config(config: Config) -> (String, Option<Config>) {
     let loaded = load_config(config.clone());
