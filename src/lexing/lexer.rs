@@ -261,6 +261,10 @@ pub fn lex(input: String) -> Vec<Token> {
                 }
                 current_pos += 1
             }
+            '.' => {
+                vec.push(Token::OPE(Selection));
+                current_pos += 1
+            }
             ch => {
                 if ch.is_numeric() {
                     let (a, b) = lex_int(current_character, &mut chars, current_pos, length);
@@ -450,7 +454,7 @@ mod tests {
     fn test_simple_float() {
         let mut expected = Vec::new();
         expected.push(FLOAT(0.14));
-        let result = lex(".14".to_string());
+        let result = lex("0.14".to_string());
         assert_eq!(result, expected);
     }
 
