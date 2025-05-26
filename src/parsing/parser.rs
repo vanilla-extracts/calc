@@ -130,6 +130,10 @@ impl CalcParser<'_> {
                 is_right: false,
                 precedence: (Precedence::EXPONENT as i64),
             })),
+            TokenType::SELECTION => Some(Box::from(OperatorInfixParselet {
+                is_right: false,
+                precedence: (Precedence::SELECTION as i64),
+            })),
             TokenType::LPAR => Some(Box::from(CallParselet {})),
             TokenType::NOT => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
