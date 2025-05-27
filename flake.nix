@@ -1,41 +1,33 @@
 {
-  description = "A fully-featured minimalistic configurable rust calculator.";
+  description = "A Fully-Featured Configurable (mini) Rust Calculator.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
-    utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-        cargoTOML = builtins.fromTOML (builtins.readFile ./Cargo.toml);
-      in
-      rec {
-        devShell = pkgs.mkShell {
-          inputsFrom = [ packages.calc ];
-          packages = [ pkgs.gnumake ];
-        };
+  outputs = {
+    nixpkgs,
+    flake-utils,
+    ...
+  }:
+    flake-utils.lib.eachDefaultSystem (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in rec {
+      devShell = pkgs.mkShell {
+        inputsFrom = [packages.calc];
+        packages = [
+          pkgs.gnumake
+          pkgs.rust-analyzer
+          pkgs.rustfmt
+        ];
+      };
 
-        formatter = pkgs.nixpkgs-fmt;
-        packages = rec {
-          default = calc;
-          calc = pkgs.rustPlatform.buildRustPackage {
-            inherit (cargoTOML.package) version;
+      formatter = pkgs.alejandra;
 
-            pname = "calc";
-            src = ./.;
-
-            nativeBuildInputs = [ pkgs.makeWrapper ];
-            postFixup = ''
-              wrapProgram $out/bin/mini-calc \
-                --prefix PATH : "${pkgs.lib.makeBinPath [ pkgs.gnuplot ]}"
-            '';
-
-            cargoLock.lockFile = ./Cargo.lock;
-            meta.mainProgram = "mini-calc";
-          };
-        };
-      });
+      packages = {
+        default = packages.calc;
+        calc = pkgs.callPackage ./nix/package.nix {};
+      };
+    });
 }
