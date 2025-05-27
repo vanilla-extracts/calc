@@ -102,7 +102,7 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
 }
 
 pub fn debug(p: &Vec<Parameters>) -> Parameters {
-    dbg!(format!("{:#?}", p));
+    println!("{:#?}", p);
     Parameters::Null
 }
 
