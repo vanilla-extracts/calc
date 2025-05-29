@@ -50,6 +50,8 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
         "plot" => plot_fn(&lst, &ram, &functions, false),
         "termplot" => plot_fn(&lst, &ram, &functions, true),
         "diff" => diff(&lst, &ram, &functions),
+        "debug" => debug(&lst),
+        "print" => print(&lst),
         s => {
             let mut sram: HashMap<String, Parameters> = HashMap::new();
             sram.insert("pi".to_string(), Float(PI));
@@ -97,6 +99,16 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
             }
         }
     }
+}
+
+pub fn debug(p: &Vec<Parameters>) -> Parameters {
+    println!("{:#?}", p);
+    Parameters::Null
+}
+
+pub fn print(p: &Vec<Parameters>) -> Parameters {
+    p.iter().for_each(|f| println!("{f}"));
+    Parameters::Null
 }
 
 pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
