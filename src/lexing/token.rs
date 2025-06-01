@@ -16,6 +16,7 @@ pub enum Operator {
     Or,
     NOT,
     Selection,
+    ConcatOperation,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -83,6 +84,7 @@ pub enum TokenType {
     RSB,
     LSB,
     SELECTION,
+    CONCAT,
 }
 
 pub enum Precedence {
@@ -95,6 +97,7 @@ pub enum Precedence {
     // TODO: maybe rename this
     CONDITIONAL = 20,
     SELECTION = 25,
+    CONCAT = 26,
     MINUS = 30,
     SUM = 40,
     DIVIDE = 45,
@@ -120,6 +123,7 @@ impl Display for Operator {
             Operator::Or => write!(f, "||"),
             Operator::And => write!(f, "&&"),
             Operator::Selection => write!(f, "."),
+            Operator::ConcatOperation => write!(f, "++"),
         }
     }
 }
@@ -173,6 +177,7 @@ impl Token {
                 Operator::And => TokenType::AND,
                 Operator::Or => TokenType::OR,
                 Operator::Selection => TokenType::SELECTION,
+                Operator::ConcatOperation => TokenType::CONCAT,
             },
             Token::IDENTIFIER(_) => TokenType::IDENTIFIER,
             Token::INT(_) => TokenType::INT,

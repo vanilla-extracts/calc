@@ -35,6 +35,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                 Parameters::AndOperation => and(param1, param2, Some(&ram)),
                 Parameters::OrOperation => or(param1, param2, Some(&ram)),
                 Parameters::SelectionOperation => select(param1, param2, Some(&ram)),
+                Parameters::ConcatOperation => concat(param1, param2, Some(&ram)),
                 Parameters::Rational(s) => Parameters::Rational(s.clone()),
                 Parameters::Str(s) => Parameters::Str(s.to_string()),
                 Parameters::Assign => match *(l.clone()) {
