@@ -52,6 +52,7 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
         "diff" => diff(&lst, &ram, &functions),
         "debug" => debug(&lst),
         "print" => print(&lst),
+        "split" => split_string(&lst, &ram),
         s => {
             let mut sram: HashMap<String, Parameters> = HashMap::new();
             sram.insert("pi".to_string(), Float(PI));
@@ -109,6 +110,55 @@ pub fn debug(p: &Vec<Parameters>) -> Parameters {
 pub fn print(p: &Vec<Parameters>) -> Parameters {
     p.iter().for_each(|f| println!("{f}"));
     Parameters::Null
+}
+
+pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+    if p.len() < 1 {
+        return Null;
+    }
+    let str = match p.first() {
+        Some(Str(s)) => s.trim(),
+        Some(Identifier(s)) => match ram {
+            Some(ref t) => match t.get(s) {
+                Some(Str(sa)) => sa.trim(),
+                Some(_) => "",
+                None => s.trim(),
+            },
+            None => s.trim(),
+        },
+        _ => "",
+    };
+    if str == "" {
+        return Null;
+    }
+    let separator = match p.get(1) {
+        Some(Str(s)) => s.trim(),
+        Some(Identifier(s)) => match ram {
+            Some(ref t) => match t.get(s) {
+                Some(Str(sa)) => sa.trim(),
+                Some(_) => "",
+                None => s.trim(),
+            },
+            None => s.trim(),
+        },
+        _ => "",
+    };
+
+    if separator == "" {
+        InterpreterVector(
+            str.chars()
+                .map(|f| Str(f.to_string()))
+                .collect::<Vec<Parameters>>()
+                .into(),
+        )
+    } else {
+        InterpreterVector(
+            str.split(separator)
+                .map(|f| Str(f.to_string()))
+                .collect::<Vec<Parameters>>()
+                .into(),
+        )
+    }
 }
 
 pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
