@@ -502,7 +502,39 @@ pub fn select(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
                 Parameters::Identifier("@Runtime Exception: identifier does not exist".to_string())
             }
         },
-        _ => Parameters::Identifier("@Runtime Exception: types are incompatible.".to_string()),
+        _ => Parameters::Identifier(
+            "@Runtime Exception: types are incompatible with the select operator.".to_string(),
+        ),
+    }
+}
+
+pub fn concat(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
+    match (i, i2) {
+        (InterpreterVector(v), InterpreterVector(v2)) => {
+            Parameters::InterpreterVector(vec![*v, *v2].concat().into())
+        }
+        (Str(s), Str(s2)) => Parameters::Str((s + s2.as_str()).to_string()),
+        (Identifier(s), InterpreterVector(v)) => match ram {
+            Some(_) => apply_operator(Identifier(s), InterpreterVector(v.clone()), ram, concat),
+            None => {
+                Parameters::Identifier("@Runtime Exception: Identifier does not exist".to_string())
+            }
+        },
+        (InterpreterVector(v), Identifier(s)) => match ram {
+            Some(_) => apply_operator_reverse(Identifier(s), InterpreterVector(v), ram, concat),
+            None => {
+                Parameters::Identifier("@Runtime Exception: Identifier does not exist".to_string())
+            }
+        },
+        (Identifier(s), Identifier(s1)) => match ram {
+            Some(_) => apply_operator(Identifier(s), Identifier(s1), ram, concat),
+            None => {
+                Parameters::Identifier("@Runtime Exception: Identifier does not exist".to_string())
+            }
+        },
+        _ => Parameters::Identifier(
+            "@Runtime Exception: types are incompatible with the concat operator.".to_string(),
+        ),
     }
 }
 

@@ -26,6 +26,7 @@ pub fn size(p: &Parameters) -> i32 {
         | Not
         | Vector(_)
         | SelectionOperation
+        | ConcatOperation
         | InterpreterVector(_) => 0,
         Plus(x, y) => 1 + size(x) + size(y),
         Var(x, _, _) => 1 + size(x),

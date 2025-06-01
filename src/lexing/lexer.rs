@@ -133,10 +133,21 @@ pub fn lex(input: String) -> Vec<Token> {
         };
 
         match current_character {
-            '+' => {
-                vec.push(Token::OPE(PLUS));
-                current_pos += 1
-            }
+            '+' => match vec.pop() {
+                Some(Token::OPE(PLUS)) => {
+                    vec.push(Token::OPE(ConcatOperation));
+                    current_pos += 1;
+                }
+                Some(p) => {
+                    vec.push(p);
+                    vec.push(Token::OPE(PLUS));
+                    current_pos += 1;
+                }
+                None => {
+                    vec.push(Token::OPE(PLUS));
+                    current_pos += 1;
+                }
+            },
             '-' => {
                 vec.push(Token::OPE(MINUS));
                 current_pos += 1
