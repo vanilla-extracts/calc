@@ -125,7 +125,7 @@ pub fn lex(input: String) -> Vec<Token> {
                 current_pos += 1;
                 continue;
             }
-            Some(t) => current_character = t.to_ascii_lowercase(),
+            Some(t) => current_character = t.clone(),
         }
         if !is_an_allowed_char(current_character) {
             current_pos += 1;
