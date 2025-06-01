@@ -106,7 +106,7 @@ impl PrefixParselet for QuoteParselet {
         }
 
         Ast::Node {
-            value: crate::parsing::ast::Parameters::Str(str.trim().to_string()),
+            value: crate::parsing::ast::Parameters::Str(str.to_string()),
             left: Box::new(Ast::Nil),
             right: Box::new(Ast::Nil),
         }
