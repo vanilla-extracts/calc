@@ -52,6 +52,8 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
         "diff" => diff(&lst, &ram, &functions),
         "debug" => debug(&lst),
         "print" => print(&lst),
+        "split" => split_string(&lst, &ram),
+        "join" => join_string(&lst, &ram),
         s => {
             let mut sram: HashMap<String, Parameters> = HashMap::new();
             sram.insert("pi".to_string(), Float(PI));
@@ -111,6 +113,91 @@ pub fn print(p: &Vec<Parameters>) -> Parameters {
     Parameters::Null
 }
 
+pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+    if p.len() < 1 {
+        return Null;
+    }
+    let str = match p.first() {
+        Some(Str(s)) => s.trim(),
+        Some(Identifier(s)) => match ram {
+            Some(ref t) => match t.get(s) {
+                Some(Str(sa)) => sa.trim(),
+                Some(_) => "",
+                None => s.trim(),
+            },
+            None => s.trim(),
+        },
+        _ => "",
+    };
+    if str == "" {
+        return Null;
+    }
+    let separator = match p.get(1) {
+        Some(Str(s)) => s.trim(),
+        Some(Identifier(s)) => match ram {
+            Some(ref t) => match t.get(s) {
+                Some(Str(sa)) => sa.trim(),
+                Some(_) => "",
+                None => s.trim(),
+            },
+            None => s.trim(),
+        },
+        _ => "",
+    };
+
+    if separator == "" {
+        InterpreterVector(
+            str.chars()
+                .map(|f| Str(f.to_string()))
+                .collect::<Vec<Parameters>>()
+                .into(),
+        )
+    } else {
+        InterpreterVector(
+            str.split(separator)
+                .map(|f| Str(f.to_string()))
+                .collect::<Vec<Parameters>>()
+                .into(),
+        )
+    }
+}
+
+pub fn join_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+    if p.len() < 1 {
+        return Null;
+    }
+    let delimiter = match p.last() {
+        Some(Str(s)) => s,
+        Some(Identifier(s)) => match ram {
+            Some(ref t) => match t.get(s) {
+                Some(Str(sa)) => sa,
+                Some(_) => "",
+                None => s,
+            },
+            None => s,
+        },
+        _ => "",
+    };
+
+    Str(p
+        .iter()
+        .map(|f| match f {
+            Str(s) => s,
+            Identifier(s) => match ram {
+                Some(ref t) => match t.get(s) {
+                    Some(Str(sa)) => sa,
+                    Some(_) => "",
+                    None => s,
+                },
+                None => s,
+            },
+            _ => "",
+        })
+        .collect::<Vec<&str>>()
+        .join(delimiter)
+        .trim()
+        .to_string())
+}
 pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
         return Null;

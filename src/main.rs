@@ -19,8 +19,8 @@ use crate::lexing::lexer::lex;
 use crate::parsing::ast::{Ast, Parameters};
 use crate::parsing::parser::{init_calc_parser, CalcParser};
 use atty::Stream;
-use std::io;
 use std::io::BufRead;
+use std::{fs, io};
 
 mod configuration;
 mod exact_math;
@@ -401,7 +401,7 @@ fn main() {
             "exit" => break,
             "help" => {
                 let message = loaded.general_color.paint(format!(
-                    " Calc {VERSION} Help \n > info : show infos \n > exit : exit the program \n > help : print this help \n > verbose : toggle the verbose \n > version : prints the version \n > config : root of the config \n toggle_float <exact|science|normal> : toggle the float mode"
+                    " Calc {VERSION} Help \n > info : show infos \n > exit : exit the program \n > help : print this help \n > verbose : toggle the verbose \n > version : prints the version \n > load <file> : load a file from fs \n > config : root of the config \n > toggle_float <exact|science|normal> : toggle the float mode"
                 ));
                 println!("{}", message)
             }
@@ -414,6 +414,43 @@ fn main() {
                 let message = loaded.general_color.paint("You toggled the verbose : ");
                 let message2 = Color::Red.paint(if verbose { "on" } else { "off" });
                 println!("{}{}", message, message2)
+            }
+            str if str.starts_with("load") => {
+                let file = match str.strip_prefix("load") {
+                    Some(s) => s.trim(),
+                    None => continue,
+                };
+                let code = match fs::read_to_string(file) {
+                    Ok(s) => s,
+                    Err(e) => {
+                        println!("Error while reading file: {e}");
+                        continue;
+                    }
+                };
+                let a = lex(code.clone());
+                let parser: &mut CalcParser = &mut parsing::parser::init_calc_parser(&a);
+                let p = parser.parse();
+                if verbose {
+                    println!("Lexing of line: {}", &code);
+                    println!("{:?}", &a);
+                    println!("Parsing of line: {}", &code);
+                    println!("{:#?}", p);
+                    println!()
+                }
+
+                let result = interpret(&p, &mut ram, &mut functions);
+
+                if verbose {
+                    println!("{:#?}", &result);
+                    println!()
+                }
+
+                if result != Parameters::Null {
+                    println!(
+                        "{}",
+                        result.argument_print(Some(&mut ram), Some(&mut functions))
+                    )
+                }
             }
             str if str.starts_with("toggle_float") => {
                 let p = str.replace("toggle_float ", "");
@@ -516,6 +553,7 @@ static CMD: &[&str] = &[
     "help",
     "info",
     "toggle_float",
+    "load",
 ];
 static CONFIG_CMD: &[&str] = &["reload", "reset", "set", "show"];
 static TOGGLE_FLOAT_CMD: &[&str] = &["normal", "science", "scientific", "exact", "rational"];
