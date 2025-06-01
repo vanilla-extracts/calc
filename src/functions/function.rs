@@ -492,6 +492,10 @@ pub fn select(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
             Some(opt) => opt.clone(),
             None => Parameters::Identifier("@Runtime Exception: Index out of bound.".to_string()),
         },
+        (Str(s), Int(i)) => match s.chars().nth(i as usize) {
+            Some(opt) => Parameters::Str(opt.to_string()),
+            None => Parameters::Identifier("@Runtime Exception: Index out of bound".to_string()),
+        },
         (Identifier(s), Int(i)) => match ram {
             Some(_) => apply_operator(Identifier(s), Int(i), ram, select),
             None => {
