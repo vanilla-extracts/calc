@@ -167,7 +167,7 @@ pub fn join_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         return Null;
     }
     let delimiter = match p.last() {
-        Some(Str(s)) => s.trim(),
+        Some(Str(s)) => s,
         Some(Identifier(s)) => match ram {
             Some(ref t) => match t.get(s) {
                 Some(Str(sa)) => sa,
@@ -194,7 +194,9 @@ pub fn join_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             _ => "",
         })
         .collect::<Vec<&str>>()
-        .join(delimiter))
+        .join(delimiter)
+        .trim()
+        .to_string())
 }
 pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     if p.len() < 1 {
