@@ -1,4 +1,4 @@
-# Version 4.0.0-beta-rc-1 : A real programming language
+# Version 4.0.0-beta-rc1 : A real programming language
 This version adds a lot of features which makes calc closer to a real programming language.
 
 Total changelog so far (as of merging #73):
