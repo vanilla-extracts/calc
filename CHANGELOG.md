@@ -1,3 +1,18 @@
+# Version 4.0.0 : A real programming language
+This version adds a lot of features which makes calc closer to a real programming language.
+
+Changelog:
+- `if-then-else` statements (for example `if x>5 then {3} else {4}`)
+- `while` loops (for example `while x>5 do x=x+1`)
+-  `{}` scopes (variables are still global) and `;` ignore operator (which executes and ignore `lhs` and executes and returns `rhs`)
+- `.` operator (extracting a value from an array)
+- `debug` and `print` functions (finally!)
+- String manipulation (join,concat,to_array)
+- Array manipulation (extract,add to array,concat)
+- fix stackoverflow when assigning a variable to itself (for example `x=x+1`).
+
+Thanks Léana for the huge help!
+
 # Version 4.0.0-beta-rc1 : A real programming language
 This version adds a lot of features which makes calc closer to a real programming language.
 
