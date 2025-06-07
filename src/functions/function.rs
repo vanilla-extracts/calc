@@ -56,10 +56,90 @@ pub fn apply_operator_reverse(
 }
 
 pub fn assign(s: Parameters, s2: Parameters) -> (String, Parameters) {
+    fn contained_in_parameter(pattern: &Parameters, search: &Parameters) -> bool {
+        match search {
+            Int(_) => {
+                if let Int(_) = pattern {
+                    true
+                } else {
+                    false
+                }
+            }
+            Float(_) => {
+                if let Float(_) = pattern {
+                    true
+                } else {
+                    false
+                }
+            }
+            Bool(_) => {
+                if let Bool(_) = pattern {
+                    true
+                } else {
+                    false
+                }
+            }
+            Rational(_) => {
+                if let Rational(_) = pattern {
+                    true
+                } else {
+                    false
+                }
+            }
+            Str(_) => {
+                if let Str(_) = pattern {
+                    true
+                } else {
+                    false
+                }
+            }
+            Identifier(str) => {
+                if let Identifier(str2) = pattern {
+                    str == str2
+                } else if let Var(_, _, str2) = pattern {
+                    str == str2
+                } else {
+                    false
+                }
+            }
+            Var(_, _, s) => {
+                if let Var(_, _, s2) = pattern {
+                    s == s2
+                } else if let Identifier(s2) = pattern {
+                    s == s2
+                } else {
+                    false
+                }
+            }
+            InterpreterVector(_) => {
+                if let InterpreterVector(_) = pattern {
+                    true
+                } else {
+                    false
+                }
+            }
+            Call(s, _) => {
+                if let Call(s2, _) = pattern {
+                    s == s2
+                } else {
+                    false
+                }
+            }
+            Plus(x, y) => contained_in_parameter(pattern, x) || contained_in_parameter(pattern, y),
+            Mul(x, y) => contained_in_parameter(pattern, x) || contained_in_parameter(pattern, y),
+            Div(x, y) => contained_in_parameter(pattern, x) || contained_in_parameter(pattern, y),
+            _ => false,
+        }
+    }
     match (s, s2.clone()) {
-        (Identifier(s), Identifier(s2)) if s == s2 => ("".to_string(), Identifier(s2)),
-        (Identifier(s), _) => (s, s2),
-        _ => ("".to_string(), s2),
+        (Identifier(s), _) => {
+            if contained_in_parameter(&Identifier(s.clone()), &s2) {
+                ("".to_string(), Parameters::Null)
+            } else {
+                (s, s2)
+            }
+        }
+        _ => ("".to_string(), Parameters::Null),
     }
 }
 
