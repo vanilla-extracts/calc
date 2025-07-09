@@ -15,7 +15,7 @@ pub fn apply_operator(
         Identifier(ref s) => s,
         _ => "",
     };
-    if s == "" {
+    if s.is_empty() {
         return Null;
     }
     match ram {
@@ -40,7 +40,7 @@ pub fn apply_operator_reverse(
         Identifier(ref s) => s,
         _ => "",
     };
-    if s == "" {
+    if s.is_empty() {
         return Null;
     }
     match ram {
@@ -591,7 +591,7 @@ pub fn select(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 pub fn concat(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (InterpreterVector(v), InterpreterVector(v2)) => {
-            Parameters::InterpreterVector(vec![*v, *v2].concat().into())
+            Parameters::InterpreterVector([*v, *v2].concat().into())
         }
         (Str(s), Str(s2)) => Parameters::Str((s + s2.as_str()).to_string()),
         (Identifier(s), InterpreterVector(v)) => match ram {

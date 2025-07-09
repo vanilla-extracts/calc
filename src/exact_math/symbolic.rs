@@ -81,8 +81,7 @@ mod test {
             0, 0, 0, 0, 0,
         ];
 
-        let _ = v
-            .into_iter()
+        v.into_iter()
             .map(|f| size(&f))
             .zip(should)
             .for_each(|(x, y)| assert_eq!(x, y));

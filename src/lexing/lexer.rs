@@ -95,12 +95,9 @@ fn lex_float(
 ) -> (f64, usize) {
     current_pos += 1;
     let current_char_options = chars.get(current_pos);
-    let current_char = match current_char_options {
-        Some(t) => t,
-        None => &'0',
-    };
+    let current_char = current_char_options.unwrap_or(&'0');
     let (a, b) = lex_raddix(*current_char, chars, current_pos, len);
-    let f = f64::from_str(&*(whole_side.to_string().as_str().to_owned() + "." + a.as_str()));
+    let f = f64::from_str(&(whole_side.to_string().as_str().to_owned() + "." + a.as_str()));
     if f.is_err() {
         return (f64::NAN, b);
     }
@@ -119,14 +116,14 @@ pub fn lex(input: String) -> Vec<Token> {
     let length = input.len();
     while current_pos < input.len() {
         let peeking_char = chars.get(current_pos);
-        let current_character: char;
-        match peeking_char {
+
+        let current_character: char = match peeking_char {
             None => {
                 current_pos += 1;
                 continue;
             }
-            Some(t) => current_character = t.clone(),
-        }
+            Some(t) => *t,
+        };
         if !is_an_allowed_char(current_character) {
             current_pos += 1;
             continue;

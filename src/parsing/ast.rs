@@ -98,11 +98,11 @@ pub fn int_to_superscript_string(i: i64) -> String {
     let string_int = i.to_string();
     string_int
         .split("")
-        .map(|x| digit_to_superscript_char(x))
+        .map(digit_to_superscript_char)
         .for_each(|f| vec.push(f));
 
     let i = vec.join("");
-    if i == "⁰".to_string() {
+    if i == *"⁰" {
         "error".to_string()
     } else if i == "¹" {
         "".to_string()
@@ -166,7 +166,7 @@ impl Display for Ast {
             Ast::Call { name: v, lst: s } => {
                 let mut vs = Vec::new();
                 s.iter().for_each(|x1| vs.push(x1.to_string()));
-                write!(f, "{}({})", v, vs.join(",").to_string())
+                write!(f, "{}({})", v, vs.join(","))
             }
             Ast::Conditional {
                 condition,
@@ -195,22 +195,20 @@ impl Parameters {
             Identifier(s) => {
                 if s.starts_with("@") {
                     match s.strip_prefix("@") {
-                        None => format!(""),
+                        None => String::new(),
                         Some(c) => {
                             format!("{} {}", Color::Purple.paint("Error:"), Color::Red.paint(c))
                         }
                     }
+                } else if ram.is_none() {
+                    self.to_string()
                 } else {
-                    if ram.is_none() {
-                        return self.to_string();
-                    } else {
-                        match ram.as_mut().unwrap().get(s) {
-                            None => s.to_string(),
-                            Some(t) => t.clone().pretty_print(
-                                Some(ram.as_mut().unwrap()),
-                                Some(function.as_mut().unwrap()),
-                            ),
-                        }
+                    match ram.as_mut().unwrap().get(s) {
+                        None => s.to_string(),
+                        Some(t) => t.clone().pretty_print(
+                            Some(ram.as_mut().unwrap()),
+                            Some(function.as_mut().unwrap()),
+                        ),
                     }
                 }
             }
@@ -236,14 +234,14 @@ impl Parameters {
                                 ""
                             }
                         }
-                        Float(f) if f >= 1.0 - 1e-10 && f <= 1.0 + 1e-10 => {
+                        Float(f) if (1.0 - 1e-10..=1.0 + 1e-10).contains(&f) => {
                             if division {
                                 "1"
                             } else {
                                 ""
                             }
                         }
-                        Rational(r) if r.clone() == Rationals::new(1, 1) => {
+                        Rational(r) if r == Rationals::new(1, 1) => {
                             if division {
                                 "1"
                             } else {
@@ -257,14 +255,14 @@ impl Parameters {
                                 "-"
                             }
                         }
-                        Float(f) if f >= -1.0 - 1e-10 && f <= -1.0 + 1e-10 => {
+                        Float(f) if (-1.0 - 1e-10..=-1.0 + 1e-10).contains(&f) => {
                             if division {
                                 "-1"
                             } else {
                                 ""
                             }
                         }
-                        Rational(r) if r.clone() == Rationals::new(-1, 1) => {
+                        Rational(r) if r == Rationals::new(-1, 1) => {
                             if division {
                                 "-1"
                             } else {
@@ -317,8 +315,8 @@ impl Parameters {
                 match y_printed.chars().nth(0) {
                     Some('-') => format!("({}{})", x_printed, y_printed),
                     _ => {
-                        if y_printed == "0".to_string() {
-                            format!("{}", x_printed)
+                        if y_printed == *"0" {
+                            x_printed.to_string()
                         } else {
                             format!("({})+({})", x_printed, y_printed)
                         }
@@ -355,12 +353,11 @@ impl Parameters {
                  * -------------
                  */
                 let mut matrix = false;
-                if vec.len() == 0 {
-                    return format!("");
+                if vec.is_empty() {
+                    return String::new();
                 }
-                match lst.first().unwrap() {
-                    Parameters::InterpreterVector(_) => matrix = true,
-                    _ => (),
+                if let Parameters::InterpreterVector(_) = lst.first().unwrap() {
+                    matrix = true
                 }
                 if !matrix {
                     format!("|{}|", vec.join(" "))
@@ -470,7 +467,7 @@ impl Parameters {
                 } else {
                     format!(
                         "{}: {} = {}",
-                        Color::Cyan.paint(format!("{}", s.clone())),
+                        Color::Cyan.paint(s.clone().to_string()),
                         Color::Yellow.paint("ident"),
                         Color::Yellow.paint(self.pretty_print(ram, function))
                     )
@@ -567,7 +564,7 @@ impl Parameters {
                     let param = t.get(&s);
                     match param {
                         None => Parameters::Null,
-                        Some(t) => t.clone().abs(ram.as_deref()),
+                        Some(t) => t.clone().abs(ram),
                     }
                 }
             },

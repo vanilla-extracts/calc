@@ -247,7 +247,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
         }
     }
 
-    handle_second_argument(config, args.nth(0), args)
+    handle_second_argument(config, args.next(), args)
 }
 
 fn reload_config() -> (String, Option<Config>) {
@@ -264,7 +264,7 @@ fn reload_config() -> (String, Option<Config>) {
 }
 
 fn show_help_config() -> (String, Option<Config>) {
-    (format!("Config help, \n > config show: show config \n > config set: set config \n > config reload: reload config \n > config reset: reset config\n\n"),None)
+    ("Config help, \n > config show: show config \n > config set: set config \n > config reload: reload config \n > config reset: reset config\n\n".to_string(),None)
 }
 
 fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
@@ -272,7 +272,7 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
         None => show_help_config(),
         Some(t) => {
             let mut w = t.split_whitespace();
-            match w.nth(0) {
+            match w.next() {
                 None => show_help_config(),
                 Some("set") => set_config(config, &mut w.clone()),
                 Some("reload") => reload_config(),
@@ -295,19 +295,19 @@ fn main() {
                 a.push(line.unwrap().to_string());
             }
         } else {
-            args.nth(0);
+            args.next();
             args.for_each(|f| a.push(f));
         }
 
         let arg_final = a.join("");
         if arg_final == "-h" || arg_final == "--help" {
             println!("-----Help Calc-----");
-            println!("");
+            println!();
             println!("mini-calc > launch the mini-calc REPL");
             println!("mini-calc [arg] > compute non interactively");
             println!("mini-calc -h || --help > open this help");
             println!("mini-calc -u || --update > update the binary");
-            println!("");
+            println!();
             println!("------Help Calc-----");
             exit(0);
         }
@@ -372,7 +372,7 @@ fn main() {
     });
 
     let message = &loaded.greeting_message;
-    println!("{}", message.to_string());
+    println!("{}", message);
 
     let interface = Interface::new("calc").unwrap();
     let style = &loaded.clone().prompt_style;

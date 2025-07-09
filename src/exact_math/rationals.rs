@@ -22,7 +22,7 @@ impl Rationals {
     }
 
     pub fn approx(self) -> f64 {
-        return self.over as f64 / self.under as f64;
+        self.over as f64 / self.under as f64
     }
 
     pub fn rationalize(f: f64) -> Self {
@@ -31,11 +31,11 @@ impl Rationals {
     }
 
     pub fn is_null(self) -> bool {
-        return self.over == 0;
+        self.over == 0
     }
 
     pub fn opposite(self) -> Self {
-        Rationals::new(self.under, -1 * self.over)
+        Rationals::new(self.under, -self.over)
     }
 
     pub fn invert(self) -> Result<Rationals, Rationals> {
@@ -68,7 +68,7 @@ impl Rationals {
         }
 
         if i1 == 0 && i2 == 0 {
-            return Rationals { under: 0, over: 0 };
+            Rationals { under: 0, over: 0 }
         } else if i1 == 0 {
             return Rationals { under: 1, over: 0 };
         } else if i2 == 0 {
@@ -113,21 +113,21 @@ impl Display for Rationals {
 impl PartialEq for Rationals {
     fn eq(&self, other: &Self) -> bool {
         if self.under == other.under {
-            return self.over == other.over;
+            self.over == other.over
         } else {
             let i1 = self.put_to_denominator(other.under);
             let i2 = other.put_to_denominator(self.under);
-            return i1.over == i2.over;
+            i1.over == i2.over
         }
     }
     fn ne(&self, other: &Self) -> bool {
-        return !self.eq(other);
+        !self.eq(other)
     }
 }
 
 impl PartialOrd for Rationals {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        if !(self.under == other.under) {
+        if self.under != other.under {
             if self.over == other.over {
                 return Some(std::cmp::Ordering::Equal);
             }
@@ -155,10 +155,10 @@ impl PartialOrd for Rationals {
     }
 
     fn le(&self, other: &Self) -> bool {
-        return self < other || self == other;
+        self <= other
     }
     fn ge(&self, other: &Self) -> bool {
-        return self > other || self == other;
+        self >= other
     }
 }
 
@@ -178,14 +178,14 @@ impl ops::Add for Rationals {
 impl ops::Sub for Rationals {
     type Output = Rationals;
     fn sub(self, rhs: Self) -> Self::Output {
-        return self + Rationals::new(rhs.under, -rhs.over);
+        self + Rationals::new(rhs.under, -rhs.over)
     }
 }
 
 impl ops::Mul for Rationals {
     type Output = Rationals;
     fn mul(self, rhs: Self) -> Self::Output {
-        return Rationals::new(self.under * rhs.under, self.over * rhs.over).reduce();
+        Rationals::new(self.under * rhs.under, self.over * rhs.over).reduce()
     }
 }
 
@@ -195,7 +195,7 @@ impl ops::Div for Rationals {
         let l = self.under * rhs.over;
         let rs = self.over * rhs.under;
         let r = Rationals::new(l, rs);
-        return r.reduce();
+        r.reduce()
     }
 }
 
@@ -214,14 +214,14 @@ mod test {
     pub fn test_equality_simple() {
         let r1 = Rationals::new(2, 5);
         let r2 = Rationals::new(2, 3);
-        assert_eq!(r1 > r2, true);
+        assert!(r1 > r2);
     }
 
     #[test]
     pub fn test_equality_hard() {
         let f1 = Rationals::new(2, 3);
         let f2 = Rationals::new(3, 1);
-        assert_eq!(f2 < f1, true);
+        assert!(f2 < f1);
     }
 
     #[test]

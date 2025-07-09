@@ -68,7 +68,7 @@ impl CalcParser<'_> {
     }
     pub fn consume(&mut self) -> Token {
         self.look_ahead(0);
-        if self.read.len() == 0 {
+        if self.read.is_empty() {
             return Null;
         }
         self.read.remove(0)
@@ -79,12 +79,12 @@ impl CalcParser<'_> {
         if token.to_token_type() != expected {
             return false;
         }
-        return true;
+        true
     }
 
     pub fn consume_expected(&mut self, expected: TokenType) -> Token {
         self.look_ahead(0);
-        if self.read.len() == 0 {
+        if self.read.is_empty() {
             return Null;
         }
         match self.read.remove(0) {

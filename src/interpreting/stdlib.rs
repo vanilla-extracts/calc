@@ -80,10 +80,11 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
                                 value: v,
                                 left: _l,
                                 right: _r,
-                            } => match v {
-                                Identifier(s) => names.push(s.clone()),
-                                _ => (),
-                            },
+                            } => {
+                                if let Identifier(s) = v {
+                                    names.push(s.clone())
+                                }
+                            }
                         }
                     }
                     names
@@ -114,7 +115,7 @@ pub fn print(p: &Vec<Parameters>) -> Parameters {
 }
 
 pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
     let str = match p.first() {
@@ -129,7 +130,7 @@ pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         },
         _ => "",
     };
-    if str == "" {
+    if str.is_empty() {
         return Null;
     }
     let separator = match p.get(1) {
@@ -145,7 +146,7 @@ pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         _ => "",
     };
 
-    if separator == "" {
+    if separator.is_empty() {
         InterpreterVector(
             str.chars()
                 .map(|f| Str(f.to_string()))
@@ -163,7 +164,7 @@ pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn join_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
     let delimiter = match p.last() {
@@ -199,7 +200,7 @@ pub fn join_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         .to_string())
 }
 pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -212,12 +213,12 @@ pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = if degrees {
-                ((*i).clone() as f64) * (PI / 180.0)
+                ((*i) as f64) * (PI / 180.0)
             } else {
-                (*i).clone() as f64
+                (*i) as f64
             };
             Float(fs.cos())
         }
@@ -227,9 +228,9 @@ pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             let fs = if degrees {
-                s.clone().approx() * PI / 180.0
+                (*s).approx() * PI / 180.0
             } else {
-                s.clone().approx()
+                (*s).approx()
             };
             Float(fs.cos())
         }
@@ -286,7 +287,7 @@ pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -299,12 +300,12 @@ pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = if degrees {
-                ((*i).clone() as f64) * (PI / 180.0)
+                ((*i) as f64) * (PI / 180.0)
             } else {
-                (*i).clone() as f64
+                (*i) as f64
             };
             Float(fs.sin())
         }
@@ -314,9 +315,9 @@ pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             let fs = if degrees {
-                s.clone().approx() * PI / 180.0
+                (*s).approx() * PI / 180.0
             } else {
-                s.clone().approx()
+                (*s).approx()
             };
             Float(fs.sin())
         }
@@ -373,7 +374,7 @@ pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -386,12 +387,12 @@ pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = if degrees {
-                ((*i).clone() as f64) * (PI / 180.0)
+                ((*i) as f64) * (PI / 180.0)
             } else {
-                (*i).clone() as f64
+                (*i) as f64
             };
             Float(fs.tan())
         }
@@ -401,9 +402,9 @@ pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             let fs = if degrees {
-                s.clone().approx() * PI / 180.0
+                (*s).approx() * PI / 180.0
             } else {
-                s.clone().approx()
+                (*s).approx()
             };
             Float(fs.tan())
         }
@@ -461,7 +462,7 @@ pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -474,12 +475,12 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = if degrees {
-                ((*i).clone() as f64) * (PI / 180.0)
+                ((*i) as f64) * (PI / 180.0)
             } else {
-                (*i).clone() as f64
+                (*i) as f64
             };
             Float(fs.cosh())
         }
@@ -489,9 +490,9 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             let fs = if degrees {
-                s.clone().approx() * PI / 180.0
+                (*s).approx() * PI / 180.0
             } else {
-                s.clone().approx()
+                (*s).approx()
             };
             Float(fs.cosh())
         }
@@ -549,7 +550,7 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -562,12 +563,12 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = if degrees {
-                ((*i).clone() as f64) * (PI / 180.0)
+                ((*i) as f64) * (PI / 180.0)
             } else {
-                (*i).clone() as f64
+                (*i) as f64
             };
             Float(fs.sinh())
         }
@@ -577,9 +578,9 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             let fs = if degrees {
-                s.clone().approx() * PI / 180.0
+                (*s).approx() * PI / 180.0
             } else {
-                s.clone().approx()
+                (*s).approx()
             };
             Float(fs.sinh())
         }
@@ -637,7 +638,7 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -650,12 +651,12 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = if degrees {
-                ((*i).clone() as f64) * (PI / 180.0)
+                ((*i) as f64) * (PI / 180.0)
             } else {
-                (*i).clone() as f64
+                (*i) as f64
             };
             Float(fs.tanh())
         }
@@ -665,9 +666,9 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             let fs = if degrees {
-                s.clone().approx() * PI / 180.0
+                (*s).approx() * PI / 180.0
             } else {
-                s.clone().approx()
+                (*s).approx()
             };
             Float(fs.tanh())
         }
@@ -725,7 +726,7 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -738,7 +739,7 @@ pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             Float(if degrees {
@@ -753,9 +754,9 @@ pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             f.acos()
         }),
         Rational(s) => Parameters::Float(if degrees {
-            s.clone().approx().acos() * 180.0 / PI
+            (*s).approx().acos() * 180.0 / PI
         } else {
-            s.clone().approx().acos()
+            (*s).approx().acos()
         }),
 
         InterpreterVector(vec) => {
@@ -811,7 +812,7 @@ pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -824,7 +825,7 @@ pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             Float(if degrees {
@@ -840,9 +841,9 @@ pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }),
 
         Rational(s) => Parameters::Float(if degrees {
-            s.clone().approx().asin() * (180.0 / PI)
+            (*s).approx().asin() * (180.0 / PI)
         } else {
-            s.clone().approx().asin()
+            (*s).approx().asin()
         }),
 
         InterpreterVector(vec) => {
@@ -898,7 +899,7 @@ pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -911,7 +912,7 @@ pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             Float(if degrees {
@@ -927,9 +928,9 @@ pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }),
 
         Rational(s) => Parameters::Float(if degrees {
-            s.clone().approx().atan() * (180.0 / PI)
+            (*s).approx().atan() * (180.0 / PI)
         } else {
-            s.clone().approx().atan()
+            (*s).approx().atan()
         }),
 
         InterpreterVector(vec) => {
@@ -985,7 +986,7 @@ pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -1006,7 +1007,7 @@ pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             if plus {
@@ -1024,9 +1025,9 @@ pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             if plus {
-                Float(ln.powf(s.clone().approx()))
+                Float(ln.powf((*s).approx()))
             } else {
-                Float(s.clone().approx().exp())
+                Float((*s).approx().exp())
             }
         }
 
@@ -1073,7 +1074,7 @@ pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -1094,7 +1095,7 @@ pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             if plus {
@@ -1113,9 +1114,9 @@ pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
         Rational(s) => {
             if plus {
-                Float(s.clone().approx().log(sln))
+                Float((*s).approx().log(sln))
             } else {
-                Float(s.clone().approx().ln())
+                Float((*s).approx().ln())
             }
         }
 
@@ -1162,7 +1163,7 @@ pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -1183,7 +1184,7 @@ pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             if plus {
@@ -1201,9 +1202,9 @@ pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             if plus {
-                Float(s.clone().approx().powf(1.0 / sln))
+                Float((*s).approx().powf(1.0 / sln))
             } else {
-                Float(s.clone().approx().sqrt())
+                Float((*s).approx().sqrt())
             }
         }
 
@@ -1221,9 +1222,9 @@ pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                     f.sqrt()
                 })),
                 Rational(s) => res.push(Parameters::Float(if plus {
-                    s.clone().approx().powf(1.0 / sln)
+                    s.approx().powf(1.0 / sln)
                 } else {
-                    s.clone().approx().sqrt()
+                    s.approx().sqrt()
                 })),
                 Identifier(s) => match ram {
                     None => (),
@@ -1264,11 +1265,11 @@ pub fn fact(n: i64) -> i64 {
 }
 
 pub fn factorial(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Int(fact(*i)),
         Float(f) => Parameters::Int(fact(*f as i64)),
         Identifier(s) => match ram {
@@ -1283,14 +1284,14 @@ pub fn factorial(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn abs(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Int(i.abs()),
         Float(f) => Parameters::Float(f.abs()),
-        Rational(s) => Parameters::Rational(s.clone().abs()),
+        Rational(s) => Parameters::Rational((*s).abs()),
         Identifier(s) => match ram {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
@@ -1303,11 +1304,11 @@ pub fn abs(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn ceil(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Float((*i as f64).ceil()),
         Float(f) => Parameters::Float(f.ceil()),
         Identifier(s) => match ram {
@@ -1322,11 +1323,11 @@ pub fn ceil(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn floor(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Float((*i as f64).floor()),
         Float(f) => Parameters::Float(f.floor()),
         Identifier(s) => match ram {
@@ -1341,7 +1342,7 @@ pub fn floor(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
@@ -1362,7 +1363,7 @@ pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => {
             let fs: f64 = (*i) as f64;
             if plus {
@@ -1380,9 +1381,9 @@ pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         }
         Rational(s) => {
             if plus {
-                Float((s.clone().approx() * 10.0_f64.powf(sln).round()) / (10.0_f64.powf(sln)))
+                Float(((*s).approx() * 10.0_f64.powf(sln).round()) / (10.0_f64.powf(sln)))
             } else {
-                Float(s.clone().approx().round())
+                Float((*s).approx().round())
             }
         }
         Identifier(s) => match ram {
@@ -1397,11 +1398,11 @@ pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn norm(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
         Float(f) => Parameters::Float((*f).abs()),
         InterpreterVector(lst) => {
@@ -1431,14 +1432,14 @@ pub fn norm(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters 
 }
 
 pub fn transpose_vectors(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
         Float(f) => Parameters::Float((*f).abs()),
-        Rational(s) => Parameters::Rational(s.clone().abs()),
+        Rational(s) => Parameters::Rational((*s).abs()),
         InterpreterVector(lst) => {
             let r = vec![*(lst.clone())];
             let transposed = transpose(r);
@@ -1464,14 +1465,14 @@ pub fn transpose_vectors(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn transpose_matrices(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
         Float(f) => Parameters::Float((*f).abs()),
-        Rational(s) => Parameters::Rational(s.clone().abs()),
+        Rational(s) => Parameters::Rational((*s).abs()),
         InterpreterVector(lst) => {
             let mut res1 = Vec::new();
             let mut is_matrix = true;
@@ -1509,14 +1510,14 @@ pub fn transpose_matrices(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn det_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
         Float(f) => Parameters::Float((*f).abs()),
-        Rational(s) => Parameters::Rational(s.clone().abs()),
+        Rational(s) => Parameters::Rational((*s).abs()),
         InterpreterVector(lst) => {
             let mut res1 = Vec::new();
             let mut is_matrix = true;
@@ -1561,14 +1562,14 @@ pub fn det_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 }
 
 pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
-    if p.len() < 1 {
+    if p.is_empty() {
         return Null;
     }
 
-    match p.get(0).unwrap() {
+    match p.first().unwrap() {
         Int(i) => Parameters::Int((*i).abs()),
         Float(f) => Parameters::Float((*f).abs()),
-        Rational(s) => Parameters::Rational(s.clone().abs()),
+        Rational(s) => Parameters::Rational((*s).abs()),
         InterpreterVector(lst) => {
             let mut res1 = Vec::new();
             let mut is_matrix = true;
@@ -1615,7 +1616,7 @@ pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                                 "@Determinant is zero, matrix is not invertible".to_string(),
                             )
                         }
-                        Rational(s) if s.clone().is_null() => {
+                        Rational(s) if s.is_null() => {
                             return Identifier(
                                 "@Determinant is zero, matrix is not invertible".to_string(),
                             )
@@ -1649,7 +1650,7 @@ pub fn diff(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters 
         Err(_) => load_config(Config::default()).general_color,
     };
 
-    if p.len() == 0 {
+    if p.is_empty() {
         let m = color.paint("Usage: diff <function>");
         println!("{m}");
         return Null;
@@ -1852,7 +1853,7 @@ pub fn plot_fn(
         Err(_) => load_config(Config::default()).general_color,
     };
 
-    if p.len() == 0 {
+    if p.is_empty() {
         let m = color.paint(" > plot(): displays help\n > plot(f): plot f\n > plot(f,title,xlabel,ylabel): plot f with title,xlabel,ylabel\n > plot(f,mode): plot f with the mode=LINE|LINEMARKS|MARKS(default)\n > plot(f,title,xlabel,ylabel,mode): plot f with title,xlabel,ylabel and mode\n > plot(f,start,end,step,mode): plot f between start and end with steps and mode\n > plot(f,start,end,step,title,xlabel,ylabel,mode): combines\n");
         println!("{m}");
         return Null;
@@ -1947,7 +1948,7 @@ pub fn plot_fn(
         Some(p) => match p {
             Float(f) => start = *f,
             Int(i) => start = *i as f64,
-            Rational(s) => start = s.clone().approx(),
+            Rational(s) => start = (*s).approx(),
             InterpreterVector(vec) => second_vector = Some(&**vec),
 
             Identifier(s) if ram.as_ref().unwrap().contains_key(s) => {
@@ -1974,7 +1975,7 @@ pub fn plot_fn(
         Some(p) => match p {
             Float(f) => end = *f,
             Int(i) => end = *i as f64,
-            Rational(s) => end = s.clone().approx(),
+            Rational(s) => end = (*s).approx(),
 
             Identifier(s) if ram.as_ref().unwrap().contains_key(s) => {
                 match ram.as_ref().unwrap().get(s) {
@@ -1990,7 +1991,7 @@ pub fn plot_fn(
                 "line" => mode = "line",
                 "linemarks" => mode = "linemarks",
                 _ => {
-                    if title == "".to_string() {
+                    if title == *"" {
                         title = s.to_string()
                     } else {
                         xlabel = s.to_string()
@@ -2006,7 +2007,7 @@ pub fn plot_fn(
         Some(p) => match p {
             Float(f) => steps = *f,
             Int(i) => steps = *i as f64,
-            Rational(s) => steps = s.clone().approx(),
+            Rational(s) => steps = (*s).approx(),
 
             Identifier(s) if ram.as_ref().unwrap().contains_key(s) => {
                 match ram.as_ref().unwrap().get(s) {
@@ -2020,9 +2021,9 @@ pub fn plot_fn(
                 "line" => mode = "line",
                 "linemarks" => mode = "linemarks",
                 _ => {
-                    if title == "".to_string() {
+                    if title == *"" {
                         title = s.to_string()
-                    } else if xlabel == "".to_string() {
+                    } else if xlabel == *"" {
                         xlabel = s.to_string()
                     } else {
                         ylabel = s.to_string()
@@ -2035,86 +2036,90 @@ pub fn plot_fn(
 
     match p.get(4) {
         None => (),
-        Some(p) => match p {
-            Str(s) => match s.to_lowercase().as_str() {
-                "marks" => mode = "marks",
-                "line" => mode = "line",
-                "linemarks" => mode = "linemarks",
-                _ => {
-                    if title == "".to_string() {
-                        title = s.to_string()
-                    } else if xlabel == "".to_string() {
-                        xlabel = s.to_string()
-                    } else {
-                        ylabel = s.to_string()
+        Some(p) => {
+            if let Str(s) = p {
+                match s.to_lowercase().as_str() {
+                    "marks" => mode = "marks",
+                    "line" => mode = "line",
+                    "linemarks" => mode = "linemarks",
+                    _ => {
+                        if title == *"" {
+                            title = s.to_string()
+                        } else if xlabel == *"" {
+                            xlabel = s.to_string()
+                        } else {
+                            ylabel = s.to_string()
+                        }
                     }
                 }
-            },
-            _ => (),
-        },
+            }
+        }
     }
 
     match p.get(5) {
         None => (),
-        Some(p) => match p {
-            Str(s) => match s.to_lowercase().as_str() {
-                "marks" => mode = "marks",
-                "line" => mode = "line",
-                "linemarks" => mode = "linemarks",
-                _ => {
-                    if title == "".to_string() {
-                        title = s.to_string()
-                    } else if xlabel == "".to_string() {
-                        xlabel = s.to_string()
-                    } else {
-                        ylabel = s.to_string()
+        Some(p) => {
+            if let Str(s) = p {
+                match s.to_lowercase().as_str() {
+                    "marks" => mode = "marks",
+                    "line" => mode = "line",
+                    "linemarks" => mode = "linemarks",
+                    _ => {
+                        if title == *"" {
+                            title = s.to_string()
+                        } else if xlabel == *"" {
+                            xlabel = s.to_string()
+                        } else {
+                            ylabel = s.to_string()
+                        }
                     }
                 }
-            },
-            _ => (),
-        },
+            }
+        }
     }
 
     match p.get(6) {
         None => (),
-        Some(p) => match p {
-            Str(s) => match s.to_lowercase().as_str() {
-                "marks" => mode = "marks",
-                "line" => mode = "line",
-                "linemarks" => mode = "linemarks",
-                _ => {
-                    if title == "".to_string() {
-                        title = s.to_string()
-                    } else if xlabel == "".to_string() {
-                        xlabel = s.to_string()
-                    } else {
-                        ylabel = s.to_string()
+        Some(p) => {
+            if let Str(s) = p {
+                match s.to_lowercase().as_str() {
+                    "marks" => mode = "marks",
+                    "line" => mode = "line",
+                    "linemarks" => mode = "linemarks",
+                    _ => {
+                        if title == *"" {
+                            title = s.to_string()
+                        } else if xlabel == *"" {
+                            xlabel = s.to_string()
+                        } else {
+                            ylabel = s.to_string()
+                        }
                     }
                 }
-            },
-            _ => (),
-        },
+            }
+        }
     }
 
     match p.get(7) {
         None => (),
-        Some(p) => match p {
-            Str(s) => match s.to_lowercase().as_str() {
-                "marks" => mode = "marks",
-                "line" => mode = "line",
-                "linemarks" => mode = "linemarks",
-                _ => {
-                    if title == "".to_string() {
-                        title = s.to_string()
-                    } else if xlabel == "".to_string() {
-                        xlabel = s.to_string()
-                    } else if ylabel == "".to_string() {
-                        ylabel = s.to_string()
+        Some(p) => {
+            if let Str(s) = p {
+                match s.to_lowercase().as_str() {
+                    "marks" => mode = "marks",
+                    "line" => mode = "line",
+                    "linemarks" => mode = "linemarks",
+                    _ => {
+                        if title == *"" {
+                            title = s.to_string()
+                        } else if xlabel == *"" {
+                            xlabel = s.to_string()
+                        } else if ylabel == *"" {
+                            ylabel = s.to_string()
+                        }
                     }
                 }
-            },
-            _ => (),
-        },
+            }
+        }
     }
 
     let st = start;
@@ -2136,7 +2141,7 @@ pub fn plot_fn(
         sram.insert("e".to_string(), Float(E));
         while start <= end {
             x.push(start);
-            if &fd == "" {
+            if fd.is_empty() {
                 let p = f(&vec![Float(start)], ram);
                 y.push(match p {
                     Float(f) => f,
@@ -2157,10 +2162,11 @@ pub fn plot_fn(
                             value: v,
                             left: _l,
                             right: _r,
-                        } => match v {
-                            Identifier(s) => names.push(s.clone()),
-                            _ => (),
-                        },
+                        } => {
+                            if let Identifier(s) = v {
+                                names.push(s.clone())
+                            }
+                        }
                     }
                 }
                 names
@@ -2181,14 +2187,14 @@ pub fn plot_fn(
     } else {
         match first_vector {
             Some(t) => {
-                t.into_iter().for_each(|j| match j {
+                t.iter().for_each(|j| match j {
                     Int(i) => x.push(*i as f64),
                     Float(f) => x.push(*f),
-                    Rational(s) => x.push(s.clone().approx()),
+                    Rational(s) => x.push((*s).approx()),
                     Identifier(s) => match ram.as_ref().unwrap().get(s) {
                         Some(Int(i)) => x.push(*i as f64),
                         Some(Float(f)) => x.push(*f),
-                        Some(Rational(r)) => x.push(r.clone().approx()),
+                        Some(Rational(r)) => x.push((*r).approx()),
                         _ => (),
                     },
                     _ => (),
@@ -2199,14 +2205,14 @@ pub fn plot_fn(
 
         match second_vector {
             Some(t) => {
-                t.into_iter().for_each(|j| match j {
+                t.iter().for_each(|j| match j {
                     Int(i) => y.push(*i as f64),
                     Float(f) => y.push(*f),
-                    Rational(r) => y.push(r.clone().approx()),
+                    Rational(r) => y.push((*r).approx()),
                     Identifier(s) => match ram.as_ref().unwrap().get(s) {
                         Some(Int(i)) => y.push(*i as f64),
                         Some(Float(f)) => y.push(*f),
-                        Some(Rational(r)) => y.push(r.clone().approx()),
+                        Some(Rational(r)) => y.push((*r).approx()),
                         _ => (),
                     },
                     _ => (),

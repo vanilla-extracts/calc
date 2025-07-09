@@ -7,13 +7,13 @@ pub fn computes_lines(
     title: String,
     xlabel: String,
     ylabel: String,
-) -> () {
+) {
     let mut bitmap = vec![vec![' '; 100]; 30];
 
     let mut ymin = f64::MAX;
     let mut ymax = f64::MIN;
 
-    y.into_iter().for_each(|y| {
+    y.iter().for_each(|y| {
         if y > &ymax {
             ymax = *y
         }
@@ -32,7 +32,7 @@ pub fn computes_lines(
         y_scale = 1.0;
     }
 
-    let z = x.into_iter().zip(y).map(|(x, y)| {
+    let z = x.iter().zip(y).map(|(x, y)| {
         (
             ((*x - start) / x_scale) as usize,
             ((*y - ymin) / y_scale) as usize,
@@ -53,9 +53,9 @@ pub fn computes_lines(
         print!("{char}");
     }
 
-    println!("");
+    println!();
 
-    if &title != "" {
+    if !title.is_empty() {
         let left_padding = (104 - title.len()) / 2;
         let right_padding = (104 - title.len()) - left_padding;
         for _ in 0..left_padding {
@@ -66,7 +66,7 @@ pub fn computes_lines(
             print!("*")
         }
 
-        println!("");
+        println!();
     }
 
     let size = ylabel.len();
@@ -117,7 +117,7 @@ pub fn computes_lines(
         for y in 0..xs.len() {
             print!("{}", xs[y]);
         }
-        print!("*\n");
+        println!("*");
     }
 
     print!("* |");
@@ -141,7 +141,7 @@ pub fn computes_lines(
     }
     println!("{:.2}  *", end);
 
-    if &xlabel != "" {
+    if !xlabel.is_empty() {
         let first = 104 / 2 - xlabel.len();
         let last = 104 - first - xlabel.len();
         for _ in 0..first {
@@ -157,5 +157,5 @@ pub fn computes_lines(
         }
     }
 
-    println!("");
+    println!();
 }

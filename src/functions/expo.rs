@@ -16,8 +16,8 @@ pub fn expo(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
         (Float(v), Float(f)) => Float(v.powf(f)),
         (Float(v), Int(i1)) => Float(v.powf(i1 as f64)),
 
-        (Rational(s), Null) => Rational(s.clone()),
-        (Null, Rational(s)) => Rational(s.clone()),
+        (Rational(s), Null) => Rational(s),
+        (Null, Rational(s)) => Rational(s),
         (Rational(s), Rational(s2)) => Float(s.approx().powf(s2.approx())),
         (Rational(s), Int(i)) => Float(s.approx().powf(i as f64)),
         (Int(i), Rational(s)) => Float((i as f64).powf(s.approx())),
@@ -49,9 +49,7 @@ pub fn expo(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
         (Rational(s), Identifier(ss)) => match ram {
             None => Rational(s),
-            Some(_) => {
-                apply_operator_reverse(Rational(s.clone()), Identifier(ss.clone()), ram, expo)
-            }
+            Some(_) => apply_operator_reverse(Rational(s), Identifier(ss.clone()), ram, expo),
         },
         (Identifier(ss), Rational(s)) => match ram {
             None => Rational(s),
