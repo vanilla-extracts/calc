@@ -1,9 +1,8 @@
 pub fn computes_lines(
-    x: &Vec<f64>,
-    y: &Vec<f64>,
+    x: &[f64],
+    y: &[f64],
     start: f64,
     end: f64,
-    _steps: f64,
     title: String,
     xlabel: String,
     ylabel: String,
@@ -94,15 +93,11 @@ pub fn computes_lines(
     for s in string_ymax.replace("-", "|").chars().rev() {
         y_sized.push(s);
     }
-    for _ in (lsize)..(30 / 2) {
-        y_sized.push(' ');
-    }
+    y_sized.extend(std::iter::repeat_n(' ', 15 - (lsize)));
     for s in ymiddle.replace("-", "|").chars().rev() {
         y_sized.push(s);
     }
-    for _ in ymiddle_size..(30 / 2 - lminsize) {
-        y_sized.push(' ');
-    }
+    y_sized.extend(std::iter::repeat_n(' ', 15 - lminsize - ymiddle_size));
     for s in lmin_string.replace("-", "|").chars().rev() {
         y_sized.push(s);
     }
@@ -114,8 +109,8 @@ pub fn computes_lines(
         print!("{}", iter_y_sized.next().unwrap());
         print!("|");
         let xs = &bitmap[x];
-        for y in 0..xs.len() {
-            print!("{}", xs[y]);
+        for item in xs {
+            print!("{}", item);
         }
         println!("*");
     }

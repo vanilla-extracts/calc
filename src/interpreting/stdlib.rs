@@ -2246,7 +2246,7 @@ pub fn plot_fn(
     if !terminal {
         f.show().unwrap();
     } else {
-        computes_lines(&x, &y, st, end, steps, title, xlabel, ylabel);
+        computes_lines(&x, &y, st, end, title, xlabel, ylabel);
     }
     Null
 }

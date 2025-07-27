@@ -593,18 +593,18 @@ impl<Term: Terminal> Completer<Term> for CalcCompleter {
                 Some(co)
             }
 
-            Some("toggle_float") => match words.next() {
-                _ => {
+            Some("toggle_float") => {
+                words.next();
+                {
                     let mut co = Vec::new();
                     for cmd in TOGGLE_FLOAT_CMD {
                         if cmd.starts_with(word) {
                             co.push(Completion::simple(cmd.to_string()));
                         }
                     }
-
                     Some(co)
                 }
-            },
+            }
 
             Some("config") => match words.next() {
                 None => {
