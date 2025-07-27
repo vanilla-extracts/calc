@@ -44,7 +44,7 @@ impl PrefixParselet for ValueParselet {
 
 impl PrefixParselet for OperatorPrefixParselet {
     fn parse(&self, parser: &mut CalcParser, token: &Token) -> Ast {
-        let operand = parser.parse_expression(Precedence::PREFIX as i64);
+        let operand = parser.parse_expression(Precedence::Prefix as i64);
         Ast::Node {
             value: token_to_parameter(token),
             left: Box::from(operand),
@@ -56,7 +56,7 @@ impl PrefixParselet for OperatorPrefixParselet {
 impl PrefixParselet for GroupParselet {
     fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let expression = parser.parse_expression_empty();
-        parser.consume_expected(TokenType::RPAR);
+        parser.consume_expected(TokenType::Rpar);
         expression
     }
 }
@@ -64,7 +64,7 @@ impl PrefixParselet for GroupParselet {
 impl PrefixParselet for ScopeParselet {
     fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let expression = parser.parse_expression_empty();
-        parser.consume_expected(TokenType::RSB);
+        parser.consume_expected(TokenType::Rsb);
         expression
     }
 }
@@ -73,13 +73,13 @@ impl PrefixParselet for VecParselet {
     fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let mut vec: Vec<Ast> = Vec::new();
 
-        if !parser.match_token(TokenType::RBRACKET) {
+        if !parser.match_token(TokenType::Rbracket) {
             vec.push(parser.parse_expression_empty());
-            while parser.match_token(TokenType::COMMA) {
+            while parser.match_token(TokenType::Comma) {
                 parser.consume();
                 vec.push(parser.parse_expression_empty());
             }
-            parser.consume_expected(TokenType::RBRACKET);
+            parser.consume_expected(TokenType::Rbracket);
         }
 
         Ast::Node {
@@ -94,15 +94,15 @@ impl PrefixParselet for QuoteParselet {
     fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let mut str: String = String::new();
 
-        if !parser.match_token(TokenType::QUOTE) {
-            while !parser.match_token(TokenType::QUOTE) {
+        if !parser.match_token(TokenType::Quote) {
+            while !parser.match_token(TokenType::Quote) {
                 match parser.consume() {
-                    Token::IDENTIFIER(s) => str = str + &s.to_string(),
+                    Token::Identifier(s) => str = str + &s.to_string(),
 
                     t => str = str + &t.to_string(),
                 }
             }
-            parser.consume_expected(TokenType::QUOTE);
+            parser.consume_expected(TokenType::Quote);
         }
 
         Ast::Node {
@@ -116,9 +116,9 @@ impl PrefixParselet for QuoteParselet {
 impl PrefixParselet for IfThenElseParselet {
     fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
         let cond_expr = parser.parse_expression_empty();
-        parser.consume_expected(TokenType::THEN);
+        parser.consume_expected(TokenType::Then);
         let lhs = parser.parse_expression(self.precedence);
-        parser.consume_expected(TokenType::ELSE);
+        parser.consume_expected(TokenType::Else);
         let rhs = parser.parse_expression(self.precedence);
 
         Ast::Conditional {
@@ -131,9 +131,9 @@ impl PrefixParselet for IfThenElseParselet {
 
 impl PrefixParselet for WhileParselet {
     fn parse(&self, parser: &mut CalcParser, _token: &Token) -> Ast {
-        let cond_expr = parser.parse_expression(Precedence::WHILE as i64);
-        parser.consume_expected(TokenType::DO);
-        let body = parser.parse_expression(Precedence::WHILE as i64);
+        let cond_expr = parser.parse_expression(Precedence::While as i64);
+        parser.consume_expected(TokenType::Do);
+        let body = parser.parse_expression(Precedence::While as i64);
 
         Ast::While {
             condition: cond_expr.into(),

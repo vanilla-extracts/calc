@@ -107,97 +107,97 @@ impl CalcParser<'_> {
 
     pub fn get_infix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn InfixParselet>> {
         match token_type {
-            TokenType::PLUS => Some(Box::from(OperatorInfixParselet {
+            TokenType::Plus => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::SUM as i64),
+                precedence: (Precedence::Sum as i64),
             })),
-            TokenType::MINUS => Some(Box::from(OperatorInfixParselet {
+            TokenType::Minus => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::MINUS as i64),
+                precedence: (Precedence::Minus as i64),
             })),
-            TokenType::MULTIPLICATION => Some(Box::from(OperatorInfixParselet {
+            TokenType::Multiplication => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::PRODUCT as i64),
+                precedence: (Precedence::Product as i64),
             })),
-            TokenType::DIVIDE => Some(Box::from(OperatorInfixParselet {
+            TokenType::Divide => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::DIVIDE as i64),
+                precedence: (Precedence::Divide as i64),
             })),
-            TokenType::EQUAL => Some(Box::from(AssignParselet {})),
-            TokenType::EXPO => Some(Box::from(OperatorInfixParselet {
+            TokenType::Equal => Some(Box::from(AssignParselet {})),
+            TokenType::Expo => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::EXPONENT as i64),
+                precedence: (Precedence::Exponent as i64),
             })),
-            TokenType::SELECTION => Some(Box::from(OperatorInfixParselet {
+            TokenType::Selection => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::SELECTION as i64),
+                precedence: (Precedence::Selection as i64),
             })),
-            TokenType::CONCAT => Some(Box::from(OperatorInfixParselet {
+            TokenType::Concat => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONCAT as i64),
+                precedence: (Precedence::Concat as i64),
             })),
-            TokenType::LPAR => Some(Box::from(CallParselet {})),
-            TokenType::NOT => Some(Box::from(OperatorInfixParselet {
+            TokenType::Lpar => Some(Box::from(CallParselet {})),
+            TokenType::Not => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONDITIONAL as i64),
+                precedence: (Precedence::Conditional as i64),
             })),
-            TokenType::EQUALITY => Some(Box::from(OperatorInfixParselet {
+            TokenType::Equality => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONDITIONAL as i64),
+                precedence: (Precedence::Conditional as i64),
             })),
-            TokenType::LESSER => Some(Box::from(OperatorInfixParselet {
+            TokenType::Lesser => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONDITIONAL as i64),
+                precedence: (Precedence::Conditional as i64),
             })),
-            TokenType::LESSEREQ => Some(Box::from(OperatorInfixParselet {
+            TokenType::LesserEq => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONDITIONAL as i64),
+                precedence: (Precedence::Conditional as i64),
             })),
-            TokenType::GREATER => Some(Box::from(OperatorInfixParselet {
+            TokenType::Greater => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONDITIONAL as i64),
+                precedence: (Precedence::Conditional as i64),
             })),
-            TokenType::GREATEREQ => Some(Box::from(OperatorInfixParselet {
+            TokenType::GreaterEq => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONDITIONAL as i64),
+                precedence: (Precedence::Conditional as i64),
             })),
-            TokenType::OR => Some(Box::from(OperatorInfixParselet {
+            TokenType::Or => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONDITIONAL as i64),
+                precedence: (Precedence::Conditional as i64),
             })),
-            TokenType::AND => Some(Box::from(OperatorInfixParselet {
+            TokenType::And => Some(Box::from(OperatorInfixParselet {
                 is_right: false,
-                precedence: (Precedence::CONDITIONAL as i64),
+                precedence: (Precedence::Conditional as i64),
             })),
-            TokenType::IGNORE => Some(Box::from(IgnoreParselet {})),
+            TokenType::Ignore => Some(Box::from(IgnoreParselet {})),
             _ => None,
         }
     }
 
     pub fn get_prefix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn PrefixParselet>> {
         match token_type {
-            TokenType::PLUS => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::MINUS => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::MULTIPLICATION => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::DIVIDE => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::IDENTIFIER => Some(Box::from(ValueParselet {})),
-            TokenType::INT => Some(Box::from(ValueParselet {})),
-            TokenType::FLOAT => Some(Box::from(ValueParselet {})),
-            TokenType::BOOL => Some(Box::from(ValueParselet {})),
-            TokenType::LPAR => Some(Box::from(GroupParselet {})),
-            TokenType::NOT => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::EQUALITY => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::LESSER => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::LESSEREQ => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::GREATER => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::GREATEREQ => Some(Box::from(OperatorPrefixParselet {})),
-            TokenType::LBRACKET => Some(Box::from(VecParselet {})),
-            TokenType::QUOTE => Some(Box::from(QuoteParselet {})),
-            TokenType::IF => Some(Box::from(IfThenElseParselet {
-                precedence: Precedence::IFTHENELSE as i64,
+            TokenType::Plus => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::Minus => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::Multiplication => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::Divide => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::Identifier => Some(Box::from(ValueParselet {})),
+            TokenType::Int => Some(Box::from(ValueParselet {})),
+            TokenType::Float => Some(Box::from(ValueParselet {})),
+            TokenType::Bool => Some(Box::from(ValueParselet {})),
+            TokenType::Lpar => Some(Box::from(GroupParselet {})),
+            TokenType::Not => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::Equality => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::Lesser => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::LesserEq => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::Greater => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::GreaterEq => Some(Box::from(OperatorPrefixParselet {})),
+            TokenType::Lbracket => Some(Box::from(VecParselet {})),
+            TokenType::Quote => Some(Box::from(QuoteParselet {})),
+            TokenType::If => Some(Box::from(IfThenElseParselet {
+                precedence: Precedence::IfThenElse as i64,
             })),
-            TokenType::WHILE => Some(Box::from(WhileParselet {})),
-            TokenType::LSB => Some(Box::from(ScopeParselet {})),
+            TokenType::While => Some(Box::from(WhileParselet {})),
+            TokenType::Lsb => Some(Box::from(ScopeParselet {})),
             _ => None,
         }
     }

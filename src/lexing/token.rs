@@ -2,12 +2,12 @@ use std::fmt::{Display, Formatter};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Operator {
-    PLUS,
-    MINUS,
-    MULTIPLICATION,
-    DIVIDE,
-    EXPO,
-    EQUALITY,
+    Plus,
+    Minus,
+    Multiplication,
+    Divide,
+    Expo,
+    Equality,
     GreaterThan,
     LesserThan,
     GreaterOrEqual,
@@ -21,100 +21,100 @@ pub enum Operator {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Token {
-    OPE(Operator),
-    IDENTIFIER(String),
-    INT(i64),
-    FLOAT(f64),
-    BOOL(bool),
-    EQUAL,
-    RPAR,
-    LPAR,
-    RBRACKET,
-    LBRACKET,
-    COMMA,
+    Ope(Operator),
+    Identifier(String),
+    Int(i64),
+    Float(f64),
+    Bool(bool),
+    Equal,
+    Rpar,
+    Lpar,
+    Rbracket,
+    Lbracket,
+    Comma,
     Null,
-    QUOTE,
-    WHITESPACE,
+    Quote,
+    Whitespace,
     PreAnd,
     PreOr,
-    IF,
-    THEN,
-    ELSE,
-    WHILE,
-    DO,
-    IGNORE,
-    RSB,
-    LSB,
+    If,
+    Then,
+    Else,
+    While,
+    Do,
+    Ignore,
+    Rsb,
+    Lsb,
 }
 
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub enum TokenType {
-    PLUS,
-    MINUS,
-    MULTIPLICATION,
-    DIVIDE,
-    IDENTIFIER,
-    INT,
-    FLOAT,
-    EQUAL,
-    EQUALITY,
-    GREATER,
-    LESSER,
-    GREATEREQ,
-    OR,
-    AND,
-    LESSEREQ,
-    NOT,
-    BOOL,
-    RPAR,
-    LPAR,
-    RBRACKET,
-    LBRACKET,
+    Plus,
+    Minus,
+    Multiplication,
+    Divide,
+    Identifier,
+    Int,
+    Float,
+    Equal,
+    Equality,
+    Greater,
+    Lesser,
+    GreaterEq,
+    Or,
+    And,
+    LesserEq,
+    Not,
+    Bool,
+    Rpar,
+    Lpar,
+    Rbracket,
+    Lbracket,
     Null,
-    COMMA,
-    WHITESPACE,
-    EXPO,
-    QUOTE,
-    IF,
-    THEN,
-    ELSE,
-    WHILE,
-    DO,
-    IGNORE,
-    RSB,
-    LSB,
-    SELECTION,
-    CONCAT,
+    Comma,
+    Whitespace,
+    Expo,
+    Quote,
+    If,
+    Then,
+    Else,
+    While,
+    Do,
+    Ignore,
+    Rsb,
+    Lsb,
+    Selection,
+    Concat,
 }
 
 pub enum Precedence {
-    IGNORE = 5,
-    IFTHENELSE = 6,
-    WHILE = 7,
-    PREFIX = 9,
-    ASSIGNMENT = 10,
+    Ignore = 5,
+    IfThenElse = 6,
+    While = 7,
+    Prefix = 9,
+    Assignment = 10,
 
     // TODO: maybe rename this
-    CONDITIONAL = 20,
-    SELECTION = 25,
-    CONCAT = 26,
-    MINUS = 30,
-    SUM = 40,
-    DIVIDE = 45,
-    PRODUCT = 50,
-    EXPONENT = 60,
-    CALL = 100,
+    Conditional = 20,
+    Selection = 25,
+    Concat = 26,
+    Minus = 30,
+    Sum = 40,
+    Divide = 45,
+    Product = 50,
+    Exponent = 60,
+    Call = 100,
 }
 
 impl Display for Operator {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Operator::PLUS => write!(f, "+"),
-            Operator::MINUS => write!(f, "-"),
-            Operator::DIVIDE => write!(f, "/"),
-            Operator::MULTIPLICATION => write!(f, "*"),
-            Operator::EXPO => write!(f, "^"),
-            Operator::EQUALITY => write!(f, "=="),
+            Operator::Plus => write!(f, "+"),
+            Operator::Minus => write!(f, "-"),
+            Operator::Divide => write!(f, "/"),
+            Operator::Multiplication => write!(f, "*"),
+            Operator::Expo => write!(f, "^"),
+            Operator::Equality => write!(f, "=="),
             Operator::GreaterOrEqual => write!(f, ">="),
             Operator::GreaterThan => write!(f, ">"),
             Operator::LesserOrEqual => write!(f, "<="),
@@ -131,30 +131,30 @@ impl Display for Operator {
 impl Display for Token {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Token::LPAR => write!(f, "("),
-            Token::RPAR => write!(f, ")"),
-            Token::EQUAL => write!(f, "="),
-            Token::FLOAT(i) => write!(f, "{}", i),
-            Token::INT(i) => write!(f, "{}", i),
-            Token::IDENTIFIER(s) => write!(f, "{}", s),
-            Token::OPE(s) => write!(f, "{}", s),
-            Token::COMMA => write!(f, ","),
+            Token::Lpar => write!(f, "("),
+            Token::Rpar => write!(f, ")"),
+            Token::Equal => write!(f, "="),
+            Token::Float(i) => write!(f, "{}", i),
+            Token::Int(i) => write!(f, "{}", i),
+            Token::Identifier(s) => write!(f, "{}", s),
+            Token::Ope(s) => write!(f, "{}", s),
+            Token::Comma => write!(f, ","),
             Token::Null => write!(f, "Null"),
-            Token::BOOL(b) => write!(f, "{b}"),
+            Token::Bool(b) => write!(f, "{b}"),
             Token::PreAnd => write!(f, ""),
             Token::PreOr => write!(f, ""),
-            Token::RBRACKET => write!(f, "]"),
-            Token::LBRACKET => write!(f, "["),
-            Token::QUOTE => write!(f, "\""),
-            Token::WHITESPACE => write!(f, " "),
-            Token::IF => write!(f, "if"),
-            Token::THEN => write!(f, "then"),
-            Token::ELSE => write!(f, "else"),
-            Token::WHILE => write!(f, "while"),
-            Token::DO => write!(f, "do"),
-            Token::IGNORE => write!(f, "!"),
-            Token::RSB => write!(f, "{{"),
-            Token::LSB => write!(f, "}}"),
+            Token::Rbracket => write!(f, "]"),
+            Token::Lbracket => write!(f, "["),
+            Token::Quote => write!(f, "\""),
+            Token::Whitespace => write!(f, " "),
+            Token::If => write!(f, "if"),
+            Token::Then => write!(f, "then"),
+            Token::Else => write!(f, "else"),
+            Token::While => write!(f, "while"),
+            Token::Do => write!(f, "do"),
+            Token::Ignore => write!(f, "!"),
+            Token::Rsb => write!(f, "{{"),
+            Token::Lsb => write!(f, "}}"),
         }
     }
 }
@@ -162,44 +162,44 @@ impl Display for Token {
 impl Token {
     pub fn to_token_type(&self) -> TokenType {
         match &self {
-            Token::OPE(p) => match p {
-                Operator::PLUS => TokenType::PLUS,
-                Operator::MINUS => TokenType::MINUS,
-                Operator::MULTIPLICATION => TokenType::MULTIPLICATION,
-                Operator::DIVIDE => TokenType::DIVIDE,
-                Operator::EXPO => TokenType::EXPO,
-                Operator::EQUALITY => TokenType::EQUALITY,
-                Operator::GreaterThan => TokenType::GREATER,
-                Operator::GreaterOrEqual => TokenType::GREATEREQ,
-                Operator::LesserThan => TokenType::LESSER,
-                Operator::LesserOrEqual => TokenType::LESSEREQ,
-                Operator::NOT => TokenType::NOT,
-                Operator::And => TokenType::AND,
-                Operator::Or => TokenType::OR,
-                Operator::Selection => TokenType::SELECTION,
-                Operator::ConcatOperation => TokenType::CONCAT,
+            Token::Ope(p) => match p {
+                Operator::Plus => TokenType::Plus,
+                Operator::Minus => TokenType::Minus,
+                Operator::Multiplication => TokenType::Multiplication,
+                Operator::Divide => TokenType::Divide,
+                Operator::Expo => TokenType::Expo,
+                Operator::Equality => TokenType::Equality,
+                Operator::GreaterThan => TokenType::Greater,
+                Operator::GreaterOrEqual => TokenType::GreaterEq,
+                Operator::LesserThan => TokenType::Lesser,
+                Operator::LesserOrEqual => TokenType::LesserEq,
+                Operator::NOT => TokenType::Not,
+                Operator::And => TokenType::And,
+                Operator::Or => TokenType::Or,
+                Operator::Selection => TokenType::Selection,
+                Operator::ConcatOperation => TokenType::Concat,
             },
-            Token::IDENTIFIER(_) => TokenType::IDENTIFIER,
-            Token::INT(_) => TokenType::INT,
-            Token::FLOAT(_) => TokenType::FLOAT,
-            Token::EQUAL => TokenType::EQUAL,
-            Token::RPAR => TokenType::RPAR,
-            Token::LPAR => TokenType::LPAR,
-            Token::COMMA => TokenType::COMMA,
+            Token::Identifier(_) => TokenType::Identifier,
+            Token::Int(_) => TokenType::Int,
+            Token::Float(_) => TokenType::Float,
+            Token::Equal => TokenType::Equal,
+            Token::Rpar => TokenType::Rpar,
+            Token::Lpar => TokenType::Lpar,
+            Token::Comma => TokenType::Comma,
             Token::Null => TokenType::Null,
-            Token::BOOL(_) => TokenType::BOOL,
-            Token::LBRACKET => TokenType::LBRACKET,
-            Token::RBRACKET => TokenType::RBRACKET,
-            Token::QUOTE => TokenType::QUOTE,
-            Token::WHITESPACE => TokenType::WHITESPACE,
-            Token::IF => TokenType::IF,
-            Token::ELSE => TokenType::ELSE,
-            Token::THEN => TokenType::THEN,
-            Token::WHILE => TokenType::WHILE,
-            Token::DO => TokenType::DO,
-            Token::IGNORE => TokenType::IGNORE,
-            Token::LSB => TokenType::LSB,
-            Token::RSB => TokenType::RSB,
+            Token::Bool(_) => TokenType::Bool,
+            Token::Lbracket => TokenType::Lbracket,
+            Token::Rbracket => TokenType::Rbracket,
+            Token::Quote => TokenType::Quote,
+            Token::Whitespace => TokenType::Whitespace,
+            Token::If => TokenType::If,
+            Token::Else => TokenType::Else,
+            Token::Then => TokenType::Then,
+            Token::While => TokenType::While,
+            Token::Do => TokenType::Do,
+            Token::Ignore => TokenType::Ignore,
+            Token::Lsb => TokenType::Lsb,
+            Token::Rsb => TokenType::Rsb,
             _ => TokenType::Null,
         }
     }
@@ -210,141 +210,141 @@ mod test {
 
     #[test]
     fn test_token_type_operators_plus() {
-        let expected = TokenType::PLUS;
-        let value = Token::OPE(super::Operator::PLUS).to_token_type();
+        let expected = TokenType::Plus;
+        let value = Token::Ope(super::Operator::Plus).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_minus() {
-        let expected = TokenType::MINUS;
-        let value = Token::OPE(super::Operator::MINUS).to_token_type();
+        let expected = TokenType::Minus;
+        let value = Token::Ope(super::Operator::Minus).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_mult() {
-        let expected = TokenType::MULTIPLICATION;
-        let value = Token::OPE(super::Operator::MULTIPLICATION).to_token_type();
+        let expected = TokenType::Multiplication;
+        let value = Token::Ope(super::Operator::Multiplication).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_divide() {
-        let expected = TokenType::DIVIDE;
-        let value = Token::OPE(super::Operator::DIVIDE).to_token_type();
+        let expected = TokenType::Divide;
+        let value = Token::Ope(super::Operator::Divide).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_expo() {
-        let expected = TokenType::EXPO;
-        let value = Token::OPE(super::Operator::EXPO).to_token_type();
+        let expected = TokenType::Expo;
+        let value = Token::Ope(super::Operator::Expo).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_equality() {
-        let expected = TokenType::EQUALITY;
-        let value = Token::OPE(super::Operator::EQUALITY).to_token_type();
+        let expected = TokenType::Equality;
+        let value = Token::Ope(super::Operator::Equality).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_greater() {
-        let expected = TokenType::GREATER;
-        let value = Token::OPE(super::Operator::GreaterThan).to_token_type();
+        let expected = TokenType::Greater;
+        let value = Token::Ope(super::Operator::GreaterThan).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_lesser() {
-        let expected = TokenType::LESSER;
-        let value = Token::OPE(super::Operator::LesserThan).to_token_type();
+        let expected = TokenType::Lesser;
+        let value = Token::Ope(super::Operator::LesserThan).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_greaterq() {
-        let expected = TokenType::GREATEREQ;
-        let value = Token::OPE(super::Operator::GreaterOrEqual).to_token_type();
+        let expected = TokenType::GreaterEq;
+        let value = Token::Ope(super::Operator::GreaterOrEqual).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_lesserq() {
-        let expected = TokenType::LESSEREQ;
-        let value = Token::OPE(super::Operator::LesserOrEqual).to_token_type();
+        let expected = TokenType::LesserEq;
+        let value = Token::Ope(super::Operator::LesserOrEqual).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_and() {
-        let expected = TokenType::AND;
-        let value = Token::OPE(super::Operator::And).to_token_type();
+        let expected = TokenType::And;
+        let value = Token::Ope(super::Operator::And).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_or() {
-        let expected = TokenType::OR;
-        let value = Token::OPE(super::Operator::Or).to_token_type();
+        let expected = TokenType::Or;
+        let value = Token::Ope(super::Operator::Or).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_operators_not() {
-        let expected = TokenType::NOT;
-        let value = Token::OPE(super::Operator::NOT).to_token_type();
+        let expected = TokenType::Not;
+        let value = Token::Ope(super::Operator::NOT).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_identifier() {
-        let expected = TokenType::IDENTIFIER;
-        let value = Token::IDENTIFIER("s".to_string()).to_token_type();
+        let expected = TokenType::Identifier;
+        let value = Token::Identifier("s".to_string()).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_int() {
-        let expected = TokenType::INT;
-        let value = Token::INT(0).to_token_type();
+        let expected = TokenType::Int;
+        let value = Token::Int(0).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_float() {
-        let expected = TokenType::FLOAT;
-        let value = Token::FLOAT(0.0).to_token_type();
+        let expected = TokenType::Float;
+        let value = Token::Float(0.0).to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_equal() {
-        let expected = TokenType::EQUAL;
-        let value = Token::EQUAL.to_token_type();
+        let expected = TokenType::Equal;
+        let value = Token::Equal.to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_lpar() {
-        let expected = TokenType::LPAR;
-        let value = Token::LPAR.to_token_type();
+        let expected = TokenType::Lpar;
+        let value = Token::Lpar.to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_rpar() {
-        let expected = TokenType::RPAR;
-        let value = Token::RPAR.to_token_type();
+        let expected = TokenType::Rpar;
+        let value = Token::Rpar.to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_bool() {
-        let expected = TokenType::BOOL;
-        let value = Token::BOOL(false).to_token_type();
+        let expected = TokenType::Bool;
+        let value = Token::Bool(false).to_token_type();
         assert_eq!(value, expected);
     }
 
@@ -357,36 +357,36 @@ mod test {
 
     #[test]
     fn test_token_type_comma() {
-        let expected = TokenType::COMMA;
-        let value = Token::COMMA.to_token_type();
+        let expected = TokenType::Comma;
+        let value = Token::Comma.to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_rbracket() {
-        let expected = TokenType::RBRACKET;
-        let value = Token::RBRACKET.to_token_type();
+        let expected = TokenType::Rbracket;
+        let value = Token::Rbracket.to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_lbracket() {
-        let expected = TokenType::LBRACKET;
-        let value = Token::LBRACKET.to_token_type();
+        let expected = TokenType::Lbracket;
+        let value = Token::Lbracket.to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_whitespace() {
-        let expected = TokenType::WHITESPACE;
-        let value = Token::WHITESPACE.to_token_type();
+        let expected = TokenType::Whitespace;
+        let value = Token::Whitespace.to_token_type();
         assert_eq!(value, expected);
     }
 
     #[test]
     fn test_token_type_quote() {
-        let expected = TokenType::QUOTE;
-        let value = Token::QUOTE.to_token_type();
+        let expected = TokenType::Quote;
+        let value = Token::Quote.to_token_type();
         assert_eq!(value, expected);
     }
 }
