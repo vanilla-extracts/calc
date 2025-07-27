@@ -73,13 +73,10 @@ impl InfixParselet for CallParselet {
         let name = match left {
             Ast::Nil => "",
             Ast::Node {
-                value: v,
+                value: Parameters::Identifier(s),
                 left: _left,
                 right: _right,
-            } => match v {
-                Parameters::Identifier(s) => s.as_str(),
-                _ => "",
-            },
+            } => s.as_str(),
             _ => "",
         };
 

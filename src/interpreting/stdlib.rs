@@ -267,7 +267,7 @@ pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("cos".to_string(), Box::from(Identifier(s.clone()))),
@@ -354,7 +354,7 @@ pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("sin".to_string(), Box::from(Identifier(s.clone()))),
@@ -442,7 +442,7 @@ pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("tan".to_string(), Box::from(Identifier(s.clone()))),
@@ -530,7 +530,7 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("cosh".to_string(), Box::from(Identifier(s.clone()))),
@@ -618,7 +618,7 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("sinh".to_string(), Box::from(Identifier(s.clone()))),
@@ -706,7 +706,7 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("tanh".to_string(), Box::from(Identifier(s.clone()))),
@@ -792,7 +792,7 @@ pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("acos".to_string(), Box::from(Identifier(s.clone()))),
@@ -879,7 +879,7 @@ pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("asin".to_string(), Box::from(Identifier(s.clone()))),
@@ -966,7 +966,7 @@ pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("atan".to_string(), Box::from(Identifier(s.clone()))),
@@ -1060,7 +1060,7 @@ pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("exp".to_string(), Box::from(Identifier(s.clone()))),
@@ -1149,7 +1149,7 @@ pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("ln".to_string(), Box::from(Identifier(s.clone()))),
@@ -1241,7 +1241,7 @@ pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                 },
                 _ => (),
             });
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         Identifier(s) => match ram {
             None => Call("sqrt".to_string(), Box::from(Identifier(s.clone()))),
@@ -1441,17 +1441,17 @@ pub fn transpose_vectors(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         Float(f) => Parameters::Float((*f).abs()),
         Rational(s) => Parameters::Rational((*s).abs()),
         InterpreterVector(lst) => {
-            let r = vec![*(lst.clone())];
+            let r = vec![(lst.clone())];
             let transposed = transpose(r);
 
             let mut result = Vec::new();
 
             transposed
                 .into_iter()
-                .map(|v| InterpreterVector(Box::from(v)))
+                .map(|v| InterpreterVector(v))
                 .for_each(|v| result.push(v));
 
-            InterpreterVector(Box::from(result))
+            InterpreterVector(result)
         }
         Identifier(s) => match ram {
             None => Identifier("This variable is not initialized yet".to_string()),
@@ -1494,8 +1494,8 @@ pub fn transpose_matrices(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
             matrix_result
                 .into_iter()
-                .for_each(|x| result.push(InterpreterVector(Box::from(x))));
-            InterpreterVector(Box::from(result))
+                .for_each(|x| result.push(InterpreterVector(x)));
+            InterpreterVector(result)
         }
 
         Identifier(s) => match ram {
@@ -1583,7 +1583,7 @@ pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
             });
 
             if !is_matrix {
-                return InterpreterVector(Box::from(res1));
+                return InterpreterVector(res1);
             }
 
             let mut p = Vec::new();
@@ -1626,9 +1626,9 @@ pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
                     lup_invert(&mut res, &mut p, n, &mut vec_ia, ram.as_deref());
                     let mut resd = Vec::new();
                     for i in 0..n {
-                        resd.push(InterpreterVector(Box::new(vec_ia[i].clone())));
+                        resd.push(InterpreterVector(vec_ia[i].clone()));
                     }
-                    InterpreterVector(Box::new(resd))
+                    InterpreterVector(resd)
                 }
             }
         }
@@ -2246,7 +2246,7 @@ pub fn plot_fn(
     if !terminal {
         f.show().unwrap();
     } else {
-        computes_lines(&x, &y, st, end, title, xlabel, ylabel);
+        computes_lines(&x, &y, st, end, title, xlabel, ylabel)
     }
     Null
 }

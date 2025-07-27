@@ -21,7 +21,7 @@ pub struct CalcParser<'a> {
     read: Vec<Token>,
 }
 
-pub fn init_calc_parser(input: &Vec<Token>) -> CalcParser {
+pub fn init_calc_parser(input: &[Token]) -> CalcParser {
     CalcParser {
         tokens: input.iter(),
         read: Vec::new(),
@@ -87,15 +87,13 @@ impl CalcParser<'_> {
         if self.read.is_empty() {
             return Null;
         }
-        match self.read.remove(0) {
-            t => {
-                if t.to_token_type() == expected {
-                    t
-                } else {
-                    println!("error!");
-                    Null
-                }
-            }
+        let t = self.read.remove(0);
+
+        if t.to_token_type() == expected {
+            t
+        } else {
+            println!("error!");
+            Null
         }
     }
 

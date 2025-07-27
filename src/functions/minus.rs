@@ -31,7 +31,7 @@ pub fn minus(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
             vec.into_iter()
                 .map(|x| minus(Null, x.clone(), ram))
                 .for_each(|z| res.push(z));
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
 
         (Null, InterpreterVector(vec)) => {
@@ -39,16 +39,16 @@ pub fn minus(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
             vec.into_iter()
                 .map(|x| minus(Null, x.clone(), ram))
                 .for_each(|z| res.push(z));
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
 
         (InterpreterVector(vec), InterpreterVector(vec2)) => {
             let mut res = Vec::new();
             vec.into_iter()
-                .zip(*vec2)
+                .zip(vec2)
                 .map(|(x, y)| minus(x.clone(), y.clone(), ram))
                 .for_each(|z| res.push(z));
-            InterpreterVector(Box::from(res))
+            InterpreterVector(res)
         }
         (Int(v), Float(f)) => Float((v as f64) - f),
         (Float(v), Float(f)) => Float(v - f),

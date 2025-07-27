@@ -41,7 +41,7 @@ pub enum Parameters {
     Null,
     ExpoOperation,
     Vector(Box<Vec<Ast>>),
-    InterpreterVector(Box<Vec<Parameters>>),
+    InterpreterVector(Vec<Parameters>),
     Var(Box<Parameters>, i64, String),
     Plus(Box<Parameters>, Box<Parameters>),
     Mul(Box<Parameters>, Box<Parameters>),
@@ -277,9 +277,7 @@ impl Parameters {
                         first_attach,
                         separator,
                         z,
-                        if l == "¹" {
-                            ""
-                        } else if l == "⁻¹" {
+                        if l == "¹" || l == "⁻¹" {
                             ""
                         } else {
                             e.as_str()

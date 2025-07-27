@@ -25,10 +25,10 @@ pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
                 let mut res = Vec::new();
                 vec.clone()
                     .into_iter()
-                    .zip(*vec2.clone())
+                    .zip(vec2.clone())
                     .map(|(x, y)| add(x.clone(), y.clone(), ram))
                     .for_each(|s| res.push(s));
-                InterpreterVector(Box::from(res))
+                InterpreterVector(res)
             }
             Identifier(s) => match ram {
                 None => Null,

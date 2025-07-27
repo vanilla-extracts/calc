@@ -100,7 +100,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                         .into_iter()
                         .map(|a| interpret(&a, ram, function))
                         .for_each(|s| vec.push(s));
-                    Parameters::InterpreterVector(Box::from(vec))
+                    Parameters::InterpreterVector(vec)
                 }
                 Parameters::InterpreterVector(a) => Parameters::InterpreterVector(a.clone()),
                 Parameters::Var(x, y, z) => Parameters::Var(x.clone(), *y, z.clone()),

@@ -34,28 +34,28 @@ pub fn mult(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
             vec.into_iter()
                 .map(|x| mult(x.clone(), Int(v), ram))
                 .for_each(|x| result.push(x));
-            InterpreterVector(Box::from(result))
+            InterpreterVector(result)
         }
         (Int(v), InterpreterVector(vec)) => {
             let mut result = Vec::new();
             vec.into_iter()
                 .map(|x| mult(x.clone(), Int(v), ram))
                 .for_each(|x| result.push(x));
-            InterpreterVector(Box::from(result))
+            InterpreterVector(result)
         }
         (InterpreterVector(vec), Float(v)) => {
             let mut result = Vec::new();
             vec.into_iter()
                 .map(|x| mult(x.clone(), Float(v), ram))
                 .for_each(|x| result.push(x));
-            InterpreterVector(Box::from(result))
+            InterpreterVector(result)
         }
         (Float(v), InterpreterVector(vec)) => {
             let mut result = Vec::new();
             vec.into_iter()
                 .map(|x| mult(x.clone(), Float(v), ram))
                 .for_each(|x| result.push(x));
-            InterpreterVector(Box::from(result))
+            InterpreterVector(result)
         }
 
         (InterpreterVector(vec), InterpreterVector(vec2)) => {
@@ -82,7 +82,7 @@ pub fn mult(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
                 let mut sum = Null;
                 (*vec)
                     .into_iter()
-                    .zip(*vec2)
+                    .zip(vec2)
                     .map(|(a, b)| mult(a.clone(), b.clone(), ram))
                     .for_each(|x| sum = add(sum.clone(), x, ram));
 
@@ -102,9 +102,9 @@ pub fn mult(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
 
                 matrix_result
                     .into_iter()
-                    .for_each(|x| res.push(InterpreterVector(Box::from(x))));
+                    .for_each(|x| res.push(InterpreterVector(x)));
 
-                InterpreterVector(Box::from(res))
+                InterpreterVector(res)
             }
         }
 
