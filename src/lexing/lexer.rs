@@ -339,137 +339,112 @@ mod tests {
 
     #[test]
     fn lex_plus() {
-        let mut expected = Vec::new();
-        expected.push(OPE(PLUS));
+        let expected = vec![OPE(PLUS)];
         let result = lex("+".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_minus() {
-        let mut expected = Vec::new();
-        expected.push(OPE(MINUS));
+        let expected = vec![OPE(MINUS)];
         let result = lex("-".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_mult() {
-        let mut expected = Vec::new();
-        expected.push(OPE(MULTIPLICATION));
+        let expected = vec![OPE(MULTIPLICATION)];
         let result = lex("*".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_divide() {
-        let mut expected = Vec::new();
-        expected.push(OPE(DIVIDE));
+        let expected = vec![OPE(DIVIDE)];
         let result = lex("/".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_operators() {
-        let mut expected = Vec::new();
-        expected.push(OPE(PLUS));
-        expected.push(OPE(MULTIPLICATION));
-        expected.push(OPE(MINUS));
-        expected.push(OPE(DIVIDE));
+        let expected = vec![OPE(PLUS), OPE(MULTIPLICATION), OPE(MINUS), OPE(DIVIDE)];
         let result = lex("+*-/".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_lpar() {
-        let mut expected = Vec::new();
-        expected.push(LPAR);
+        let expected = vec![LPAR];
         let result = lex("(".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_rpar() {
-        let mut expected = Vec::new();
-        expected.push(RPAR);
+        let expected = vec![RPAR];
         let result = lex(")".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_equal() {
-        let mut expected = Vec::new();
-        expected.push(EQUAL);
+        let expected = vec![EQUAL];
         let result = lex("=".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn lex_tokens() {
-        let mut expected = Vec::new();
-        expected.push(LPAR);
-        expected.push(RPAR);
-        expected.push(EQUAL);
+        let expected = vec![LPAR, RPAR, EQUAL];
         let result = lex("()=".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_simple_int() {
-        let mut expected = Vec::new();
-        expected.push(INT(1));
+        let expected = vec![INT(1)];
         let result = lex("1".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn lex_complex_int() {
-        let mut expected = Vec::new();
-        expected.push(INT(100));
+        let expected = vec![INT(100)];
         let result = lex("100".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn lex_simple_string() {
-        let mut expected = Vec::new();
-        expected.push(IDENTIFIER("test".to_string()));
+        let expected = vec![IDENTIFIER("test".to_string())];
         let result = lex("test".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn test_complex_operation() {
-        let mut expected = Vec::new();
-        expected.push(INT(1));
-        expected.push(OPE(PLUS));
-        expected.push(INT(1));
+        let expected = vec![INT(1), OPE(PLUS), INT(1)];
         let result = lex("1 + 1".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn test_complex_equality() {
-        let mut expected = Vec::new();
-        expected.push(IDENTIFIER("var1".to_string()));
-        expected.push(EQUAL);
-        expected.push(INT(100));
+        let expected = vec![IDENTIFIER("var1".to_string()), EQUAL, INT(100)];
         let result = lex("var1 = 100".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn test_simple_float() {
-        let mut expected = Vec::new();
-        expected.push(FLOAT(0.14));
+        let expected = vec![FLOAT(0.14)];
         let result = lex("0.14".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn test_complex_float() {
-        let mut expected = Vec::new();
-        expected.push(FLOAT(314.05));
+        let expected = vec![FLOAT(314.05)];
         let result = lex("314.05".to_string());
         assert_eq!(result, expected)
     }
