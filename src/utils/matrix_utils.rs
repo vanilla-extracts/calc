@@ -77,7 +77,7 @@ pub fn lup_decompose(
         max_a = Parameters::Float(0.0);
         i_max = i;
 
-        for k in i..n {
+        for (k, _) in a.iter().enumerate().take(n).skip(i) {
             abs_a = ((a[k])[i]).clone().abs(ram);
             if let Parameters::Bool(true) = greater(abs_a.clone(), max_a.clone(), ram) {
                 max_a = (abs_a).clone();
@@ -123,12 +123,12 @@ pub fn lup_decompose(
 
 pub fn lup_determinant(
     a: &mut Matrix<Parameters>,
-    p: &mut Vec<Parameters>,
+    p: &mut [Parameters],
     n: usize,
     ram: ORam,
 ) -> Parameters {
     let mut det: Parameters = a[0][0].clone();
-    for i in 1..n {
+    for (i, _) in a.iter().enumerate().take(n).skip(1) {
         det = mult(det.clone(), a[i][i].clone(), ram)
     }
 
@@ -153,7 +153,7 @@ pub fn lup_determinant(
 
 pub fn lup_invert(
     a: &mut Matrix<Parameters>,
-    p: &mut Vec<Parameters>,
+    p: &mut [Parameters],
     n: usize,
     ia: &mut Matrix<Parameters>,
     ram: ORam,
