@@ -139,7 +139,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
             loop {
                 if let Parameters::Bool(condition_bool) = interpret(condition, ram, function) {
                     if !condition_bool {
-                        return Parameters::InterpreterVector(vec.into());
+                        return Parameters::InterpreterVector(vec);
                     }
                     vec.push(interpret(body, ram, function));
                 } else {

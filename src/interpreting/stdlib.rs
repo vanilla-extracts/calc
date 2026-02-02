@@ -150,15 +150,13 @@ pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         InterpreterVector(
             str.chars()
                 .map(|f| Str(f.to_string()))
-                .collect::<Vec<Parameters>>()
-                .into(),
+                .collect::<Vec<Parameters>>(),
         )
     } else {
         InterpreterVector(
             str.split(separator)
                 .map(|f| Str(f.to_string()))
-                .collect::<Vec<Parameters>>()
-                .into(),
+                .collect::<Vec<Parameters>>(),
         )
     }
 }
@@ -1448,7 +1446,7 @@ pub fn transpose_vectors(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
 
             transposed
                 .into_iter()
-                .map(|v| InterpreterVector(v))
+                .map(InterpreterVector)
                 .for_each(|v| result.push(v));
 
             InterpreterVector(result)

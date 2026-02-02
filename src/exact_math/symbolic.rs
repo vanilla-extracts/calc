@@ -73,7 +73,7 @@ mod test {
             AndOperation,
             Not,
             Vector(Box::from(vec![Ast::Nil])),
-            InterpreterVector(Box::from(vec![Null])),
+            InterpreterVector(vec![Null]),
         ];
 
         let should = vec![

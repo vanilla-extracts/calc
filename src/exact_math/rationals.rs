@@ -70,12 +70,12 @@ impl Rationals {
         if i1 == 0 && i2 == 0 {
             Rationals { under: 0, over: 0 }
         } else if i1 == 0 {
-            return Rationals { under: 1, over: 0 };
+            Rationals { under: 1, over: 0 }
         } else if i2 == 0 {
-            return Rationals {
+            Rationals {
                 under: 1,
                 over: i64::MAX,
-            };
+            }
         } else {
             let gcd = gcd(i1, i2);
             let new_under = self.under.abs() / gcd;
@@ -84,10 +84,10 @@ impl Rationals {
             } else {
                 self.over.abs() / gcd
             };
-            return Rationals {
+            Rationals {
                 under: new_under,
                 over: new_over,
-            };
+            }
         }
     }
     pub fn abs(self) -> Self {

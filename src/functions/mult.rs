@@ -81,7 +81,7 @@ pub fn mult(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
             if !is_matrix {
                 let mut sum = Null;
                 (*vec)
-                    .into_iter()
+                    .iter()
                     .zip(vec2)
                     .map(|(a, b)| mult(a.clone(), b.clone(), ram))
                     .for_each(|x| sum = add(sum.clone(), x, ram));

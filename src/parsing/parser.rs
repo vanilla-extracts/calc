@@ -21,7 +21,7 @@ pub struct CalcParser<'a> {
     read: Vec<Token>,
 }
 
-pub fn init_calc_parser(input: &[Token]) -> CalcParser {
+pub fn init_calc_parser(input: &[Token]) -> CalcParser<'_> {
     CalcParser {
         tokens: input.iter(),
         read: Vec::new(),
