@@ -29,7 +29,7 @@ impl InfixParselet for IgnoreParselet {
         }
     }
     fn get_precedence(&self) -> i64 {
-        Precedence::IGNORE as i64
+        Precedence::Ignore as i64
     }
 }
 
@@ -64,7 +64,7 @@ impl InfixParselet for AssignParselet {
     }
 
     fn get_precedence(&self) -> i64 {
-        Precedence::ASSIGNMENT as i64
+        Precedence::Assignment as i64
     }
 }
 
@@ -73,25 +73,22 @@ impl InfixParselet for CallParselet {
         let name = match left {
             Ast::Nil => "",
             Ast::Node {
-                value: v,
+                value: Parameters::Identifier(s),
                 left: _left,
                 right: _right,
-            } => match v {
-                Parameters::Identifier(s) => s.as_str(),
-                _ => "",
-            },
+            } => s.as_str(),
             _ => "",
         };
 
         let mut lst: Vec<Ast> = Vec::new();
-        if !parser.match_token(TokenType::RPAR) {
+        if !parser.match_token(TokenType::Rpar) {
             lst.push(parser.parse_expression_empty());
-            while parser.match_token(TokenType::COMMA) {
+            while parser.match_token(TokenType::Comma) {
                 parser.consume();
                 let ast = parser.parse_expression_empty();
                 lst.push(ast);
             }
-            parser.consume_expected(TokenType::RPAR);
+            parser.consume_expected(TokenType::Rpar);
         }
         Call {
             name: name.to_string(),
@@ -100,6 +97,6 @@ impl InfixParselet for CallParselet {
     }
 
     fn get_precedence(&self) -> i64 {
-        Precedence::CALL as i64
+        Precedence::Call as i64
     }
 }

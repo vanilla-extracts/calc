@@ -18,25 +18,25 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
             left: l,
             right: r,
         } => {
-            let param1 = interpret(l, &mut ram, &mut function);
-            let param2 = interpret(r, &mut ram, &mut function);
+            let param1 = interpret(l, ram, function);
+            let param2 = interpret(r, ram, function);
             let last = match v {
-                Parameters::PlusOperation => add(param1, param2, Some(&ram)),
-                Parameters::MinusOperation => minus(param1, param2, Some(&ram)),
-                Parameters::MultiplicationOperation => mult(param1, param2, Some(&ram)),
-                Parameters::DivideOperation => divide(param1, param2, Some(&ram)),
-                Parameters::ExpoOperation => expo(param1, param2, Some(&ram)),
-                Parameters::Equal => equal(param1, param2, Some(&ram)),
-                Parameters::Not => not(param1, param2, Some(&ram)),
-                Parameters::GreaterOperation => greater(param1, param2, Some(&ram)),
-                Parameters::GreaterOrEqualOperation => greater_or_equal(param1, param2, Some(&ram)),
-                Parameters::LesserOperation => lesser(param1, param2, Some(&ram)),
-                Parameters::LesserOrEqualOperation => lesser_or_equal(param1, param2, Some(&ram)),
-                Parameters::AndOperation => and(param1, param2, Some(&ram)),
-                Parameters::OrOperation => or(param1, param2, Some(&ram)),
-                Parameters::SelectionOperation => select(param1, param2, Some(&ram)),
-                Parameters::ConcatOperation => concat(param1, param2, Some(&ram)),
-                Parameters::Rational(s) => Parameters::Rational(s.clone()),
+                Parameters::PlusOperation => add(param1, param2, Some(ram)),
+                Parameters::MinusOperation => minus(param1, param2, Some(ram)),
+                Parameters::MultiplicationOperation => mult(param1, param2, Some(ram)),
+                Parameters::DivideOperation => divide(param1, param2, Some(ram)),
+                Parameters::ExpoOperation => expo(param1, param2, Some(ram)),
+                Parameters::Equal => equal(param1, param2, Some(ram)),
+                Parameters::Not => not(param1, param2, Some(ram)),
+                Parameters::GreaterOperation => greater(param1, param2, Some(ram)),
+                Parameters::GreaterOrEqualOperation => greater_or_equal(param1, param2, Some(ram)),
+                Parameters::LesserOperation => lesser(param1, param2, Some(ram)),
+                Parameters::LesserOrEqualOperation => lesser_or_equal(param1, param2, Some(ram)),
+                Parameters::AndOperation => and(param1, param2, Some(ram)),
+                Parameters::OrOperation => or(param1, param2, Some(ram)),
+                Parameters::SelectionOperation => select(param1, param2, Some(ram)),
+                Parameters::ConcatOperation => concat(param1, param2, Some(ram)),
+                Parameters::Rational(s) => Parameters::Rational(*s),
                 Parameters::Str(s) => Parameters::Str(s.to_string()),
                 Parameters::Assign => match *(l.clone()) {
                     Ast::Call { name: n, lst: list } => {
@@ -69,7 +69,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                         };
 
                         let (a, b) = assign(p1, param2.clone());
-                        if a != "".to_string() {
+                        if a != *"" {
                             if ram.contains_key(&a) {
                                 ram.remove(&a);
                             }
@@ -100,13 +100,13 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
                         .into_iter()
                         .map(|a| interpret(&a, ram, function))
                         .for_each(|s| vec.push(s));
-                    Parameters::InterpreterVector(Box::from(vec))
+                    Parameters::InterpreterVector(vec)
                 }
                 Parameters::InterpreterVector(a) => Parameters::InterpreterVector(a.clone()),
                 Parameters::Var(x, y, z) => Parameters::Var(x.clone(), *y, z.clone()),
-                Parameters::Plus(x, y) => add(*x.clone(), *y.clone(), Some(&ram)),
-                Parameters::Mul(x, y) => mult(*x.clone(), *y.clone(), Some(&ram)),
-                Parameters::Div(x, y) => divide(*x.clone(), *y.clone(), Some(&ram)),
+                Parameters::Plus(x, y) => add(*x.clone(), *y.clone(), Some(ram)),
+                Parameters::Mul(x, y) => mult(*x.clone(), *y.clone(), Some(ram)),
+                Parameters::Div(x, y) => divide(*x.clone(), *y.clone(), Some(ram)),
                 Parameters::Call(x, y) => {
                     exec(x.clone(), vec![*y.clone()], Some(ram), Some(function))
                 }
@@ -139,7 +139,7 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
             loop {
                 if let Parameters::Bool(condition_bool) = interpret(condition, ram, function) {
                     if !condition_bool {
-                        return Parameters::InterpreterVector(vec.into());
+                        return Parameters::InterpreterVector(vec);
                     }
                     vec.push(interpret(body, ram, function));
                 } else {

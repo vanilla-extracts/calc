@@ -32,24 +32,19 @@ pub fn is_an_allowed_char(character: char) -> bool {
         || character == ' '
 }
 
-fn lex_int(
-    current_char: char,
-    chars: &mut Vec<char>,
-    current_pos: usize,
-    len: usize,
-) -> (i64, usize) {
+fn lex_int(current_char: char, chars: &mut [char], current_pos: usize, len: usize) -> (i64, usize) {
     let (a, b) = lex_raddix(current_char, chars, current_pos, len);
     let err = i64::from_str(&a);
-    if err.is_err() {
-        (0, b)
+    if let Ok(s) = err {
+        (s, b)
     } else {
-        (err.unwrap(), b)
+        (0, b)
     }
 }
 
 fn lex_raddix(
     mut current_char: char,
-    chars: &mut Vec<char>,
+    chars: &mut [char],
     mut current_pos: usize,
     len: usize,
 ) -> (String, usize) {
@@ -69,7 +64,7 @@ fn lex_raddix(
 
 fn lex_string(
     mut current_char: char,
-    chars: &mut Vec<char>,
+    chars: &mut [char],
     mut current_pos: usize,
     len: usize,
 ) -> (String, usize) {
@@ -89,18 +84,15 @@ fn lex_string(
 
 fn lex_float(
     whole_side: i64,
-    chars: &mut Vec<char>,
+    chars: &mut [char],
     mut current_pos: usize,
     len: usize,
 ) -> (f64, usize) {
     current_pos += 1;
     let current_char_options = chars.get(current_pos);
-    let current_char = match current_char_options {
-        Some(t) => t,
-        None => &'0',
-    };
+    let current_char = current_char_options.unwrap_or(&'0');
     let (a, b) = lex_raddix(*current_char, chars, current_pos, len);
-    let f = f64::from_str(&*(whole_side.to_string().as_str().to_owned() + "." + a.as_str()));
+    let f = f64::from_str(&(whole_side.to_string().as_str().to_owned() + "." + a.as_str()));
     if f.is_err() {
         return (f64::NAN, b);
     }
@@ -119,14 +111,14 @@ pub fn lex(input: String) -> Vec<Token> {
     let length = input.len();
     while current_pos < input.len() {
         let peeking_char = chars.get(current_pos);
-        let current_character: char;
-        match peeking_char {
+
+        let current_character: char = match peeking_char {
             None => {
                 current_pos += 1;
                 continue;
             }
-            Some(t) => current_character = t.clone(),
-        }
+            Some(t) => *t,
+        };
         if !is_an_allowed_char(current_character) {
             current_pos += 1;
             continue;
@@ -134,91 +126,91 @@ pub fn lex(input: String) -> Vec<Token> {
 
         match current_character {
             '+' => match vec.pop() {
-                Some(Token::OPE(PLUS)) => {
-                    vec.push(Token::OPE(ConcatOperation));
+                Some(Token::Ope(Plus)) => {
+                    vec.push(Token::Ope(ConcatOperation));
                     current_pos += 1;
                 }
                 Some(p) => {
                     vec.push(p);
-                    vec.push(Token::OPE(PLUS));
+                    vec.push(Token::Ope(Plus));
                     current_pos += 1;
                 }
                 None => {
-                    vec.push(Token::OPE(PLUS));
+                    vec.push(Token::Ope(Plus));
                     current_pos += 1;
                 }
             },
             '-' => {
-                vec.push(Token::OPE(MINUS));
+                vec.push(Token::Ope(Minus));
                 current_pos += 1
             }
             '*' => {
-                vec.push(Token::OPE(MULTIPLICATION));
+                vec.push(Token::Ope(Multiplication));
                 current_pos += 1
             }
             '/' => {
-                vec.push(Token::OPE(DIVIDE));
+                vec.push(Token::Ope(Divide));
                 current_pos += 1
             }
             ')' => {
-                vec.push(Token::RPAR);
+                vec.push(Token::Rpar);
                 current_pos += 1
             }
             '(' => {
-                vec.push(Token::LPAR);
+                vec.push(Token::Lpar);
                 current_pos += 1
             }
             '{' => {
-                vec.push(Token::LSB);
+                vec.push(Token::Lsb);
                 current_pos += 1
             }
             '}' => {
-                vec.push(Token::RSB);
+                vec.push(Token::Rsb);
                 current_pos += 1
             }
             '>' => {
-                vec.push(Token::OPE(GreaterThan));
+                vec.push(Token::Ope(GreaterThan));
                 current_pos += 1
             }
             '<' => {
-                vec.push(Token::OPE(LesserThan));
+                vec.push(Token::Ope(LesserThan));
                 current_pos += 1
             }
             '"' => {
-                vec.push(Token::QUOTE);
+                vec.push(Token::Quote);
                 quote_i += 1;
                 current_pos += 1
             }
             ';' => {
-                vec.push(Token::IGNORE);
+                vec.push(Token::Ignore);
                 current_pos += 1
             }
             '=' => match vec.pop() {
-                Some(Token::EQUAL) => {
-                    vec.push(Token::OPE(EQUALITY));
+                Some(Token::Equal) => {
+                    vec.push(Token::Ope(Equality));
                     current_pos += 1
                 }
-                Some(Token::OPE(LesserThan)) => {
-                    vec.push(Token::OPE(LesserOrEqual));
+                Some(Token::Ope(LesserThan)) => {
+                    vec.push(Token::Ope(LesserOrEqual));
                     current_pos += 1;
                 }
-                Some(Token::OPE(GreaterThan)) => {
-                    vec.push(Token::OPE(GreaterOrEqual));
+                Some(Token::Ope(GreaterThan)) => {
+                    vec.push(Token::Ope(GreaterOrEqual));
                     current_pos += 1;
                 }
                 Some(p) => {
                     vec.push(p);
-                    vec.push(Token::EQUAL);
+                    vec.push(Token::Equal);
                     current_pos += 1
                 }
                 None => {
-                    vec.push(Token::EQUAL);
+                    vec.push(Token::Equal);
                     current_pos += 1
                 }
             },
             '&' => match vec.pop() {
                 Some(Token::PreAnd) => {
-                    vec.push(Token::OPE(And));
+                    vec.push(Token::Ope(And));
                     current_pos += 1;
                 }
                 Some(p) => {
@@ -233,7 +225,7 @@ pub fn lex(input: String) -> Vec<Token> {
             },
             '|' => match vec.pop() {
                 Some(Token::PreOr) => {
-                    vec.push(Token::OPE(Or));
+                    vec.push(Token::Ope(Or));
                     current_pos += 1;
                 }
                 Some(p) => {
@@ -247,33 +239,33 @@ pub fn lex(input: String) -> Vec<Token> {
                 }
             },
             '^' => {
-                vec.push(Token::OPE(EXPO));
+                vec.push(Token::Ope(Expo));
                 current_pos += 1
             }
             ',' => {
-                vec.push(Token::COMMA);
+                vec.push(Token::Comma);
                 current_pos += 1
             }
             '!' => {
-                vec.push(Token::OPE(NOT));
+                vec.push(Token::Ope(Not));
                 current_pos += 1
             }
             ']' => {
-                vec.push(Token::RBRACKET);
+                vec.push(Token::Rbracket);
                 current_pos += 1
             }
             '[' => {
-                vec.push(Token::LBRACKET);
+                vec.push(Token::Lbracket);
                 current_pos += 1
             }
             ' ' => {
                 if quote_i % 2 == 1 {
-                    vec.push(Token::WHITESPACE);
+                    vec.push(Token::Whitespace);
                 }
                 current_pos += 1
             }
             '.' => {
-                vec.push(Token::OPE(Selection));
+                vec.push(Token::Ope(Selection));
                 current_pos += 1
             }
             ch => {
@@ -286,14 +278,14 @@ pub fn lex(input: String) -> Vec<Token> {
                             if *char == '.' {
                                 let (a1, b1) = lex_float(a, &mut chars, current_pos, length);
                                 current_pos = b1;
-                                vec.push(Token::FLOAT(a1))
+                                vec.push(Token::Float(a1))
                             } else {
-                                vec.push(Token::INT(a));
+                                vec.push(Token::Int(a));
                                 current_pos = b;
                             }
                         }
                         None => {
-                            vec.push(Token::INT(a));
+                            vec.push(Token::Int(a));
                             current_pos = b;
                         }
                     }
@@ -302,27 +294,27 @@ pub fn lex(input: String) -> Vec<Token> {
                     let (a, b) = lex_string(current_character, &mut chars, current_pos, length);
                     current_pos = b;
                     match a.as_str() {
-                        "false" => vec.push(Token::BOOL(false)),
-                        "true" => vec.push(Token::BOOL(true)),
-                        "or" => vec.push(Token::OPE(Or)),
-                        "and" => vec.push(Token::OPE(And)),
-                        "geq" => vec.push(Token::OPE(GreaterOrEqual)),
-                        "leq" => vec.push(Token::OPE(LesserOrEqual)),
-                        "lt" => vec.push(Token::OPE(LesserThan)),
-                        "gt" => vec.push(Token::OPE(GreaterThan)),
-                        "eq" => vec.push(Token::OPE(EQUALITY)),
-                        "if" => vec.push(Token::IF),
-                        "then" => vec.push(Token::THEN),
-                        "else" => vec.push(Token::ELSE),
-                        "while" => vec.push(Token::WHILE),
-                        "do" => vec.push(Token::DO),
-                        _ => vec.push(Token::IDENTIFIER(a)),
+                        "false" => vec.push(Token::Bool(false)),
+                        "true" => vec.push(Token::Bool(true)),
+                        "or" => vec.push(Token::Ope(Or)),
+                        "and" => vec.push(Token::Ope(And)),
+                        "geq" => vec.push(Token::Ope(GreaterOrEqual)),
+                        "leq" => vec.push(Token::Ope(LesserOrEqual)),
+                        "lt" => vec.push(Token::Ope(LesserThan)),
+                        "gt" => vec.push(Token::Ope(GreaterThan)),
+                        "eq" => vec.push(Token::Ope(Equality)),
+                        "if" => vec.push(Token::If),
+                        "then" => vec.push(Token::Then),
+                        "else" => vec.push(Token::Else),
+                        "while" => vec.push(Token::While),
+                        "do" => vec.push(Token::Do),
+                        _ => vec.push(Token::Identifier(a)),
                     }
                 }
                 if ch == '.' {
                     let (a, b) = lex_float(0, &mut chars, current_pos, length);
                     current_pos = b;
-                    vec.push(Token::FLOAT(a))
+                    vec.push(Token::Float(a))
                 }
             }
         }
@@ -342,137 +334,112 @@ mod tests {
 
     #[test]
     fn lex_plus() {
-        let mut expected = Vec::new();
-        expected.push(OPE(PLUS));
+        let expected = vec![Ope(Plus)];
         let result = lex("+".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_minus() {
-        let mut expected = Vec::new();
-        expected.push(OPE(MINUS));
+        let expected = vec![Ope(Minus)];
         let result = lex("-".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_mult() {
-        let mut expected = Vec::new();
-        expected.push(OPE(MULTIPLICATION));
+        let expected = vec![Ope(Multiplication)];
         let result = lex("*".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_divide() {
-        let mut expected = Vec::new();
-        expected.push(OPE(DIVIDE));
+        let expected = vec![Ope(Divide)];
         let result = lex("/".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_operators() {
-        let mut expected = Vec::new();
-        expected.push(OPE(PLUS));
-        expected.push(OPE(MULTIPLICATION));
-        expected.push(OPE(MINUS));
-        expected.push(OPE(DIVIDE));
+        let expected = vec![Ope(Plus), Ope(Multiplication), Ope(Minus), Ope(Divide)];
         let result = lex("+*-/".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_lpar() {
-        let mut expected = Vec::new();
-        expected.push(LPAR);
+        let expected = vec![Lpar];
         let result = lex("(".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_rpar() {
-        let mut expected = Vec::new();
-        expected.push(RPAR);
+        let expected = vec![Rpar];
         let result = lex(")".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_equal() {
-        let mut expected = Vec::new();
-        expected.push(EQUAL);
+        let expected = vec![Equal];
         let result = lex("=".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn lex_tokens() {
-        let mut expected = Vec::new();
-        expected.push(LPAR);
-        expected.push(RPAR);
-        expected.push(EQUAL);
+        let expected = vec![Lpar, Rpar, Equal];
         let result = lex("()=".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn lex_simple_int() {
-        let mut expected = Vec::new();
-        expected.push(INT(1));
+        let expected = vec![Int(1)];
         let result = lex("1".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn lex_complex_int() {
-        let mut expected = Vec::new();
-        expected.push(INT(100));
+        let expected = vec![Int(100)];
         let result = lex("100".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn lex_simple_string() {
-        let mut expected = Vec::new();
-        expected.push(IDENTIFIER("test".to_string()));
+        let expected = vec![Identifier("test".to_string())];
         let result = lex("test".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn test_complex_operation() {
-        let mut expected = Vec::new();
-        expected.push(INT(1));
-        expected.push(OPE(PLUS));
-        expected.push(INT(1));
+        let expected = vec![Int(1), Ope(Plus), Int(1)];
         let result = lex("1 + 1".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn test_complex_equality() {
-        let mut expected = Vec::new();
-        expected.push(IDENTIFIER("var1".to_string()));
-        expected.push(EQUAL);
-        expected.push(INT(100));
+        let expected = vec![Identifier("var1".to_string()), Equal, Int(100)];
         let result = lex("var1 = 100".to_string());
         assert_eq!(result, expected)
     }
 
     #[test]
     fn test_simple_float() {
-        let mut expected = Vec::new();
-        expected.push(FLOAT(0.14));
+        let expected = vec![Float(0.14)];
         let result = lex("0.14".to_string());
         assert_eq!(result, expected);
     }
 
     #[test]
     fn test_complex_float() {
-        let mut expected = Vec::new();
-        expected.push(FLOAT(314.05));
+        let expected = vec![Float(314.05)];
         let result = lex("314.05".to_string());
         assert_eq!(result, expected)
     }

@@ -72,8 +72,8 @@ mod test {
             OrOperation,
             AndOperation,
             Not,
-            Vector(Box::from(vec![Ast::Nil])),
-            InterpreterVector(Box::from(vec![Null])),
+            Vector(vec![Ast::Nil]),
+            InterpreterVector(vec![Null]),
         ];
 
         let should = vec![
@@ -81,8 +81,7 @@ mod test {
             0, 0, 0, 0, 0,
         ];
 
-        let _ = v
-            .into_iter()
+        v.into_iter()
             .map(|f| size(&f))
             .zip(should)
             .for_each(|(x, y)| assert_eq!(x, y));

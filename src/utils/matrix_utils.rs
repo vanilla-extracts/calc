@@ -43,10 +43,10 @@ pub fn mult_matrix(a: Matrix<Parameters>, b: Matrix<Parameters>, ram: ORam) -> M
                     let intermediary = mult(
                         a.get(i).unwrap().get(k).unwrap().clone(),
                         b.get(k).unwrap().get(j).unwrap().clone(),
-                        ram.as_deref(),
+                        ram,
                     );
 
-                    sum = add(sum, intermediary, ram.as_deref())
+                    sum = add(sum, intermediary, ram)
                 }
 
                 s.push(sum);
@@ -77,14 +77,11 @@ pub fn lup_decompose(
         max_a = Parameters::Float(0.0);
         i_max = i;
 
-        for k in i..n {
-            abs_a = ((a[k])[i]).clone().abs(ram.as_deref());
-            match greater(abs_a.clone(), max_a.clone(), ram.as_deref()) {
-                Parameters::Bool(true) => {
-                    max_a = (abs_a).clone();
-                    i_max = k;
-                }
-                _ => (),
+        for (k, _) in a.iter().enumerate().take(n).skip(i) {
+            abs_a = ((a[k])[i]).clone().abs(ram);
+            if let Parameters::Bool(true) = greater(abs_a.clone(), max_a.clone(), ram) {
+                max_a = (abs_a).clone();
+                i_max = k;
             }
         }
 
@@ -107,32 +104,32 @@ pub fn lup_decompose(
             (a)[i] = (a)[i_max].clone();
             (a)[i_max] = ptr.clone();
 
-            (p)[n] = add((p)[n].clone(), Parameters::Int(1), ram.as_deref());
+            (p)[n] = add((p)[n].clone(), Parameters::Int(1), ram);
         }
 
         for j in (i + 1)..n {
-            (a)[j][i] = divide((a)[j][i].clone(), (a)[i][i].clone(), ram.as_deref());
+            (a)[j][i] = divide((a)[j][i].clone(), (a)[i][i].clone(), ram);
             for k in (i + 1)..n {
                 (a)[j][k] = minus(
                     (a)[j][k].clone(),
-                    mult((a)[j][i].clone(), (a)[i][k].clone(), ram.as_deref()),
-                    ram.as_deref(),
+                    mult((a)[j][i].clone(), (a)[i][k].clone(), ram),
+                    ram,
                 )
             }
         }
     }
-    return 1;
+    1
 }
 
 pub fn lup_determinant(
     a: &mut Matrix<Parameters>,
-    p: &mut Vec<Parameters>,
+    p: &mut [Parameters],
     n: usize,
     ram: ORam,
 ) -> Parameters {
-    let mut det: Parameters = (&a[0][0]).clone();
-    for i in 1..n {
-        det = mult(det.clone(), (&a[i][i]).clone(), ram.as_deref())
+    let mut det: Parameters = a[0][0].clone();
+    for (i, _) in a.iter().enumerate().take(n).skip(1) {
+        det = mult(det.clone(), a[i][i].clone(), ram)
     }
 
     match p[n] {
@@ -140,23 +137,24 @@ pub fn lup_determinant(
             if (i - (n as i64)) % 2 == 0 {
                 det
             } else {
-                minus(Parameters::Int(0), det, ram.as_deref())
+                minus(Parameters::Int(0), det, ram)
             }
         }
         Parameters::Float(f) => {
             if (f - (n as f64)) % 2.0 == 0.0 {
                 det
             } else {
-                minus(Parameters::Float(0.0), det, ram.as_deref())
+                minus(Parameters::Float(0.0), det, ram)
             }
         }
         _ => Parameters::Float(f64::NAN),
     }
 }
 
+#[allow(clippy::needless_range_loop)]
 pub fn lup_invert(
     a: &mut Matrix<Parameters>,
-    p: &mut Vec<Parameters>,
+    p: &mut [Parameters],
     n: usize,
     ia: &mut Matrix<Parameters>,
     ram: ORam,
@@ -203,9 +201,9 @@ pub fn lup_invert(
             };
             for k in 0..i {
                 ia[i][j] = minus(
-                    (&ia[i][j]).clone(),
-                    mult((&a[i][k]).clone(), (&ia[k][j]).clone(), ram.as_deref()),
-                    ram.as_deref(),
+                    ia[i][j].clone(),
+                    mult(a[i][k].clone(), ia[k][j].clone(), ram),
+                    ram,
                 );
             }
         }
@@ -213,12 +211,12 @@ pub fn lup_invert(
         for i in (0..n).rev() {
             for k in i + 1..n {
                 ia[i][j] = minus(
-                    (&ia[i][j]).clone(),
-                    mult((&a[i][k]).clone(), (&ia[k][j]).clone(), ram.as_deref()),
-                    ram.as_deref(),
+                    ia[i][j].clone(),
+                    mult(a[i][k].clone(), ia[k][j].clone(), ram),
+                    ram,
                 )
             }
-            ia[i][j] = divide((&ia[i][j]).clone(), (&a[i][i]).clone(), ram.as_deref());
+            ia[i][j] = divide(ia[i][j].clone(), a[i][i].clone(), ram);
         }
     }
 }
@@ -255,11 +253,11 @@ mod test {
 
         let mut b = vec![Parameters::Int(0); 4];
 
-        let _ = lup_decompose(&mut a, &mut b, 3 as usize, None);
+        let _ = lup_decompose(&mut a, &mut b, 3_usize, None);
 
         println!("{:?}/{:?}", &a, &b);
 
-        let det = lup_determinant(&mut a, &mut b, 3 as usize, None);
+        let det = lup_determinant(&mut a, &mut b, 3_usize, None);
 
         println!("{:?}", det);
         assert_eq!(

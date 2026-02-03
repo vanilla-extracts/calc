@@ -90,20 +90,11 @@ pub fn load_rgb_color(str: &str) -> (u8, u8, u8) {
     let gd = u8::from_str_radix(second, 16);
     let bd = u8::from_str_radix(last, 16);
 
-    let r = match rd {
-        Ok(c) => c,
-        Err(_) => 0xFF,
-    };
+    let r = rd.unwrap_or(0xFF);
 
-    let g = match gd {
-        Ok(c) => c,
-        Err(_) => 0xFF,
-    };
+    let g = gd.unwrap_or(0xFF);
 
-    let b = match bd {
-        Ok(c) => c,
-        Err(_) => 0xFF,
-    };
+    let b = bd.unwrap_or(0xFF);
     (r, g, b)
 }
 
@@ -123,7 +114,7 @@ pub fn load_color(string: String) -> Color {
                 if str.unwrap().len() < 6 {
                     Color::Cyan
                 } else {
-                    let (r, g, b) = load_rgb_color(&str.unwrap());
+                    let (r, g, b) = load_rgb_color(str.unwrap());
                     if r == 0xFF && g == 0xFF && b == 0xFF {
                         Color::Cyan
                     } else {

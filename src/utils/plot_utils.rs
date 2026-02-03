@@ -1,19 +1,18 @@
 pub fn computes_lines(
-    x: &Vec<f64>,
-    y: &Vec<f64>,
+    x: &[f64],
+    y: &[f64],
     start: f64,
     end: f64,
-    _steps: f64,
     title: String,
     xlabel: String,
     ylabel: String,
-) -> () {
+) {
     let mut bitmap = vec![vec![' '; 100]; 30];
 
     let mut ymin = f64::MAX;
     let mut ymax = f64::MIN;
 
-    y.into_iter().for_each(|y| {
+    y.iter().for_each(|y| {
         if y > &ymax {
             ymax = *y
         }
@@ -32,7 +31,7 @@ pub fn computes_lines(
         y_scale = 1.0;
     }
 
-    let z = x.into_iter().zip(y).map(|(x, y)| {
+    let z = x.iter().zip(y).map(|(x, y)| {
         (
             ((*x - start) / x_scale) as usize,
             ((*y - ymin) / y_scale) as usize,
@@ -53,9 +52,9 @@ pub fn computes_lines(
         print!("{char}");
     }
 
-    println!("");
+    println!();
 
-    if &title != "" {
+    if !title.is_empty() {
         let left_padding = (104 - title.len()) / 2;
         let right_padding = (104 - title.len()) - left_padding;
         for _ in 0..left_padding {
@@ -66,7 +65,7 @@ pub fn computes_lines(
             print!("*")
         }
 
-        println!("");
+        println!();
     }
 
     let size = ylabel.len();
@@ -94,15 +93,11 @@ pub fn computes_lines(
     for s in string_ymax.replace("-", "|").chars().rev() {
         y_sized.push(s);
     }
-    for _ in (lsize)..(30 / 2) {
-        y_sized.push(' ');
-    }
+    y_sized.extend(std::iter::repeat_n(' ', 15 - (lsize)));
     for s in ymiddle.replace("-", "|").chars().rev() {
         y_sized.push(s);
     }
-    for _ in ymiddle_size..(30 / 2 - lminsize) {
-        y_sized.push(' ');
-    }
+    y_sized.extend(std::iter::repeat_n(' ', 15 - lminsize - ymiddle_size));
     for s in lmin_string.replace("-", "|").chars().rev() {
         y_sized.push(s);
     }
@@ -114,10 +109,10 @@ pub fn computes_lines(
         print!("{}", iter_y_sized.next().unwrap());
         print!("|");
         let xs = &bitmap[x];
-        for y in 0..xs.len() {
-            print!("{}", xs[y]);
+        for item in xs {
+            print!("{}", item);
         }
-        print!("*\n");
+        println!("*");
     }
 
     print!("* |");
@@ -141,7 +136,7 @@ pub fn computes_lines(
     }
     println!("{:.2}  *", end);
 
-    if &xlabel != "" {
+    if !xlabel.is_empty() {
         let first = 104 / 2 - xlabel.len();
         let last = 104 - first - xlabel.len();
         for _ in 0..first {
@@ -157,5 +152,5 @@ pub fn computes_lines(
         }
     }
 
-    println!("");
+    println!();
 }
