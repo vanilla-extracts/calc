@@ -42,7 +42,7 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
         "ceil" => ceil(lst.as_slice(), &ram),
         "floor" => floor(lst.as_slice(), &ram),
         "round" => round(lst.as_slice(), &ram),
-        "norm" => norm(lst.as_slice(), &ram, &functions),
+        "norm" => norm(lst.as_slice(), &ram),
         "transpose_vector" => transpose_vectors(lst.as_slice(), &ram),
         "transpose" => transpose_matrices(lst.as_slice(), &ram),
         "det" => det_matrix(lst.as_slice(), &ram),
@@ -1395,7 +1395,7 @@ pub fn round(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
-pub fn norm(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
+pub fn norm(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1422,7 +1422,7 @@ pub fn norm(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => norm(&[t.clone()], ram, function),
+                Some(t) => norm(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1623,8 +1623,8 @@ pub fn inverse_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
                     }
                     lup_invert(&mut res, &mut p, n, &mut vec_ia, ram.as_deref());
                     let mut resd = Vec::new();
-                    for i in 0..n {
-                        resd.push(InterpreterVector(vec_ia[i].clone()));
+                    for i in vec_ia.iter().take(n) {
+                        resd.push(InterpreterVector(i.clone()));
                     }
                     InterpreterVector(resd)
                 }
@@ -2028,91 +2028,75 @@ pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: boo
     }
 
     match p.get(4) {
-        None => (),
-        Some(p) => {
-            if let Str(s) = p {
-                match s.to_lowercase().as_str() {
-                    "marks" => mode = "marks",
-                    "line" => mode = "line",
-                    "linemarks" => mode = "linemarks",
-                    _ => {
-                        if title == *"" {
-                            title = s.to_string()
-                        } else if xlabel == *"" {
-                            xlabel = s.to_string()
-                        } else {
-                            ylabel = s.to_string()
-                        }
-                    }
+        Some(Str(s)) => match s.to_lowercase().as_str() {
+            "marks" => mode = "marks",
+            "line" => mode = "line",
+            "linemarks" => mode = "linemarks",
+            _ => {
+                if title == *"" {
+                    title = s.to_string()
+                } else if xlabel == *"" {
+                    xlabel = s.to_string()
+                } else {
+                    ylabel = s.to_string()
                 }
             }
-        }
+        },
+        _ => (),
     }
 
     match p.get(5) {
-        None => (),
-        Some(p) => {
-            if let Str(s) = p {
-                match s.to_lowercase().as_str() {
-                    "marks" => mode = "marks",
-                    "line" => mode = "line",
-                    "linemarks" => mode = "linemarks",
-                    _ => {
-                        if title == *"" {
-                            title = s.to_string()
-                        } else if xlabel == *"" {
-                            xlabel = s.to_string()
-                        } else {
-                            ylabel = s.to_string()
-                        }
-                    }
+        Some(Str(s)) => match s.to_lowercase().as_str() {
+            "marks" => mode = "marks",
+            "line" => mode = "line",
+            "linemarks" => mode = "linemarks",
+            _ => {
+                if title == *"" {
+                    title = s.to_string()
+                } else if xlabel == *"" {
+                    xlabel = s.to_string()
+                } else {
+                    ylabel = s.to_string()
                 }
             }
-        }
+        },
+        _ => (),
     }
 
     match p.get(6) {
-        None => (),
-        Some(p) => {
-            if let Str(s) = p {
-                match s.to_lowercase().as_str() {
-                    "marks" => mode = "marks",
-                    "line" => mode = "line",
-                    "linemarks" => mode = "linemarks",
-                    _ => {
-                        if title == *"" {
-                            title = s.to_string()
-                        } else if xlabel == *"" {
-                            xlabel = s.to_string()
-                        } else {
-                            ylabel = s.to_string()
-                        }
-                    }
+        Some(Str(s)) => match s.to_lowercase().as_str() {
+            "marks" => mode = "marks",
+            "line" => mode = "line",
+            "linemarks" => mode = "linemarks",
+            _ => {
+                if title == *"" {
+                    title = s.to_string()
+                } else if xlabel == *"" {
+                    xlabel = s.to_string()
+                } else {
+                    ylabel = s.to_string()
                 }
             }
-        }
+        },
+        _ => (),
     }
 
     match p.get(7) {
-        None => (),
-        Some(p) => {
-            if let Str(s) = p {
-                match s.to_lowercase().as_str() {
-                    "marks" => mode = "marks",
-                    "line" => mode = "line",
-                    "linemarks" => mode = "linemarks",
-                    _ => {
-                        if title == *"" {
-                            title = s.to_string()
-                        } else if xlabel == *"" {
-                            xlabel = s.to_string()
-                        } else if ylabel == *"" {
-                            ylabel = s.to_string()
-                        }
-                    }
+        Some(Str(s)) => match s.to_lowercase().as_str() {
+            "marks" => mode = "marks",
+            "line" => mode = "line",
+            "linemarks" => mode = "linemarks",
+            _ => {
+                if title == *"" {
+                    title = s.to_string()
+                } else if xlabel == *"" {
+                    xlabel = s.to_string()
+                } else if ylabel == *"" {
+                    ylabel = s.to_string()
                 }
             }
-        }
+        },
+        _ => (),
     }
 
     let st = start;
