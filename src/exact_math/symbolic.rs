@@ -72,7 +72,7 @@ mod test {
             OrOperation,
             AndOperation,
             Not,
-            Vector(Box::from(vec![Ast::Nil])),
+            Vector(vec![Ast::Nil]),
             InterpreterVector(vec![Null]),
         ];
 

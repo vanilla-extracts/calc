@@ -479,7 +479,7 @@ mod test {
         let b = lex("[2,2,2,2]".to_string());
         let parser = &mut init_calc_parser(&b);
         let expected = Ast::Node {
-            value: Parameters::Vector(Box::new(vec![Ast::new(Parameters::Int(2)); 4])),
+            value: Parameters::Vector(vec![Ast::new(Parameters::Int(2)); 4]),
             left: Box::new(Ast::Nil),
             right: Box::new(Ast::Nil),
         };
