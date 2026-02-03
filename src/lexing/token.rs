@@ -14,7 +14,7 @@ pub enum Operator {
     LesserOrEqual,
     And,
     Or,
-    NOT,
+    Not,
     Selection,
     ConcatOperation,
 }
@@ -119,7 +119,7 @@ impl Display for Operator {
             Operator::GreaterThan => write!(f, ">"),
             Operator::LesserOrEqual => write!(f, "<="),
             Operator::LesserThan => write!(f, "<"),
-            Operator::NOT => write!(f, "!"),
+            Operator::Not => write!(f, "!"),
             Operator::Or => write!(f, "||"),
             Operator::And => write!(f, "&&"),
             Operator::Selection => write!(f, "."),
@@ -173,7 +173,7 @@ impl Token {
                 Operator::GreaterOrEqual => TokenType::GreaterEq,
                 Operator::LesserThan => TokenType::Lesser,
                 Operator::LesserOrEqual => TokenType::LesserEq,
-                Operator::NOT => TokenType::Not,
+                Operator::Not => TokenType::Not,
                 Operator::And => TokenType::And,
                 Operator::Or => TokenType::Or,
                 Operator::Selection => TokenType::Selection,
@@ -295,7 +295,7 @@ mod test {
     #[test]
     fn test_token_type_operators_not() {
         let expected = TokenType::Not;
-        let value = Token::Ope(super::Operator::NOT).to_token_type();
+        let value = Token::Ope(super::Operator::Not).to_token_type();
         assert_eq!(value, expected);
     }
 

@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::f64::consts::{E, PI};
+use std::slice::from_ref;
 
 use gnuplot::{AxesCommon, Figure};
 
@@ -258,7 +259,7 @@ pub fn cos(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(cos(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(cos(&[s.clone()], ram))
+                                res.push(cos(from_ref(s), ram))
                             }
                         }
                     },
@@ -275,7 +276,7 @@ pub fn cos(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         cos(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        cos(&[t.clone()], ram)
+                        cos(from_ref(t), ram)
                     }
                 }
             },
@@ -345,7 +346,7 @@ pub fn sin(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(sin(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(sin(&[s.clone()], ram))
+                                res.push(sin(from_ref(s), ram))
                             }
                         }
                     },
@@ -362,7 +363,7 @@ pub fn sin(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         sin(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        sin(&[t.clone()], ram)
+                        sin(from_ref(t), ram)
                     }
                 }
             },
@@ -433,7 +434,7 @@ pub fn tan(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(tan(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(tan(&[s.clone()], ram))
+                                res.push(tan(from_ref(s), ram))
                             }
                         }
                     },
@@ -450,7 +451,7 @@ pub fn tan(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         tan(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        tan(&[t.clone()], ram)
+                        tan(from_ref(t), ram)
                     }
                 }
             },
@@ -521,7 +522,7 @@ pub fn cosh(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(cosh(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(cosh(&[s.clone()], ram))
+                                res.push(cosh(from_ref(s), ram))
                             }
                         }
                     },
@@ -538,7 +539,7 @@ pub fn cosh(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         cosh(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        cosh(&[t.clone()], ram)
+                        cosh(from_ref(t), ram)
                     }
                 }
             },
@@ -609,7 +610,7 @@ pub fn sinh(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(sinh(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(sinh(&[s.clone()], ram))
+                                res.push(sinh(from_ref(s), ram))
                             }
                         }
                     },
@@ -626,7 +627,7 @@ pub fn sinh(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         sinh(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        sinh(&[t.clone()], ram)
+                        sinh(from_ref(t), ram)
                     }
                 }
             },
@@ -697,7 +698,7 @@ pub fn tanh(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(tanh(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(tanh(&[s.clone()], ram))
+                                res.push(tanh(from_ref(s), ram))
                             }
                         }
                     },
@@ -714,7 +715,7 @@ pub fn tanh(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         tanh(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        tanh(&[t.clone()], ram)
+                        tanh(from_ref(t), ram)
                     }
                 }
             },
@@ -783,7 +784,7 @@ pub fn acos(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(acos(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(acos(&[s.clone()], ram))
+                                res.push(acos(from_ref(s), ram))
                             }
                         }
                     },
@@ -800,7 +801,7 @@ pub fn acos(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         acos(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        acos(&[t.clone()], ram)
+                        acos(from_ref(t), ram)
                     }
                 }
             },
@@ -870,7 +871,7 @@ pub fn asin(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(asin(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(asin(&[s.clone()], ram))
+                                res.push(asin(from_ref(s), ram))
                             }
                         }
                     },
@@ -887,7 +888,7 @@ pub fn asin(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         asin(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        asin(&[t.clone()], ram)
+                        asin(from_ref(t), ram)
                     }
                 }
             },
@@ -957,7 +958,7 @@ pub fn atan(p: &[Parameters], ram: &Ram) -> Parameters {
                             if degrees {
                                 res.push(atan(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(atan(&[s.clone()], ram))
+                                res.push(atan(from_ref(s), ram))
                             }
                         }
                     },
@@ -974,7 +975,7 @@ pub fn atan(p: &[Parameters], ram: &Ram) -> Parameters {
                     if degrees {
                         atan(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        atan(&[t.clone()], ram)
+                        atan(from_ref(t), ram)
                     }
                 }
             },
@@ -1051,7 +1052,7 @@ pub fn exp(p: &[Parameters], ram: &Ram) -> Parameters {
                             if plus {
                                 res.push(exp(&[s.clone(), Float(ln)], ram))
                             } else {
-                                res.push(exp(&[s.clone()], ram))
+                                res.push(exp(from_ref(s), ram))
                             }
                         }
                     },
@@ -1140,7 +1141,7 @@ pub fn ln(p: &[Parameters], ram: &Ram) -> Parameters {
                             if plus {
                                 res.push(ln(&[s.clone(), Float(sln)], ram))
                             } else {
-                                res.push(ln(&[s.clone()], ram))
+                                res.push(ln(from_ref(s), ram))
                             }
                         }
                     },
@@ -1232,7 +1233,7 @@ pub fn sqrt(p: &[Parameters], ram: &Ram) -> Parameters {
                             if plus {
                                 res.push(sqrt(&[s.clone(), Float(sln)], ram))
                             } else {
-                                res.push(sqrt(&[s.clone()], ram))
+                                res.push(sqrt(from_ref(s), ram))
                             }
                         }
                     },
@@ -1274,7 +1275,7 @@ pub fn factorial(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => factorial(&[t.clone()], ram),
+                Some(t) => factorial(from_ref(t), ram),
             },
         },
         _ => Null,
@@ -1294,7 +1295,7 @@ pub fn abs(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => abs(&[t.clone()], ram),
+                Some(t) => abs(from_ref(t), ram),
             },
         },
         _ => Null,
@@ -1313,7 +1314,7 @@ pub fn ceil(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => ceil(&[t.clone()], ram),
+                Some(t) => ceil(from_ref(t), ram),
             },
         },
         _ => Null,
@@ -1332,7 +1333,7 @@ pub fn floor(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => floor(&[t.clone()], ram),
+                Some(t) => floor(from_ref(t), ram),
             },
         },
         _ => Null,
@@ -1422,7 +1423,7 @@ pub fn norm(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => norm(&[t.clone()], ram),
+                Some(t) => norm(from_ref(t), ram),
             },
         },
         _ => Null,
@@ -1455,7 +1456,7 @@ pub fn transpose_vectors(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => transpose_vectors(&[t.clone()], ram),
+                Some(t) => transpose_vectors(from_ref(t), ram),
             },
         },
         _ => Null,
@@ -1500,7 +1501,7 @@ pub fn transpose_matrices(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => transpose_matrices(&[t.clone()], ram),
+                Some(t) => transpose_matrices(from_ref(t), ram),
             },
         },
         _ => Null,
@@ -1552,7 +1553,7 @@ pub fn det_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => det_matrix(&[t.clone()], ram),
+                Some(t) => det_matrix(from_ref(t), ram),
             },
         },
         _ => Null,
@@ -1635,7 +1636,7 @@ pub fn inverse_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => inverse_matrix(&[t.clone()], ram),
+                Some(t) => inverse_matrix(from_ref(t), ram),
             },
         },
         _ => Null,

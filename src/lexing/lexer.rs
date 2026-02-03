@@ -32,24 +32,19 @@ pub fn is_an_allowed_char(character: char) -> bool {
         || character == ' '
 }
 
-fn lex_int(
-    current_char: char,
-    chars: &mut Vec<char>,
-    current_pos: usize,
-    len: usize,
-) -> (i64, usize) {
+fn lex_int(current_char: char, chars: &mut [char], current_pos: usize, len: usize) -> (i64, usize) {
     let (a, b) = lex_raddix(current_char, chars, current_pos, len);
     let err = i64::from_str(&a);
-    if err.is_err() {
-        (0, b)
+    if let Ok(s) = err {
+        (s, b)
     } else {
-        (err.unwrap(), b)
+        (0, b)
     }
 }
 
 fn lex_raddix(
     mut current_char: char,
-    chars: &mut Vec<char>,
+    chars: &mut [char],
     mut current_pos: usize,
     len: usize,
 ) -> (String, usize) {
@@ -69,7 +64,7 @@ fn lex_raddix(
 
 fn lex_string(
     mut current_char: char,
-    chars: &mut Vec<char>,
+    chars: &mut [char],
     mut current_pos: usize,
     len: usize,
 ) -> (String, usize) {
@@ -89,7 +84,7 @@ fn lex_string(
 
 fn lex_float(
     whole_side: i64,
-    chars: &mut Vec<char>,
+    chars: &mut [char],
     mut current_pos: usize,
     len: usize,
 ) -> (f64, usize) {
@@ -252,7 +247,7 @@ pub fn lex(input: String) -> Vec<Token> {
                 current_pos += 1
             }
             '!' => {
-                vec.push(Token::Ope(NOT));
+                vec.push(Token::Ope(Not));
                 current_pos += 1
             }
             ']' => {

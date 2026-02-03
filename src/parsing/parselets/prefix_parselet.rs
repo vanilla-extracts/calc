@@ -83,7 +83,7 @@ impl PrefixParselet for VecParselet {
         }
 
         Ast::Node {
-            value: crate::parsing::ast::Parameters::Vector(Box::from(vec)),
+            value: crate::parsing::ast::Parameters::Vector(vec),
             left: Box::new(Ast::Nil),
             right: Box::new(Ast::Nil),
         }
