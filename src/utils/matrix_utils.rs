@@ -151,6 +151,7 @@ pub fn lup_determinant(
     }
 }
 
+#[allow(clippy::needless_range_loop)]
 pub fn lup_invert(
     a: &mut Matrix<Parameters>,
     p: &mut [Parameters],
