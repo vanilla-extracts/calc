@@ -2027,8 +2027,8 @@ pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: boo
         },
     }
 
-    match p.get(4) {
-        Some(Str(s)) => match s.to_lowercase().as_str() {
+    if let Some(Str(s)) = p.get(4) {
+        match s.to_lowercase().as_str() {
             "marks" => mode = "marks",
             "line" => mode = "line",
             "linemarks" => mode = "linemarks",
@@ -2041,12 +2041,11 @@ pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: boo
                     ylabel = s.to_string()
                 }
             }
-        },
-        _ => (),
+        }
     }
 
-    match p.get(5) {
-        Some(Str(s)) => match s.to_lowercase().as_str() {
+    if let Some(Str(s)) = p.get(5) {
+        match s.to_lowercase().as_str() {
             "marks" => mode = "marks",
             "line" => mode = "line",
             "linemarks" => mode = "linemarks",
@@ -2059,12 +2058,11 @@ pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: boo
                     ylabel = s.to_string()
                 }
             }
-        },
-        _ => (),
+        }
     }
 
-    match p.get(6) {
-        Some(Str(s)) => match s.to_lowercase().as_str() {
+    if let Some(Str(s)) = p.get(6) {
+        match s.to_lowercase().as_str() {
             "marks" => mode = "marks",
             "line" => mode = "line",
             "linemarks" => mode = "linemarks",
@@ -2077,12 +2075,11 @@ pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: boo
                     ylabel = s.to_string()
                 }
             }
-        },
-        _ => (),
+        }
     }
 
-    match p.get(7) {
-        Some(Str(s)) => match s.to_lowercase().as_str() {
+    if let Some(Str(s)) = p.get(7) {
+        match s.to_lowercase().as_str() {
             "marks" => mode = "marks",
             "line" => mode = "line",
             "linemarks" => mode = "linemarks",
@@ -2095,8 +2092,7 @@ pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: boo
                     ylabel = s.to_string()
                 }
             }
-        },
-        _ => (),
+        }
     }
 
     let st = start;
