@@ -256,9 +256,9 @@ pub fn cos(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(cos(&vec![s.clone(), Bool(false)], ram))
+                                res.push(cos(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(cos(&vec![s.clone()], ram))
+                                res.push(cos(&[s.clone()], ram))
                             }
                         }
                     },
@@ -273,9 +273,9 @@ pub fn cos(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("cos".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        cos(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        cos(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        cos(&vec![t.clone()], ram)
+                        cos(&[t.clone()], ram)
                     }
                 }
             },
@@ -343,9 +343,9 @@ pub fn sin(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(sin(&vec![s.clone(), Bool(false)], ram))
+                                res.push(sin(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(sin(&vec![s.clone()], ram))
+                                res.push(sin(&[s.clone()], ram))
                             }
                         }
                     },
@@ -360,9 +360,9 @@ pub fn sin(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("sin".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        sin(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        sin(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        sin(&vec![t.clone()], ram)
+                        sin(&[t.clone()], ram)
                     }
                 }
             },
@@ -431,9 +431,9 @@ pub fn tan(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(tan(&vec![s.clone(), Bool(false)], ram))
+                                res.push(tan(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(tan(&vec![s.clone()], ram))
+                                res.push(tan(&[s.clone()], ram))
                             }
                         }
                     },
@@ -448,9 +448,9 @@ pub fn tan(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("tan".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        tan(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        tan(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        tan(&vec![t.clone()], ram)
+                        tan(&[t.clone()], ram)
                     }
                 }
             },
@@ -519,9 +519,9 @@ pub fn cosh(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(cosh(&vec![s.clone(), Bool(false)], ram))
+                                res.push(cosh(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(cosh(&vec![s.clone()], ram))
+                                res.push(cosh(&[s.clone()], ram))
                             }
                         }
                     },
@@ -536,9 +536,9 @@ pub fn cosh(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("cosh".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        cosh(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        cosh(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        cosh(&vec![t.clone()], ram)
+                        cosh(&[t.clone()], ram)
                     }
                 }
             },
@@ -607,9 +607,9 @@ pub fn sinh(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(sinh(&vec![s.clone(), Bool(false)], ram))
+                                res.push(sinh(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(sinh(&vec![s.clone()], ram))
+                                res.push(sinh(&[s.clone()], ram))
                             }
                         }
                     },
@@ -624,9 +624,9 @@ pub fn sinh(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("sinh".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        sinh(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        sinh(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        sinh(&vec![t.clone()], ram)
+                        sinh(&[t.clone()], ram)
                     }
                 }
             },
@@ -695,9 +695,9 @@ pub fn tanh(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(tanh(&vec![s.clone(), Bool(false)], ram))
+                                res.push(tanh(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(tanh(&vec![s.clone()], ram))
+                                res.push(tanh(&[s.clone()], ram))
                             }
                         }
                     },
@@ -712,9 +712,9 @@ pub fn tanh(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("tanh".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        tanh(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        tanh(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        tanh(&vec![t.clone()], ram)
+                        tanh(&[t.clone()], ram)
                     }
                 }
             },
@@ -781,9 +781,9 @@ pub fn acos(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(acos(&vec![s.clone(), Bool(false)], ram))
+                                res.push(acos(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(acos(&vec![s.clone()], ram))
+                                res.push(acos(&[s.clone()], ram))
                             }
                         }
                     },
@@ -798,9 +798,9 @@ pub fn acos(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("acos".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        acos(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        acos(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        acos(&vec![t.clone()], ram)
+                        acos(&[t.clone()], ram)
                     }
                 }
             },
@@ -868,9 +868,9 @@ pub fn asin(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(asin(&vec![s.clone(), Bool(false)], ram))
+                                res.push(asin(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(asin(&vec![s.clone()], ram))
+                                res.push(asin(&[s.clone()], ram))
                             }
                         }
                     },
@@ -885,9 +885,9 @@ pub fn asin(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("asin".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        asin(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        asin(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        asin(&vec![t.clone()], ram)
+                        asin(&[t.clone()], ram)
                     }
                 }
             },
@@ -955,9 +955,9 @@ pub fn atan(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if degrees {
-                                res.push(atan(&vec![s.clone(), Bool(false)], ram))
+                                res.push(atan(&[s.clone(), Bool(false)], ram))
                             } else {
-                                res.push(atan(&vec![s.clone()], ram))
+                                res.push(atan(&[s.clone()], ram))
                             }
                         }
                     },
@@ -972,9 +972,9 @@ pub fn atan(p: &[Parameters], ram: &Ram) -> Parameters {
                 None => Call("atan".to_string(), Box::from(Identifier(s.clone()))),
                 Some(t) => {
                     if degrees {
-                        atan(&vec![t.clone(), Identifier("false".to_string())], ram)
+                        atan(&[t.clone(), Identifier("false".to_string())], ram)
                     } else {
-                        atan(&vec![t.clone()], ram)
+                        atan(&[t.clone()], ram)
                     }
                 }
             },
@@ -1049,9 +1049,9 @@ pub fn exp(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if plus {
-                                res.push(exp(&vec![s.clone(), Float(ln)], ram))
+                                res.push(exp(&[s.clone(), Float(ln)], ram))
                             } else {
-                                res.push(exp(&vec![s.clone()], ram))
+                                res.push(exp(&[s.clone()], ram))
                             }
                         }
                     },
@@ -1064,7 +1064,7 @@ pub fn exp(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Call("exp".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Call("exp".to_string(), Box::from(Identifier(s.clone()))),
-                Some(t) => exp(&vec![t.clone(), Float(ln)], ram),
+                Some(t) => exp(&[t.clone(), Float(ln)], ram),
             },
         },
         p => Call("exp".to_string(), Box::from(p.clone())),
@@ -1138,9 +1138,9 @@ pub fn ln(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if plus {
-                                res.push(ln(&vec![s.clone(), Float(sln)], ram))
+                                res.push(ln(&[s.clone(), Float(sln)], ram))
                             } else {
-                                res.push(ln(&vec![s.clone()], ram))
+                                res.push(ln(&[s.clone()], ram))
                             }
                         }
                     },
@@ -1153,7 +1153,7 @@ pub fn ln(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Call("ln".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Call("ln".to_string(), Box::from(Identifier(s.clone()))),
-                Some(t) => ln(&vec![t.clone(), Float(sln)], ram),
+                Some(t) => ln(&[t.clone(), Float(sln)], ram),
             },
         },
         p => Call("ln".to_string(), Box::from(p.clone())),
@@ -1230,9 +1230,9 @@ pub fn sqrt(p: &[Parameters], ram: &Ram) -> Parameters {
                         None => (),
                         Some(s) => {
                             if plus {
-                                res.push(sqrt(&vec![s.clone(), Float(sln)], ram))
+                                res.push(sqrt(&[s.clone(), Float(sln)], ram))
                             } else {
-                                res.push(sqrt(&vec![s.clone()], ram))
+                                res.push(sqrt(&[s.clone()], ram))
                             }
                         }
                     },
@@ -1245,7 +1245,7 @@ pub fn sqrt(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Call("sqrt".to_string(), Box::from(Identifier(s.clone()))),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Call("sqrt".to_string(), Box::from(Identifier(s.clone()))),
-                Some(t) => sqrt(&vec![t.clone(), Float(sln)], ram),
+                Some(t) => sqrt(&[t.clone(), Float(sln)], ram),
             },
         },
         p => Call("sqrt".to_string(), Box::from(p.clone())),
@@ -1274,7 +1274,7 @@ pub fn factorial(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => factorial(&vec![t.clone()], ram),
+                Some(t) => factorial(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1294,7 +1294,7 @@ pub fn abs(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => abs(&vec![t.clone()], ram),
+                Some(t) => abs(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1313,7 +1313,7 @@ pub fn ceil(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => ceil(&vec![t.clone()], ram),
+                Some(t) => ceil(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1332,7 +1332,7 @@ pub fn floor(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => floor(&vec![t.clone()], ram),
+                Some(t) => floor(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1388,7 +1388,7 @@ pub fn round(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => round(&vec![t.clone(), Float(sln)], ram),
+                Some(t) => round(&[t.clone(), Float(sln)], ram),
             },
         },
         _ => Null,
@@ -1422,7 +1422,7 @@ pub fn norm(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => norm(&vec![t.clone()], ram, function),
+                Some(t) => norm(&[t.clone()], ram, function),
             },
         },
         _ => Null,
@@ -1455,7 +1455,7 @@ pub fn transpose_vectors(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => transpose_vectors(&vec![t.clone()], ram),
+                Some(t) => transpose_vectors(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1500,7 +1500,7 @@ pub fn transpose_matrices(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => transpose_matrices(&vec![t.clone()], ram),
+                Some(t) => transpose_matrices(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1552,7 +1552,7 @@ pub fn det_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => det_matrix(&vec![t.clone()], ram),
+                Some(t) => det_matrix(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1635,7 +1635,7 @@ pub fn inverse_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
             None => Identifier("This variable is not initialized yet".to_string()),
             Some(ref t) => match t.get(s.as_str()) {
                 None => Null,
-                Some(t) => inverse_matrix(&vec![t.clone()], ram),
+                Some(t) => inverse_matrix(&[t.clone()], ram),
             },
         },
         _ => Null,
@@ -1741,19 +1741,19 @@ pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
                     ),
 
                     Plus(x, y) => other_add(
-                        diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
-                        diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
+                        diff(&[*x.clone()], &Some(&mut c), &Some(&mut s)),
+                        diff(&[*y.clone()], &Some(&mut c), &Some(&mut s)),
                         Some(&c),
                     ),
                     Mul(x, y) => other_add(
                         mult(
                             *x.clone(),
-                            diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
+                            diff(&[*y.clone()], &Some(&mut c), &Some(&mut s)),
                             Some(&c),
                         ),
                         mult(
                             *y.clone(),
-                            diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
+                            diff(&[*x.clone()], &Some(&mut c), &Some(&mut s)),
                             Some(&c),
                         ),
                         Some(&c),
@@ -1762,12 +1762,12 @@ pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
                         Box::from(other_add(
                             mult(
                                 *x.clone(),
-                                diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
+                                diff(&[*y.clone()], &Some(&mut c), &Some(&mut s)),
                                 Some(&c),
                             ),
                             mult(
                                 mult(Int(-1), *y.clone(), Some(&c)),
-                                diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
+                                diff(&[*x.clone()], &Some(&mut c), &Some(&mut s)),
                                 Some(&c),
                             ),
                             Some(&c),
@@ -1775,9 +1775,9 @@ pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
                         Box::from(mult(*y.clone(), *y.clone(), Some(&c))),
                     ),
                     Call(name, pst) => {
-                        let prefix = diff(&vec![*pst.clone()], &Some(&mut c), &Some(&mut s));
+                        let prefix = diff(&[*pst.clone()], &Some(&mut c), &Some(&mut s));
                         let call = diff(
-                            &vec![Identifier(name), *pst.clone()],
+                            &[Identifier(name), *pst.clone()],
                             &Some(&mut c),
                             &Some(&mut s),
                         );
@@ -1793,19 +1793,19 @@ pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
             z.clone(),
         ),
         Plus(x, y) => other_add(
-            diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
-            diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
+            diff(&[*x.clone()], &Some(&mut c), &Some(&mut s)),
+            diff(&[*y.clone()], &Some(&mut c), &Some(&mut s)),
             Some(&c),
         ),
         Mul(x, y) => other_add(
             mult(
                 *x.clone(),
-                diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
+                diff(&[*y.clone()], &Some(&mut c), &Some(&mut s)),
                 Some(&c),
             ),
             mult(
                 *y.clone(),
-                diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
+                diff(&[*x.clone()], &Some(&mut c), &Some(&mut s)),
                 Some(&c),
             ),
             Some(&c),
@@ -1814,12 +1814,12 @@ pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
             Box::from(other_add(
                 mult(
                     *x.clone(),
-                    diff(&vec![*y.clone()], &Some(&mut c), &Some(&mut s)),
+                    diff(&[*y.clone()], &Some(&mut c), &Some(&mut s)),
                     Some(&c),
                 ),
                 mult(
                     Mul(Box::from(Int(-1)), y.clone()),
-                    diff(&vec![*x.clone()], &Some(&mut c), &Some(&mut s)),
+                    diff(&[*x.clone()], &Some(&mut c), &Some(&mut s)),
                     Some(&c),
                 ),
                 Some(&c),
@@ -1828,9 +1828,9 @@ pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
         ),
 
         Call(name, pst) => {
-            let prefix = diff(&vec![*pst.clone()], &Some(&mut c), &Some(&mut s));
+            let prefix = diff(&[*pst.clone()], &Some(&mut c), &Some(&mut s));
             let call = diff(
-                &vec![Identifier(name.to_string()), *pst.clone()],
+                &[Identifier(name.to_string()), *pst.clone()],
                 &Some(&mut c),
                 &Some(&mut s),
             );
@@ -2135,7 +2135,7 @@ pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: boo
         while start <= end {
             x.push(start);
             if fd.is_empty() {
-                let p = f(&vec![Float(start)], ram);
+                let p = f(&[Float(start)], ram);
                 y.push(match p {
                     Float(f) => f,
                     Int(i) => i as f64,
