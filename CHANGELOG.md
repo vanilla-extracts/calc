@@ -1,3 +1,7 @@
+# Version 4.0.3 : Documentation
+This version is a very minor update, no new features are planned, but the code readability will be improved drastically. As well
+as the maintainability of the code.
+
 # Version 4.0.0 : A real programming language
 This version adds a lot of features which makes calc closer to a real programming language.
 
