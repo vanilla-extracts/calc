@@ -120,9 +120,6 @@ impl PartialEq for Rationals {
             i1.over == i2.over
         }
     }
-    fn ne(&self, other: &Self) -> bool {
-        !self.eq(other)
-    }
 }
 
 impl PartialOrd for Rationals {

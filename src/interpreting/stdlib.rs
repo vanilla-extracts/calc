@@ -23,37 +23,37 @@ type Functions<'a> = Option<&'a mut ast::Functions>;
 
 pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> Parameters {
     match s.as_str() {
-        "cos" => cos(&lst, &ram),
-        "sin" => sin(&lst, &ram),
-        "tan" => tan(&lst, &ram),
-        "cosh" => cosh(&lst, &ram),
-        "sinh" => sinh(&lst, &ram),
-        "tanh" => tanh(&lst, &ram),
-        "exp" => exp(&lst, &ram),
-        "acos" => acos(&lst, &ram),
-        "asin" => asin(&lst, &ram),
-        "atan" => atan(&lst, &ram),
-        "ln" => ln(&lst, &ram),
-        "log" => ln(&lst, &ram),
-        "sqrt" => sqrt(&lst, &ram),
-        "fact" => factorial(&lst, &ram),
-        "factorial" => factorial(&lst, &ram),
-        "abs" => abs(&lst, &ram),
-        "ceil" => ceil(&lst, &ram),
-        "floor" => floor(&lst, &ram),
-        "round" => round(&lst, &ram),
-        "norm" => norm(&lst, &ram, &functions),
-        "transpose_vector" => transpose_vectors(&lst, &ram),
-        "transpose" => transpose_matrices(&lst, &ram),
-        "det" => det_matrix(&lst, &ram),
-        "invert" => inverse_matrix(&lst, &ram),
-        "plot" => plot_fn(&lst, &ram, &functions, false),
-        "termplot" => plot_fn(&lst, &ram, &functions, true),
-        "diff" => diff(&lst, &ram, &functions),
-        "debug" => debug(&lst),
-        "print" => print(&lst),
-        "split" => split_string(&lst, &ram),
-        "join" => join_string(&lst, &ram),
+        "cos" => cos(lst.as_slice(), &ram),
+        "sin" => sin(lst.as_slice(), &ram),
+        "tan" => tan(lst.as_slice(), &ram),
+        "cosh" => cosh(lst.as_slice(), &ram),
+        "sinh" => sinh(lst.as_slice(), &ram),
+        "tanh" => tanh(lst.as_slice(), &ram),
+        "exp" => exp(lst.as_slice(), &ram),
+        "acos" => acos(lst.as_slice(), &ram),
+        "asin" => asin(lst.as_slice(), &ram),
+        "atan" => atan(lst.as_slice(), &ram),
+        "ln" => ln(lst.as_slice(), &ram),
+        "log" => ln(lst.as_slice(), &ram),
+        "sqrt" => sqrt(lst.as_slice(), &ram),
+        "fact" => factorial(lst.as_slice(), &ram),
+        "factorial" => factorial(lst.as_slice(), &ram),
+        "abs" => abs(lst.as_slice(), &ram),
+        "ceil" => ceil(lst.as_slice(), &ram),
+        "floor" => floor(lst.as_slice(), &ram),
+        "round" => round(lst.as_slice(), &ram),
+        "norm" => norm(lst.as_slice(), &ram, &functions),
+        "transpose_vector" => transpose_vectors(lst.as_slice(), &ram),
+        "transpose" => transpose_matrices(lst.as_slice(), &ram),
+        "det" => det_matrix(lst.as_slice(), &ram),
+        "invert" => inverse_matrix(lst.as_slice(), &ram),
+        "plot" => plot_fn(lst.as_slice(), &ram, &functions, false),
+        "termplot" => plot_fn(lst.as_slice(), &ram, &functions, true),
+        "diff" => diff(lst.as_slice(), &ram, &functions),
+        "debug" => debug(lst.as_slice()),
+        "print" => print(lst.as_slice()),
+        "split" => split_string(lst.as_slice(), &ram),
+        "join" => join_string(lst.as_slice(), &ram),
         s => {
             let mut sram: HashMap<String, Parameters> = HashMap::new();
             sram.insert("pi".to_string(), Float(PI));
@@ -104,17 +104,17 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
     }
 }
 
-pub fn debug(p: &Vec<Parameters>) -> Parameters {
+pub fn debug(p: &[Parameters]) -> Parameters {
     println!("{:#?}", p);
     Parameters::Null
 }
 
-pub fn print(p: &Vec<Parameters>) -> Parameters {
+pub fn print(p: &[Parameters]) -> Parameters {
     p.iter().for_each(|f| println!("{f}"));
     Parameters::Null
 }
 
-pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn split_string(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -161,7 +161,7 @@ pub fn split_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn join_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn join_string(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -197,7 +197,7 @@ pub fn join_string(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
         .trim()
         .to_string())
 }
-pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn cos(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -284,7 +284,7 @@ pub fn cos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn sin(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -371,7 +371,7 @@ pub fn sin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn tan(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -459,7 +459,7 @@ pub fn tan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn cosh(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -547,7 +547,7 @@ pub fn cosh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn sinh(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -635,7 +635,7 @@ pub fn sinh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn tanh(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -723,7 +723,7 @@ pub fn tanh(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn acos(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -809,7 +809,7 @@ pub fn acos(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn asin(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -896,7 +896,7 @@ pub fn asin(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn atan(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -983,7 +983,7 @@ pub fn atan(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn exp(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1071,7 +1071,7 @@ pub fn exp(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn ln(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1160,7 +1160,7 @@ pub fn ln(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn sqrt(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn sqrt(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1262,7 +1262,7 @@ pub fn fact(n: i64) -> i64 {
     aux(n, 1)
 }
 
-pub fn factorial(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn factorial(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1281,7 +1281,7 @@ pub fn factorial(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn abs(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn abs(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1301,7 +1301,7 @@ pub fn abs(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn ceil(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn ceil(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1320,7 +1320,7 @@ pub fn ceil(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn floor(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn floor(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1339,7 +1339,7 @@ pub fn floor(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn round(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1395,7 +1395,7 @@ pub fn round(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn norm(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters {
+pub fn norm(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1429,7 +1429,7 @@ pub fn norm(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters 
     }
 }
 
-pub fn transpose_vectors(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn transpose_vectors(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1462,7 +1462,7 @@ pub fn transpose_vectors(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn transpose_matrices(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn transpose_matrices(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1507,7 +1507,7 @@ pub fn transpose_matrices(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn det_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn det_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1559,7 +1559,7 @@ pub fn det_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
+pub fn inverse_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
     }
@@ -1642,7 +1642,7 @@ pub fn inverse_matrix(p: &Vec<Parameters>, ram: &Ram) -> Parameters {
     }
 }
 
-pub fn diff(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters {
+pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
     let color = match load() {
         Ok(cfg) => load_config(cfg).general_color,
         Err(_) => load_config(Config::default()).general_color,
@@ -1840,12 +1840,7 @@ pub fn diff(p: &Vec<Parameters>, ram: &Ram, function: &Functions) -> Parameters 
     }
 }
 
-pub fn plot_fn(
-    p: &Vec<Parameters>,
-    ram: &Ram,
-    functions: &Functions,
-    terminal: bool,
-) -> Parameters {
+pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: bool) -> Parameters {
     let color = match load() {
         Ok(cfg) => load_config(cfg).general_color,
         Err(_) => load_config(Config::default()).general_color,
@@ -1858,7 +1853,7 @@ pub fn plot_fn(
     }
 
     let fs = p.first().unwrap();
-    let mut f: fn(&Vec<Parameters>, &Ram) -> Parameters = cos;
+    let mut f: fn(&[Parameters], &Ram) -> Parameters = cos;
     let mut fd: String = "".to_string();
     let mut rad: bool = false;
     let mut fun: bool = true;

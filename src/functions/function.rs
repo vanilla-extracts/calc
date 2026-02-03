@@ -59,39 +59,19 @@ pub fn assign(s: Parameters, s2: Parameters) -> (String, Parameters) {
     fn contained_in_parameter(pattern: &Parameters, search: &Parameters) -> bool {
         match search {
             Int(_) => {
-                if let Int(_) = pattern {
-                    true
-                } else {
-                    false
-                }
+                matches!(pattern, Int(_))
             }
             Float(_) => {
-                if let Float(_) = pattern {
-                    true
-                } else {
-                    false
-                }
+                matches!(pattern, Float(_))
             }
             Bool(_) => {
-                if let Bool(_) = pattern {
-                    true
-                } else {
-                    false
-                }
+                matches!(pattern, Bool(_))
             }
             Rational(_) => {
-                if let Rational(_) = pattern {
-                    true
-                } else {
-                    false
-                }
+                matches!(pattern, Rational(_))
             }
             Str(_) => {
-                if let Str(_) = pattern {
-                    true
-                } else {
-                    false
-                }
+                matches!(pattern, Str(_))
             }
             Identifier(str) => {
                 if let Identifier(str2) = pattern {
@@ -112,11 +92,7 @@ pub fn assign(s: Parameters, s2: Parameters) -> (String, Parameters) {
                 }
             }
             InterpreterVector(_) => {
-                if let InterpreterVector(_) = pattern {
-                    true
-                } else {
-                    false
-                }
+                matches!(pattern, InterpreterVector(_))
             }
             Call(s, _) => {
                 if let Call(s2, _) = pattern {
