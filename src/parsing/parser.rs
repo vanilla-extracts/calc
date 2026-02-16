@@ -15,12 +15,20 @@ use super::parselets::prefix_parselet::{
     IfThenElseParselet, QuoteParselet, ScopeParselet, VecParselet, WhileParselet,
 };
 
+/// # CalcParser
+/// Defines the parser struct
+/// Contains an iterator over a list of tokens
+/// Contains a vector of the read tokens
 #[derive(Clone)]
 pub struct CalcParser<'a> {
     tokens: Iter<'a, Token>,
     read: Vec<Token>,
 }
 
+/// # Init Parser
+/// Initialise a CalcParser
+/// Takes a ref to a list of tokens
+/// Returns the initialised CalcParser
 pub fn init_calc_parser(input: &[Token]) -> CalcParser<'_> {
     CalcParser {
         tokens: input.iter(),
@@ -29,9 +37,17 @@ pub fn init_calc_parser(input: &[Token]) -> CalcParser<'_> {
 }
 
 impl CalcParser<'_> {
+    /// # Parse
+    /// Takes a mutable reference of itself
+    /// Returns the parsed Ast with no precedence.
     pub fn parse(&mut self) -> Ast {
         self.parse_expression_empty()
     }
+
+    /// # Parse Expression
+    /// Takes a mutable reference of itself
+    /// Takes a precedence value as a sixty four bits integer
+    /// Returns the parsed Ast.
     pub fn parse_expression(&mut self, precedence: i64) -> Ast {
         let mut token = self.consume();
         let prefix = self.get_prefix_parselet(&token.to_token_type());
@@ -51,9 +67,17 @@ impl CalcParser<'_> {
         left
     }
 
+    /// # Parse Expression Empty
+    /// Takes a mutable reference to itself
+    /// Returns the parsed Ast with no precedence
     pub fn parse_expression_empty(&mut self) -> Ast {
         self.parse_expression(0)
     }
+
+    /// # Look Ahead
+    /// Takes a mutable reference to itself
+    /// Takes a distance to look ahead, as an usize
+    /// Returns the token at the inputed distance in its iterator
     fn look_ahead(&mut self, distance: usize) -> Token {
         while distance >= self.read.len() {
             match self.tokens.next() {
@@ -66,6 +90,11 @@ impl CalcParser<'_> {
             Some(t) => t.clone(),
         }
     }
+
+    /// # Consume
+    /// Consumes a token
+    /// Takes a mutable reference to itself
+    /// Returns the consumed token.
     pub fn consume(&mut self) -> Token {
         self.look_ahead(0);
         if self.read.is_empty() {
@@ -74,6 +103,11 @@ impl CalcParser<'_> {
         self.read.remove(0)
     }
 
+    /// # Match Token
+    /// Peeks at the top value in the iterator, and matches it with the expected token
+    /// Takes a mutable reference to itself
+    /// Takes the expected TokenType
+    /// Returns whether the token matches.
     pub fn match_token(&mut self, expected: TokenType) -> bool {
         let token = self.look_ahead(0);
         if token.to_token_type() != expected {
@@ -82,6 +116,13 @@ impl CalcParser<'_> {
         true
     }
 
+    /// # Consume Expected
+    /// Consumes a token of an expected type.
+    /// Takes a mutable reference to itself
+    /// Takes the expected TokenType
+    /// Returns the consumed token
+    ///
+    /// If the token does not match, it returns the Null Token.
     pub fn consume_expected(&mut self, expected: TokenType) -> Token {
         self.look_ahead(0);
         if self.read.is_empty() {
@@ -97,6 +138,10 @@ impl CalcParser<'_> {
         }
     }
 
+    /// # Get Reference
+    /// Fetches the next value in the iterator, look up the corresponding parselet, gives its precedence
+    /// Takes a mutable reference of itself
+    /// Returns its precedence.
     fn get_precedence(&mut self) -> i64 {
         let token_type = self.look_ahead(0).to_token_type();
         match self.get_infix_parselet(&token_type) {
@@ -105,6 +150,13 @@ impl CalcParser<'_> {
         }
     }
 
+    /// # Get Infix Parselet
+    /// Fetches the corresponding parselet (Infix) from a TokenType
+    /// Takes a reference to itself
+    /// Takes a reference to a TokenType
+    /// Returns an Option of the corresponding parselet.
+    ///
+    /// If there is no correspondance, the Option is None.
     pub fn get_infix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn InfixParselet>> {
         match token_type {
             TokenType::Plus => Some(Box::from(OperatorInfixParselet {
@@ -174,6 +226,8 @@ impl CalcParser<'_> {
         }
     }
 
+    /// # Get Prefix Parselet
+    /// Same as the last function, but for the prefixes.
     pub fn get_prefix_parselet(&self, token_type: &TokenType) -> Option<Box<dyn PrefixParselet>> {
         match token_type {
             TokenType::Plus => Some(Box::from(OperatorPrefixParselet {})),
