@@ -1,5 +1,22 @@
 use std::fmt::{Display, Formatter};
 
+/// # Operator
+/// An operator in Calc is any of the following:
+/// - `+` addition
+/// - `-` substraction
+/// - `*` multiplication
+/// - `/` division
+/// - `^` exponentiation
+/// - `==` equality
+/// - `>` greater than
+/// - `<` lesser than
+/// - `>=` greater of equal
+/// - `<=` lesser or equal
+/// - `&&` boolean and
+/// - `||` boolean or
+/// - `!` boolean not
+/// - `.` vector selection
+/// - `++` vector/string concatenation
 #[derive(Debug, Clone, PartialEq)]
 pub enum Operator {
     Plus,
@@ -19,6 +36,31 @@ pub enum Operator {
     ConcatOperation,
 }
 
+/// # Token
+/// A token can be:
+/// - An operator (with the associated Operator, see above)
+/// - An identifier (with the associated string)
+/// - An integer (with the associated signed sixty four bits integer)
+/// - A float (with the associated sixty four bits double precision floating point number)
+/// - A boolean (with the associated boolean)
+/// - Equal (`=`)
+/// - Rpar (`(`)
+/// - Lpar (`)`)
+/// - Rbracket (`[`)
+/// - Lbracket (`]`)
+/// - Comma (`,`)
+/// - Quote (`"`)
+/// - Whitespace (` `)
+/// - PreAnd: temporary token to lex a full And operator (`&`)
+/// - PreOr: temporary token to lex a full Or operator (`|`)
+/// - If (`if`)
+/// - Then (`then`)
+/// - Else (`else`)
+/// - While (`while`)
+/// - Do (`do`)
+/// - Ignore (`;`)
+/// - Rsb (`{`)
+/// - Lsb (`}`)
 #[derive(Debug, Clone, PartialEq)]
 pub enum Token {
     Ope(Operator),
@@ -47,6 +89,8 @@ pub enum Token {
     Lsb,
 }
 
+/// # TokenType
+/// The type (without associated value) of each token, very useful in parsing
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub enum TokenType {
     Plus,
@@ -87,6 +131,20 @@ pub enum TokenType {
     Concat,
 }
 
+/// # Precedence
+/// Precedence table for the operator, the higher the number the "stickier" the parsing
+/// For example if you have: 3+3*3
+/// It will be parsed as 3+(3*3)
+/// Because the precedence of product is 50, while the precedence of addition is 40
+/// Warning:
+///
+/// This approach has one *big* downside:
+/// The parser as it is now can't handle two operators with the same precedence
+/// Which means this: `3/3*3`
+/// Which *should* be `(3/3)*3` in "standard math" (because product and division has the same precedence, so it is read left to right)
+/// Is parsed as `3/(3*3)` because in this the precedence of the product is higher than the precedence of division
+///
+/// FIXME: Allow two equal precedence with parsing left to right
 pub enum Precedence {
     Ignore = 5,
     IfThenElse = 6,
@@ -160,6 +218,10 @@ impl Display for Token {
 }
 
 impl Token {
+    /// # ToTokenType
+    /// Transforms a token into its type
+    /// Takes a reference to itself
+    /// Returns the equivalent TokenType
     pub fn to_token_type(&self) -> TokenType {
         match &self {
             Token::Ope(p) => match p {
