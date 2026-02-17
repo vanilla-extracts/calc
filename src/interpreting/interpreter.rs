@@ -10,6 +10,20 @@ use crate::interpreting::stdlib::exec;
 use crate::parsing::ast::{Ast, Functions, Parameters, Ram};
 use crate::FLOAT_MODE;
 
+/// # Interpreter
+/// Interprets the Ast, and gives the result
+/// A really simple and intuitive interpreter, it deconstructs the input Ast
+/// - If it is the empty tree it returns the null parameter
+/// - If it is a `Node(v,lhs,rhs)` it interprets recursively `lhs` and `rhs`, then match the value `v`, and call the right function.
+/// - If it is a function call, it interprets the whole list of parameters and call the function (be it std or user-defined)
+/// - If it is a conditional, it interprets the condition and interprets the right branch
+/// - If it is a while, it interprets the condition then run the while and returns it as a vector of parameters
+/// - If it is an ignore, it interprets `lhs`, ignores it, and interprets `rhs`, returns it.
+///
+/// Takes a reference to the Ast
+/// Takes a mutable reference to the state of the variables of Calc (see: [Ram](../parsing/ast.rs))
+/// Takes a mutable reference to the state of the user-defined functions of Calc (see [Functions](../parsing/ast.rs))
+/// Returns the final parameter.
 pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> Parameters {
     match ast {
         Ast::Nil => Parameters::Null,
