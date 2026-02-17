@@ -4,6 +4,9 @@ use crate::lexing::token::Operator::*;
 use crate::lexing::token::Token;
 use crate::lexing::token::Token::PreAnd;
 
+/// # Is An Allowed Character
+/// Filters the "allowed characters" in calc
+/// An allowed character is either alphanumeric or from a list of operators and tokens
 pub fn is_an_allowed_char(character: char) -> bool {
     character.is_alphanumeric()
         || character == '+'
@@ -32,6 +35,13 @@ pub fn is_an_allowed_char(character: char) -> bool {
         || character == ' '
 }
 
+/// # Lex Int
+/// Helper function to read an integer
+/// Takes the current character
+/// Takes a mutable reference to the slice of characters
+/// Takes the current position
+/// Takes the total number of characters
+/// Returns the lexed integer and the new position within the slice of characters; as an usize.
 fn lex_int(current_char: char, chars: &mut [char], current_pos: usize, len: usize) -> (i64, usize) {
     let (a, b) = lex_raddix(current_char, chars, current_pos, len);
     let err = i64::from_str(&a);
@@ -42,6 +52,13 @@ fn lex_int(current_char: char, chars: &mut [char], current_pos: usize, len: usiz
     }
 }
 
+/// # Lex Raddix
+/// Helper function to read a whole "integer" as a string
+/// Takes the current character (as a mutable)
+/// Takes a mutable reference to the slice of characters
+/// Takes the current position (as a mutable)
+/// Takes the total number of characters
+/// Returns the "integer" (as a string), and the new position within the slice of characters; as an usize.
 fn lex_raddix(
     mut current_char: char,
     chars: &mut [char],
@@ -62,6 +79,13 @@ fn lex_raddix(
     (str, current_pos)
 }
 
+/// # Lex String
+/// Helper function to read a string
+/// Takes the current character; as a mutable
+/// Takes the a mutable reference to the slice of chars
+/// Takes the current position; as a mutable
+/// Takes the total number of characters
+/// Returns the string, and the new position within the slice of characters; as an usize.
 fn lex_string(
     mut current_char: char,
     chars: &mut [char],
@@ -82,6 +106,13 @@ fn lex_string(
     (str, current_pos)
 }
 
+/// # Lex Float
+/// Helper function to lex a floating point number
+/// Takes the whole part of the float
+/// Takes a mutable reference to the slice of characters
+/// Takes the current position; as a mutable
+/// Takes the total number of characters
+/// Returns the floating point number, and the new position within the slice of characters; as an usize.
 fn lex_float(
     whole_side: i64,
     chars: &mut [char],
@@ -99,6 +130,10 @@ fn lex_float(
     (f.unwrap(), b)
 }
 
+/// # Lex
+/// Main function of the lexer, the algorithm is really simple, it reads character by character and assign the correct token.
+/// Takes the input code
+/// Returns a vector of the lexed tokens
 pub fn lex(input: String) -> Vec<Token> {
     let mut vec: Vec<Token> = Vec::new();
 
