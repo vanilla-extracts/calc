@@ -3,18 +3,38 @@ use crate::parsing::ast::Ast::Call;
 use crate::parsing::ast::{token_to_parameter, Ast, Parameters};
 use crate::parsing::parser::CalcParser;
 
+/// # Infix Parselet
+/// Trait defining a parselet for an infix operator / expression
+/// Infix is for example the '+' operator
+/// Function parse:
+///  Takes a reference to itself
+///  Takes a mutable reference to a parser
+///  Takes a reference to the lhs expression
+///  Takes a reference to the current token
+///  Returns an Ast representing the operator
+/// Function get_precendence:
+///  Takes a reference to itself
+///  Returns the precedence of the operator as a sixty four bits integer
 pub trait InfixParselet {
     fn parse(&self, parser: &mut CalcParser, left: &Ast, token: &Token) -> Ast;
     fn get_precedence(&self) -> i64;
 }
 
+/// # Assign
+/// Parselet for the assign operator (var=value)
 #[derive(Clone)]
 pub struct AssignParselet {}
 
+/// # Call
+/// Parselet for the call operation (f(x))
 pub struct CallParselet {}
 
+/// # Ignore
+/// Parselet for the ignore parselet (lhs; rhs)
 pub struct IgnoreParselet {}
 
+/// # Operator
+/// Parselet for all operators (+,*,/,etc.)
 pub struct OperatorInfixParselet {
     pub is_right: bool,
     pub precedence: i64,
