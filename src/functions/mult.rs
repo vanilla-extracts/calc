@@ -9,6 +9,11 @@ use crate::utils::matrix_utils::*;
 
 use super::add::ORam;
 
+/// # Multiplication
+/// Main function for the multiplication
+/// Takes two parameters
+/// Takes an ORam
+/// Returns the (*) operator applied to the input parameters.
 pub fn mult(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(v)) => Int(v),
