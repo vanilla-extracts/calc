@@ -9,14 +9,14 @@ use crate::parsing::ast::*;
 use super::mult::mult;
 
 /// # Type: ORam
-/// ORam is an option of a reference of the Ram as defined in [Ast](../parsing/ast.rs)
+/// ORam is an option of a reference of the Ram as defined in [Ast](../parsing/ast.rs).
 pub type ORam<'a> = Option<&'a ast::Ram>;
 
 /// # Add
 /// Main function for addition
 /// Takes two parameters
 /// Takes an ORam
-/// Returns the sum of the two input parameters
+/// Returns the sum of the two input parameters.
 pub fn add(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (&i, &i2) {
         (Null, Int(v)) => Int(*v),
