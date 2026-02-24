@@ -5,6 +5,11 @@ use crate::parsing::ast::Parameters::*;
 
 use super::add::ORam;
 
+/// # Exponentiation
+/// Main function for the exponentiation
+/// Takes two parameters
+/// Takes an ORam (as defined in [Add](add.rs))
+/// Returns the first parameter exponentiated to the second parameter
 pub fn expo(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(v)) => Int(v),
