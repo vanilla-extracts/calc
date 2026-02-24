@@ -4,6 +4,10 @@ use crate::{utils::integer_utils::gcd, FLOAT_MODE};
 
 use super::{float_mode::FloatMode, scientific_mode::from_float};
 
+/// # Rational
+/// A rational number is:
+/// A non null integer denominator
+/// An integer numerator.
 #[derive(Debug, Clone, Copy)]
 pub struct Rationals {
     pub under: i64,
@@ -11,33 +15,61 @@ pub struct Rationals {
 }
 
 impl Rationals {
+    /// # Put To Denominator
+    /// Multiplication of each value by the input
+    /// Takes a reference to itself
+    /// Takes an integer
+    /// Returns the same rational but to the new denominator.
     pub fn put_to_denominator(&self, n: i64) -> Self {
         Rationals {
             under: self.under * n,
             over: self.over * n,
         }
     }
+
+    /// # New
+    /// Creates a new rational number from the input
+    /// Takes two integers, the second is the numerator, the first is the denominator
+    /// Returns the rational number.
     pub fn new(under: i64, over: i64) -> Self {
         Rationals { under, over }
     }
 
+    /// # Approximate
+    /// Takes itself
+    /// Returns the floating point approximation of the rational number.
     pub fn approx(self) -> f64 {
         self.over as f64 / self.under as f64
     }
 
+    /// # Rationalize
+    /// Takes a float
+    /// Returns a reduced rational number representing the float
+    /// Warning: it can only do so with ten decimal numbers of precision.
     pub fn rationalize(f: f64) -> Self {
         let r = (f * (10.0_f64.powf(10.0))).round() as i64;
         Rationals::new(10_i64.pow(10), r).reduce()
     }
 
+    /// # Is Null
+    /// Takes itself
+    /// Returns whether it is null.
     pub fn is_null(self) -> bool {
         self.over == 0
     }
 
+    /// # Opposite
+    /// Takes itself
+    /// Returns the opposite rational from itself.
     pub fn opposite(self) -> Self {
         Rationals::new(self.under, -self.over)
     }
 
+    /// # Invert
+    /// Takes itself
+    /// Returns a result,
+    /// - If itself is 0, it returns an error
+    /// - If not it returns the inverse rational.
     pub fn invert(self) -> Result<Rationals, Rationals> {
         match self.over {
             0 => Err(Rationals::new(0, 1)),
@@ -45,6 +77,10 @@ impl Rationals {
         }
     }
 
+    /// # Reduction
+    /// Computes the GCD and reduces the rational accordingly
+    /// Takes itself
+    /// Returns the reduced rational.
     pub fn reduce(self) -> Self {
         let minus;
         let i1;
@@ -90,11 +126,16 @@ impl Rationals {
             }
         }
     }
+
+    /// # Absolute value
+    /// Takes itself
+    /// Returns a new rational which is the absolute value.
     pub fn abs(self) -> Self {
         Rationals::new(self.under.abs(), self.over.abs())
     }
 }
 
+/// Implementation of the Display trait for the Rationals.
 impl Display for Rationals {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let fs = self.reduce();

@@ -5,6 +5,12 @@ use crate::parsing::ast::Parameters::*;
 
 use super::add::ORam;
 
+/// # Apply Operator
+/// Helper function to apply an operator to a value in Ram
+/// Takes two parameters
+/// Takes an ORam
+/// Takes the function to apply (which must be of type: Parameters -> Parameters -> ORam -> Parameters)
+/// Returns the results of f being applied to the two input parameters.
 pub fn apply_operator(
     value: Parameters,
     value2: Parameters,
@@ -30,6 +36,12 @@ pub fn apply_operator(
     }
 }
 
+/// # Apply Operator Reverse
+/// Helper function to apply an operator to a value in Ram, but with the order reversed
+/// Takes two parameters
+/// Takes an ORam
+/// Takes the function to apply (which must be of type: Parameters -> Parameters -> ORam -> Parameters)
+/// Returns the results of f being applied to the two input parameters (but reversed).
 pub fn apply_operator_reverse(
     value: Parameters,
     value2: Parameters,
@@ -55,6 +67,10 @@ pub fn apply_operator_reverse(
     }
 }
 
+/// # Assign
+/// Performs the assignment
+/// Takes two parameters
+/// Returns the couple present in Ram.
 pub fn assign(s: Parameters, s2: Parameters) -> (String, Parameters) {
     fn contained_in_parameter(pattern: &Parameters, search: &Parameters) -> bool {
         match search {
@@ -119,6 +135,11 @@ pub fn assign(s: Parameters, s2: Parameters) -> (String, Parameters) {
     }
 }
 
+/// # Greater Than
+/// Main function for greater than
+/// Takes two parameters
+/// Takes an ORam
+/// Returns the (>) function applied to the two input parameters (in order).
 pub fn greater(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(true),
@@ -192,6 +213,8 @@ pub fn greater(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+/// # Lesser Than
+/// Same as Greater Than but for (<).
 pub fn lesser(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(false),
@@ -264,6 +287,8 @@ pub fn lesser(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+/// # Greater or Equal
+/// Same as Greater Than but for (>=).
 pub fn greater_or_equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(true),
@@ -339,6 +364,8 @@ pub fn greater_or_equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters 
     }
 }
 
+/// # Lesser Or Equal
+/// Same as Greater Than but for (<=).
 pub fn lesser_or_equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(false),
@@ -414,6 +441,8 @@ pub fn lesser_or_equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+/// # Equality
+/// Same as Greater Than but for (==).
 pub fn equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(_)) => Bool(true),
@@ -489,6 +518,10 @@ pub fn equal(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+/// # Negation
+/// Takes two parameter (the second is optional, and is ignored)
+/// Takes an ORam
+/// Returns the (!) function applied to the first parameter.
 pub fn not(i: Parameters, _i2: Parameters, ram: ORam) -> Parameters {
     match i {
         Bool(b) => Bool(!b),
@@ -500,6 +533,8 @@ pub fn not(i: Parameters, _i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+/// # Logical And
+/// Same as Greater Than but for (&&).
 pub fn and(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Bool(b), Bool(b2)) => Bool(b && b2),
@@ -521,6 +556,8 @@ pub fn and(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+/// # Logical Or
+/// Same as Greater Than but for (||).
 pub fn or(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Bool(b), Bool(b2)) => Bool(b || b2),
@@ -542,6 +579,11 @@ pub fn or(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+/// # Selection
+/// Main function for the selection operator
+/// Takes two parameters
+/// Takes an ORam
+/// Returns the selection operator (taking the nth member of a vector) applied to the input parameters.
 pub fn select(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (InterpreterVector(v), Int(i)) => match v.get(i as usize) {
@@ -564,6 +606,8 @@ pub fn select(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     }
 }
 
+/// # Concatenation
+/// Same as selection but for concatenation.
 pub fn concat(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (InterpreterVector(v), InterpreterVector(v2)) => {

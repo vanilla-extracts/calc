@@ -9,6 +9,11 @@ use super::add::add;
 use super::add::ORam;
 use super::mult::mult;
 
+/// # Divide
+/// Main function for dividing
+/// Takes two parameters
+/// Takes an ORam (as defined in [Add](add.rs))
+/// Returns the division of the first input parameter by the second.
 pub fn divide(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(v)) => Int(v),

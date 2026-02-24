@@ -12,9 +12,18 @@ use crate::parsing::ast::Parameters::*;
 use crate::utils::matrix_utils::transpose;
 use crate::FLOAT_MODE;
 
+/// # Ram
+/// The Ram is the current state of the variables of Calc
+/// It is a Hashmap with the name (string) of the variable as key and the value (parameter) of the variable as value.
 pub type Ram = HashMap<String, Parameters>;
+
+/// # Functions
+/// Functions is the current state of the user-defined functions of Calc
+/// It is a Hashmap with the name (string) of the function as key and a couple of the list of arguments (Vec<Ast>) and the body (Ast) of the function as value.
 pub type Functions = HashMap<String, (Vec<Ast>, Ast)>;
 
+/// # Parameters
+/// List of all possible parameters in Calc.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Parameters {
     Int(i64),
@@ -49,6 +58,14 @@ pub enum Parameters {
     Call(String, Box<Parameters>),
 }
 
+/// # Ast
+/// The Abstract Syntax Tree of Calc
+/// The tree is binary and is either empty (Nil) or:
+/// A node (prefix: parameter, left: Ast, right: Ast) or:
+/// A function call (name: String, list of arguments: Vec<Ast>) or:
+/// A condition (condition: Ast, then: Ast, else: Ast) or:
+/// A while statement (condition: Ast, body: Ast, right: Nil) or:
+/// An ignore statement (value: nothing, left: Ast, right: Ast)
 #[derive(Debug, Clone, PartialEq)]
 pub enum Ast {
     Nil,
@@ -76,6 +93,10 @@ pub enum Ast {
     },
 }
 
+/// # Superscript
+/// Transforms an integer to a string of the integer as a superscript (exponent)
+/// Takes an integer as a sixty four bit integer
+/// Returns the integer as a string as a superscript.
 pub fn int_to_superscript_string(i: i64) -> String {
     fn digit_to_superscript_char(i: &str) -> &str {
         match i {
@@ -111,6 +132,8 @@ pub fn int_to_superscript_string(i: i64) -> String {
     }
 }
 
+/// # Display for Parameters
+/// Implements the Display trait for the Parameters enum.
 impl Display for Parameters {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -152,6 +175,8 @@ impl Display for Parameters {
     }
 }
 
+/// # Display for Ast
+/// Implements the Display trait for the Ast enum.
 impl Display for Ast {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -186,6 +211,12 @@ impl Display for Ast {
 }
 
 impl Parameters {
+    /// # Pretty Print Parameters
+    /// Returns a "pretty printed" string of a parameter
+    /// Takes a ref of itself
+    /// Takes an Option of a mutable ref of the state of the variables of Calc
+    /// Takes an Option of a mutable ref of the state of the user-defined functions of Calc
+    /// Returns the pretty printed string of the parameter.
     pub fn pretty_print(
         &self,
         mut ram: Option<&mut Ram>,
@@ -429,10 +460,16 @@ impl Parameters {
             _ => format!("{self}"),
         }
     }
+    /// Argument Print
+    /// Returns a pretty string of a parameter if it is the final value.
+    /// Takes a ref to itself
+    /// Takes an Option of a mutable reference of the state of the variables of Calc
+    /// Takes an Option of a mutable reference of the state of the user-defined functions of Calc
+    /// Returns the pretty string of itself.
     pub fn argument_print(
         &self,
-        ram: Option<&mut HashMap<String, Parameters>>,
-        function: Option<&mut HashMap<String, (Vec<Ast>, Ast)>>,
+        ram: Option<&mut Ram>,
+        function: Option<&mut Functions>,
     ) -> String {
         match self.clone() {
             Int(_) => format!(
@@ -523,6 +560,10 @@ impl Parameters {
     }
 }
 
+/// # Token To Parameters
+/// Gives the Parameter equivalent of a token
+/// Takes a reference to a Token
+/// Returns the parameter equivalent of the input token.
 pub fn token_to_parameter(token: &Token) -> Parameters {
     match token {
         Token::Int(i) => Int(*i),
@@ -551,7 +592,12 @@ pub fn token_to_parameter(token: &Token) -> Parameters {
 }
 
 impl Parameters {
-    pub fn abs(self, ram: Option<&HashMap<String, Parameters>>) -> Parameters {
+    /// # Abs
+    /// Computes the absolute value of a parameter
+    /// Takes itself
+    /// Takes an Option of a mutable reference of the state of the variables of Calc
+    /// Returns the absolute value of the input parameter, as a parameter.
+    pub fn abs(self, ram: Option<&Ram>) -> Parameters {
         match self {
             Parameters::Int(i) => Parameters::Int(i.abs()),
             Parameters::Float(f) => Parameters::Float(f.abs()),

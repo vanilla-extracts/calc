@@ -9,8 +9,14 @@ use crate::{
     parsing::ast::Parameters,
 };
 
+/// # Type Matrix,
+/// A matrix is a Vec of Vec (2D-Matrix)
 type Matrix<T> = Vec<Vec<T>>;
 
+/// # Transpose
+/// Computes the transpose matrix of a given matrix
+/// Takes a matrix
+/// Returns the transposition of the input matrix
 pub fn transpose<T>(matrix: Matrix<T>) -> Matrix<T> {
     let num_cols = matrix.first().unwrap().len();
     let mut row_iters: Vec<_> = matrix.into_iter().map(Vec::into_iter).collect();
@@ -24,6 +30,13 @@ pub fn transpose<T>(matrix: Matrix<T>) -> Matrix<T> {
     out
 }
 
+/// # Multiplication
+/// Computes the multiplication of two (compatible) matrices
+/// Takes two PARAMETERS matrices
+/// Takes the current state of the variables of Calc, see: [ORam](../functions/add.rs)
+/// Returns the product of the two matrices
+///
+/// If the two matrices are not compatible, returns the null matrix (empty Vec).
 pub fn mult_matrix(a: Matrix<Parameters>, b: Matrix<Parameters>, ram: ORam) -> Matrix<Parameters> {
     let first = a.first().unwrap().len();
     let second = b.len();
@@ -57,7 +70,15 @@ pub fn mult_matrix(a: Matrix<Parameters>, b: Matrix<Parameters>, ram: ORam) -> M
         res
     }
 }
-
+/// # Decomposition
+/// Decomposes a given matrix following the [LUP](https://en.wikipedia.org/wiki/LU_decomposition) algorithm.
+/// Takes a mutable ref of a parameter matrix,
+/// Takes a mutable ref of a parameter vector,
+/// Takes the dimension of the matrix (must be a square matrix)
+/// Takes the current state of the variables of Calc, see [ORam](../functions/add.rs)
+///
+/// Returns 1 if the decomposition is successful
+/// Modifies the input matrix is modified and contains the decomposition, the input vector is modified and contains the permutation vector.
 pub fn lup_decompose(
     a: &mut Matrix<Parameters>,
     mut p: &mut Vec<Parameters>,
@@ -121,6 +142,14 @@ pub fn lup_decompose(
     1
 }
 
+/// # Determinant
+/// Computes the determinant of a given already decomposed matrix.
+/// Takes a mutable ref to a decomposed parameters matrix
+/// Takes a mutable ref to the permutation vector
+/// Takes the dimension of the matrix (must be a square matrix)
+/// Takes the current state of the variable of Calc, see [ORam](../functions/add.rs)
+///
+/// Returns the determinant of the input matrix, as a parameter
 pub fn lup_determinant(
     a: &mut Matrix<Parameters>,
     p: &mut [Parameters],
@@ -151,6 +180,17 @@ pub fn lup_determinant(
     }
 }
 
+/// # Inversion
+/// Computes the inverted matrix of the input matrix.
+///
+/// Takes a mutable ref to a decomposed parameters matrix
+/// Takes a mutable ref to the permutation vector
+/// Takes the dimension of the matrix (must be a square matrix)
+/// Takes a mutable ref of a parameter matrix (as an _accumulator_)
+/// Takes the current state of the variables of Calc, see: [ORam](../functions/add.rs)
+///
+/// Modifies the accumulator to slowly set it as the inverted matrix
+/// Requires the determinant to be not zero.
 #[allow(clippy::needless_range_loop)]
 pub fn lup_invert(
     a: &mut Matrix<Parameters>,

@@ -22,6 +22,13 @@ use crate::functions::mult::mult;
 type Ram<'a> = Option<&'a mut ast::Ram>;
 type Functions<'a> = Option<&'a mut ast::Functions>;
 
+/// # Exec
+/// Executes a given function
+/// Takes the name of the function
+/// Takes the list of arguments
+/// Takes an Option of a mutable reference of the state of the variables of Calc
+/// Takes an Option of a mutable reference of the state of the user-defined functions of Calc
+/// Return the result.
 pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> Parameters {
     match s.as_str() {
         "cos" => cos(lst.as_slice(), &ram),
@@ -105,16 +112,32 @@ pub fn exec(s: String, lst: Vec<Parameters>, ram: Ram, functions: Functions) -> 
     }
 }
 
+/// # Debug
+/// Prints in debug mode the list of arguments
+/// Takes a reference to the list of arguments
+/// Returns the null parameter
 pub fn debug(p: &[Parameters]) -> Parameters {
     println!("{:#?}", p);
     Parameters::Null
 }
 
+/// # Print
+/// Prints in normal mode each arguments
+/// Takes a reference to the list of arguments
+/// Returns the null parameter
 pub fn print(p: &[Parameters]) -> Parameters {
     p.iter().for_each(|f| println!("{f}"));
     Parameters::Null
 }
 
+/// # Split
+/// Splits a string
+/// Takes a reference to the list of arguments
+/// Takes a Ram (see above)
+/// Returns the result
+///
+/// Requirements: at least one argument
+/// - If there is no second argument, it returns the first argument, trimmed
 pub fn split_string(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -162,6 +185,14 @@ pub fn split_string(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Join
+/// Joins a list of string with a delimiter
+/// Takes a reference to the list of parameters
+/// Takes a reference to the Ram (see above)
+/// Returns the joined string
+///
+/// Requirements: at least one argument
+/// - The delimiter is the *last* argument
 pub fn join_string(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -198,6 +229,16 @@ pub fn join_string(p: &[Parameters], ram: &Ram) -> Parameters {
         .trim()
         .to_string())
 }
+
+/// # Cos
+/// Computes the cos of the input parameter
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram (see above)
+/// Returns the cos of the input parameter
+///
+/// Requirements: at least one argument
+/// - If there is a second argument, the input is assumed to be in degrees rather than in radian
+/// - The first argument must be either an integer, a float, a rational number, or a vector of these arguments
 pub fn cos(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -285,6 +326,8 @@ pub fn cos(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Sin
+/// Same as in cos, but for the sinus.
 pub fn sin(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -372,6 +415,8 @@ pub fn sin(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Tan
+/// Same as in cos, but for the tan
 pub fn tan(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -460,6 +505,8 @@ pub fn tan(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Cosh
+/// Same as cos, but for the hyperbolic cos
 pub fn cosh(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -548,6 +595,8 @@ pub fn cosh(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Sinh
+/// Same as in cos, but for the hyperbolic sinus
 pub fn sinh(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -636,6 +685,8 @@ pub fn sinh(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Tanh
+/// Same as in cos, but for the hyperbolic tan
 pub fn tanh(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -724,6 +775,8 @@ pub fn tanh(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Acos
+/// Same as in cos, but for acos.
 pub fn acos(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -810,6 +863,8 @@ pub fn acos(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Asin
+/// Same as in cos, but for the asin
 pub fn asin(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -897,6 +952,8 @@ pub fn asin(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Atan
+/// Same as in cos, but for the atan
 pub fn atan(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -984,6 +1041,15 @@ pub fn atan(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Exp
+/// Computes the exponential of the input
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the exponential of the input argument
+///
+/// Requirements: at least one argument
+/// - If there is a second argument, it modifies the base of the exponential, by default it is the natural base
+/// - The first argument must be either an integer, a float, a rational number, or a vector of these arguments.
 pub fn exp(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1072,6 +1138,8 @@ pub fn exp(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Logarithm
+/// Inverse of the previous (exponential) function, parameters works the same way
 pub fn ln(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1161,6 +1229,15 @@ pub fn ln(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Root
+/// Computes the nth (default is two) root of the input argument
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the nth root of the input argument
+///
+/// Requirements: at least one argument
+/// - If there is a second argument, it modifies the base of the root (default is square root)
+/// - The first argument must be either an integer, a float, a rational number, or a vector of these arguments.
 pub fn sqrt(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1253,6 +1330,10 @@ pub fn sqrt(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Fact
+/// Helper function to computes n factorial
+/// Takes an integer
+/// Returns the factorial of the input.
 pub fn fact(n: i64) -> i64 {
     fn aux(n: i64, acc: i64) -> i64 {
         match n {
@@ -1263,6 +1344,14 @@ pub fn fact(n: i64) -> i64 {
     aux(n, 1)
 }
 
+/// # Factorial
+/// Computes the factorial of the input argument
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram (see above)
+/// Returns the factorial of the input argument.
+///
+/// Requirements: one argument
+/// - The argument must be either an integer or a float (in this case, this function computes the factorial of the floor of the float).
 pub fn factorial(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1282,6 +1371,14 @@ pub fn factorial(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Absolute value
+/// Computes the absolute value of the input argument
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the absolute value of the argument.
+///
+/// Requirements: one argument
+/// - The argument must be either an integer, a float, or a rational number.
 pub fn abs(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1302,6 +1399,14 @@ pub fn abs(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Ceil
+/// Computes the ceil of the input argument
+/// Takes a reference to the list of parameters
+/// Takes a reference to the Ram
+/// Returns the ceil of the input argument
+///
+/// Requirements: one argument
+/// - The argument must be an integer or a float.
 pub fn ceil(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1321,6 +1426,14 @@ pub fn ceil(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Floor
+/// Computes the floor of the input argument
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the floor of the input argument
+///
+/// Requirements: one argument
+/// - The argument must be an integer or a float.
 pub fn floor(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1340,6 +1453,15 @@ pub fn floor(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Round
+/// Rounds the input argument
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the rounded value of the argument.
+///
+/// Requirements: at least one argument
+/// - If there is a second argument, the second one will be the number of decimal digits to be rounded to (default is 0)
+/// - The first argument must be either an integer, a float, or a rational number.
 pub fn round(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1396,6 +1518,15 @@ pub fn round(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Norm
+/// Computes the norm of a vector of arguments
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the norm of the input.
+///
+/// Requirements: one argument
+/// - If the argument is an integer or a float, it returns the absolute value
+/// - The argument must be an integer, a float, a rational number, or a vector of these arguments.
 pub fn norm(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1430,6 +1561,15 @@ pub fn norm(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Transpose (Vectors)
+/// Computes the transposition of a vector of arguments
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the transposition of the input argument
+///
+/// Requirements: one argument
+/// - The argument must be an integer, a float, a rational number, or a vector of those arguments
+/// - If the argument is not a vector, it computes the absolute value.
 pub fn transpose_vectors(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1463,6 +1603,15 @@ pub fn transpose_vectors(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Transpose (Matrices)
+/// Computes the transposition of a matrix of arguments
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the transposition of the input.
+///
+/// Requirements: one argument
+/// - The argument must be an integer, a float, a rational number, a vector of these arguments, or a matrix of those arguments
+/// - If the argument is not a matrix, it uses the vector version of the transposition (see above).
 pub fn transpose_matrices(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1508,6 +1657,16 @@ pub fn transpose_matrices(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Determinant (Matrices)
+/// Computes the determinant of a matrix of arguments
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the determinant of the input
+///
+/// Requirements: one argument
+/// - The argument must be an integer, a float, a rational number, a vector of these arguments, or a matrix of these arguments
+/// - If the argument is not a matrix it computes the absolute value (or returns zero, in case of a vector)
+/// - If the matrix is not square it returns zero.
 pub fn det_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1560,6 +1719,17 @@ pub fn det_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Inverse (Matrices)
+/// Inverts a matrix of arguments
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Returns the inverted matrix of the input matrix
+///
+/// Requiremens: one argument
+/// - The argument must be an integer, a float, a rational number, a vector of these arguments, or a matrix of these arguments
+/// - If the argument is not a matrix it returns the absolute value (or itself if it is a vector)
+/// - If the matrix is not square it returns an error
+/// - If the matrix is not invertible it returns an error.
 pub fn inverse_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
     if p.is_empty() {
         return Null;
@@ -1643,6 +1813,16 @@ pub fn inverse_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
     }
 }
 
+/// # Differenciation
+/// Differentiates a function (be it user-defined or std).
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Takes a reference to the user-defined functions
+/// Returns the differentiated function
+///
+/// Requires: at least one argument
+/// - First argument is the function to differentiate
+/// - Second argument if defined is the variable to differentiate (for example f(x,y) dy)
 pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
     let color = match load() {
         Ok(cfg) => load_config(cfg).general_color,
@@ -1841,6 +2021,22 @@ pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
     }
 }
 
+/// # Plot (GNUPlot/Terminal)
+/// Plots a function using gnuplot (or the terminal)
+/// Takes a reference to the list of arguments
+/// Takes a reference to the RAM
+/// Takes a reference to the user-defined functions
+/// Takes a bool defining whether we use gnuplot (false) or the terminal (true) as the backend
+/// Plots and returns the null parameter
+///
+/// Requirements: at least one argument
+/// - First argument is the function to plot
+/// - The following arguments are:
+/// > plot(f,title,xlabel,ylabel): plots f with the title and label for the x and y axis
+/// > plot(f,mode): plots f with mode=LINE|LINEMARKS|MARKS(default)
+/// > plot(f,title,xlabel,ylabel,mode): the two previous ones
+/// > plot(f,start,end,step,mode): plots f between start and end (on the x axis), with delta_x as step and mode as previously defined
+/// > plot(f,start,end,step,title,xlabel,ylabel,mode): combines everything
 pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: bool) -> Parameters {
     let color = match load() {
         Ok(cfg) => load_config(cfg).general_color,

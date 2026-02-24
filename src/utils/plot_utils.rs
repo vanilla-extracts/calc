@@ -1,3 +1,10 @@
+/// # Plot utils: computing the lines for terminal plotting
+/// Takes two float lists, the first is the list of coordinates on the X axis, the second is the list of coordinates on the Y axis
+/// Takes two floats, respectively the start and the end of the scale on the X axis, it auto-computes the scale on the Y axis
+/// Takes three strings, respectively the title, the label of the X axis, and the label of the Y axis
+///
+/// Prints the terminal plot
+/// Returns nothing (UNIT).
 pub fn computes_lines(
     x: &[f64],
     y: &[f64],

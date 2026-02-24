@@ -10,6 +10,11 @@ use super::add::ORam;
 use super::divide::divide;
 use super::mult::mult;
 
+/// # Substraction
+/// Main function for the substraction operator
+/// Takes two parameters
+/// Takes an ORam
+/// Returns the (-) operator applied to the input parameters, in order.
 pub fn minus(i: Parameters, i2: Parameters, ram: ORam) -> Parameters {
     match (i, i2) {
         (Null, Int(v)) => Int(-v),

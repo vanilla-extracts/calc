@@ -2,33 +2,66 @@ use crate::lexing::token::{Precedence, Token, TokenType};
 use crate::parsing::ast::{token_to_parameter, Ast};
 use crate::parsing::parser::CalcParser;
 
+/// # Prefix Parselet
+/// Trait for defining a prefix operation parselet
+/// A prefix operation can be multiple things, for example:
+/// - `x` is a prefix, it's a simple value.
+/// - `(x)` is a prefix operator, the parentheses contains `x`.
+/// - `{x}` same as the last one
+/// - `[x]` same idea
+/// - `"x"` same idea
+/// - `+x` where `+` can be any operator, very useful for negative numbers
+/// - `if cond then stuff else other` is a prefix operator.
+/// - `while cond do stuff` is also a prefix operator
+/// Function parse:
+///   Takes a reference to itself
+///   Takes a mutable reference to a parser
+///   Takes a reference to the current token
+///   Returns the Ast describing the operation
 pub trait PrefixParselet {
     fn parse(&self, parser: &mut CalcParser, token: &Token) -> Ast;
 }
 
+/// # Value
+/// Parselet for a simple value
 #[derive(Clone)]
 pub struct ValueParselet {}
 
+/// # Operator Prefix
+/// Generic Parselet for any operator
 #[derive(Clone)]
 pub struct OperatorPrefixParselet {}
 
+/// # Group
+/// Parselet for `(stuff)`
 #[derive(Clone)]
 pub struct GroupParselet {}
 
+/// # Scope
+/// Parselet for `{scope}`
 #[derive(Clone)]
 pub struct ScopeParselet {}
 
+/// # Vec
+/// Parselet for `[stuff]`
 #[derive(Clone)]
 pub struct VecParselet {}
 
+/// # Quote
+/// Parselet for `"stuff"`
 #[derive(Clone)]
 pub struct QuoteParselet {}
 
+/// # If Then Else
+/// Parselet for the `if cond then stuff else other` operation
+/// Precedence: sixty four bits integer for the precedence of the `if` operator
 #[derive(Clone)]
 pub struct IfThenElseParselet {
     pub precedence: i64,
 }
 
+/// # While
+/// Parselet for the `while cond do stuff` operation
 #[derive(Clone)]
 pub struct WhileParselet {}
 

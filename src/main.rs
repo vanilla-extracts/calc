@@ -31,8 +31,12 @@ mod parsing;
 mod utils;
 
 thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
-static VERSION: &str = "v4.0.2";
+static VERSION: &str = "v4.0.3-alpha";
 
+/// # ShowConfig
+/// Displays to the user the current content of the configuration file
+/// with colours and text.
+///
 fn show_config(config: Config) -> (String, Option<Config>) {
     let loaded = load_config(config.clone());
 
@@ -50,6 +54,8 @@ fn show_config(config: Config) -> (String, Option<Config>) {
     ("".to_string(), None)
 }
 
+/// # Reset config
+/// Resets the configuration file to the default configuration.
 fn reset_config() -> (String, Option<Config>) {
     let _ = write_default_config();
     match load() {
@@ -64,55 +70,59 @@ fn reset_config() -> (String, Option<Config>) {
     }
 }
 
+/// # Set config
+/// Modifies the configuration with the supplied arguments
 fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Config>) {
     fn handle_second_argument(
         config: Config,
-        s: Option<&str>,
+        verb: Option<&str>,
         args: &mut SplitWhitespace,
     ) -> (String, Option<Config>) {
-        match s {
+        match verb {
             None => (
                 "You need more argument for this command\n".to_string(),
                 None,
             ),
             Some("general_color") => {
-                let mut st = "".to_string();
-                args.into_iter().for_each(|x| st = st.clone() + x + " ");
+                let mut new_value = "".to_string();
+                args.into_iter()
+                    .for_each(|x| new_value = new_value.clone() + x + " ");
 
-                match st.as_str() {
-                    s if s.trim() == "" => (
+                match &new_value.as_str() {
+                    val if val.trim() == "" => (
                         "You need more argument for this command\n".to_string(),
                         None,
                     ),
-                    s => {
+                    val => {
                         let cfg = Config {
-                            general_color: (s.to_string()),
+                            general_color: (val.to_string()),
                             default_float_mode: (config.default_float_mode),
                             greeting: (config.greeting),
                             prompt: (config.prompt),
                         };
                         match write_config(&cfg) {
-                            Ok(_) => (format!("Greeting color has been set to {}, reload for this to take effect\n",&s).to_string(),None),
+                            Ok(_) => (format!("Greeting color has been set to {}, reload for this to take effect\n",&val).to_string(),None),
                             _ => ("An error occured while writing the config\n".to_string(),None)
                         }
                     }
                 }
             }
             Some("prompt") => {
-                let mut st = "".to_string();
-                args.into_iter().for_each(|x| st = st.clone() + x + " ");
-                match st.as_str() {
-                    s if s.trim() == "" => (
+                let mut new_value = "".to_string();
+                args.into_iter()
+                    .for_each(|x| new_value = new_value.clone() + x + " ");
+                match new_value.as_str() {
+                    val if val.trim() == "" => (
                         "You need more argument for this command\n".to_string(),
                         None,
                     ),
-                    s => {
+                    val => {
                         let cfg = Config {
                             general_color: config.general_color,
                             greeting: (config.greeting),
                             default_float_mode: (config.default_float_mode),
                             prompt: Prompt {
-                                prompt: s.to_string(),
+                                prompt: val.to_string(),
                                 prompt_color: config.prompt.prompt_color,
                             },
                         };
@@ -121,7 +131,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                             Ok(_) => (
                                 format!(
                                 "Prompt has been updated to {}, reload for this to take effect\n",
-                                &s
+                                &val
                             )
                                 .to_string(),
                                 None,
@@ -135,27 +145,28 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                 }
             }
             Some("prompt_color") => {
-                let mut st = "".to_string();
-                args.into_iter().for_each(|x| st = st.clone() + x + " ");
+                let mut new_value = "".to_string();
+                args.into_iter()
+                    .for_each(|x| new_value = new_value.clone() + x + " ");
 
-                match st {
-                    s if s.trim() == "" => (
+                match new_value {
+                    val if val.trim() == "" => (
                         "You need more argument for this command\n".to_string(),
                         None,
                     ),
-                    s => {
+                    val => {
                         let cfg = Config {
                             general_color: config.general_color,
                             greeting: (config.greeting),
                             default_float_mode: (config.default_float_mode),
                             prompt: Prompt {
                                 prompt: config.prompt.prompt,
-                                prompt_color: s.to_string(),
+                                prompt_color: val.to_string(),
                             },
                         };
 
                         match write_config(&cfg) {
-                            Ok(_) => (format!("Prompt color has been updated to {}, reload for this to take effect\n",&s).to_string(),None),
+                            Ok(_) => (format!("Prompt color has been updated to {}, reload for this to take effect\n",&val).to_string(),None),
                             _ => ("An error occured while writing the config\n".to_string(),None)
 
                         }
@@ -163,27 +174,28 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                 }
             }
             Some("greeting_color") => {
-                let mut st = "".to_string();
-                args.into_iter().for_each(|x| st = st.clone() + x + " ");
+                let mut new_value = "".to_string();
+                args.into_iter()
+                    .for_each(|x| new_value = new_value.clone() + x + " ");
 
-                match st {
-                    s if s.trim() == "" => (
+                match new_value {
+                    val if val.trim() == "" => (
                         "You need more argument for this command\n".to_string(),
                         None,
                     ),
-                    s => {
+                    val => {
                         let cfg = Config {
                             general_color: config.general_color,
                             default_float_mode: config.default_float_mode,
                             greeting: Greeting {
-                                greeting_color: s.to_string(),
+                                greeting_color: val.to_string(),
                                 greeting_message: config.greeting.greeting_message,
                             },
                             prompt: config.prompt,
                         };
 
                         match write_config(&cfg) {
-                            Ok(_) => (format!("Greeting color has been updated to {}, reload for this to take effect\n",&s).to_string(),None),
+                            Ok(_) => (format!("Greeting color has been updated to {}, reload for this to take effect\n",&val).to_string(),None),
                             _ => ("An error occured while writing the config\n".to_string(),None)
 
                         }
@@ -204,19 +216,20 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                 }
             }
             Some("greeting_message") => {
-                let mut st = "".to_string();
-                args.into_iter().for_each(|x| st = st.clone() + x + " ");
+                let mut new_value = "".to_string();
+                args.into_iter()
+                    .for_each(|x| new_value = new_value.clone() + x + " ");
 
-                match st {
-                    s if s.trim() == "" => (
+                match new_value {
+                    val if val.trim() == "" => (
                         "You need more arguments for this command\n".to_string(),
                         None,
                     ),
-                    s => {
+                    val => {
                         let cfg = Config {
                             general_color: config.general_color,
                             greeting: Greeting {
-                                greeting_message: s.to_string(),
+                                greeting_message: val.to_string(),
                                 greeting_color: config.greeting.greeting_color,
                             },
                             default_float_mode: config.default_float_mode,
@@ -227,7 +240,7 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
                             Ok(_) => (
                                 format!(
                                 "Prompt has been updated to {}, reload for this to take effect\n",
-                                &s
+                                &val
                             )
                                 .to_string(),
                                 None,
@@ -250,6 +263,8 @@ fn set_config(config: Config, args: &mut SplitWhitespace) -> (String, Option<Con
     handle_second_argument(config, args.next(), args)
 }
 
+/// # Reload Config
+/// Reloads the configuration from the configuration file to the running instance of the REPL.
 fn reload_config() -> (String, Option<Config>) {
     match load() {
         Ok(cfg) => (
@@ -263,18 +278,22 @@ fn reload_config() -> (String, Option<Config>) {
     }
 }
 
+/// # Show Help Config
+/// Shows the configuration help menu
 fn show_help_config() -> (String, Option<Config>) {
     ("Config help, \n > config show: show config \n > config set: set config \n > config reload: reload config \n > config reset: reset config\n\n".to_string(),None)
 }
 
+/// # Handle config
+/// Super-function calling the previous configuration functions relative to the verb
 fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
     match line.strip_prefix("config") {
         None => show_help_config(),
-        Some(t) => {
-            let mut w = t.split_whitespace();
-            match w.next() {
+        Some(value) => {
+            let mut words = value.split_whitespace();
+            match words.next() {
                 None => show_help_config(),
-                Some("set") => set_config(config, &mut w.clone()),
+                Some("set") => set_config(config, &mut words.clone()),
                 Some("reload") => reload_config(),
                 Some("reset") => reset_config(),
                 _ => show_config(config.clone()),
@@ -283,23 +302,25 @@ fn handle_config(line: &str, config: Config) -> (String, Option<Config>) {
     }
 }
 
+/// # Main
+/// Main function of Calc, it handles the REPL & the CLI. It reads from input, and executes the command or parse then interpret the Calc code.
 fn main() {
     let mut args: Args = env::args();
 
     if args.len() > 1 || !atty::is(Stream::Stdin) {
-        let mut a = vec![];
+        let mut lines = vec![];
 
         if !atty::is(Stream::Stdin) {
             let stdin = io::stdin();
             for line in stdin.lock().lines() {
-                a.push(line.unwrap().to_string());
+                lines.push(line.unwrap().to_string());
             }
         } else {
             args.next();
-            args.for_each(|f| a.push(f));
+            args.for_each(|arg| lines.push(arg));
         }
 
-        let arg_final = a.join("");
+        let arg_final = lines.join("");
         if arg_final == "-h" || arg_final == "--help" {
             println!("-----Help Calc-----");
             println!();
@@ -312,7 +333,7 @@ fn main() {
             exit(0);
         }
 
-        if arg_final == "-v" || arg_final == "--VERSION" {
+        if arg_final == "-v" || arg_final == "--version" {
             println!("Calc {VERSION}");
             exit(0);
         }
@@ -330,7 +351,7 @@ fn main() {
                     .output()
                     .expect("update failed")
             };
-            println!("mini-calc has been succesfully updated to the latest VERSION");
+            println!("mini-calc has been succesfully updated to version {VERSION}");
             exit(0);
         }
 
@@ -367,8 +388,8 @@ fn main() {
 
     let mut loaded: Loaded = load_config(config.clone());
 
-    FLOAT_MODE.with(|fm| {
-        *fm.borrow_mut() = loaded.clone().float_mode;
+    FLOAT_MODE.with(|float_mode| {
+        *float_mode.borrow_mut() = loaded.clone().float_mode;
     });
 
     let message = &loaded.greeting_message;
@@ -415,30 +436,30 @@ fn main() {
                 let message2 = Color::Red.paint(if verbose { "on" } else { "off" });
                 println!("{}{}", message, message2)
             }
-            str if str.starts_with("load") => {
-                let file = match str.strip_prefix("load") {
-                    Some(s) => s.trim(),
+            verb if verb.starts_with("load") => {
+                let file = match verb.strip_prefix("load") {
+                    Some(value) => value.trim(),
                     None => continue,
                 };
                 let code = match fs::read_to_string(file) {
-                    Ok(s) => s,
-                    Err(e) => {
-                        println!("Error while reading file: {e}");
+                    Ok(value) => value,
+                    Err(err) => {
+                        println!("Error while reading file: {err}");
                         continue;
                     }
                 };
-                let a = lex(code.clone());
-                let parser: &mut CalcParser = &mut parsing::parser::init_calc_parser(&a);
-                let p = parser.parse();
+                let lexed = lex(code.clone());
+                let parser: &mut CalcParser = &mut parsing::parser::init_calc_parser(&lexed);
+                let parsed = parser.parse();
                 if verbose {
                     println!("Lexing of line: {}", &code);
-                    println!("{:?}", &a);
+                    println!("{:?}", &lexed);
                     println!("Parsing of line: {}", &code);
-                    println!("{:#?}", p);
+                    println!("{:#?}", parsed);
                     println!()
                 }
 
-                let result = interpret(&p, &mut ram, &mut functions);
+                let result = interpret(&parsed, &mut ram, &mut functions);
 
                 if verbose {
                     println!("{:#?}", &result);
@@ -452,11 +473,11 @@ fn main() {
                     )
                 }
             }
-            str if str.starts_with("toggle_float") => {
-                let p = str.replace("toggle_float ", "");
-                match p.as_str().trim() {
-                    "exact" | "rational" => FLOAT_MODE.with(|fm| {
-                        *fm.borrow_mut() = FloatMode::Exact;
+            verb if verb.starts_with("toggle_float") => {
+                let sentence = verb.replace("toggle_float ", "");
+                match sentence.as_str().trim() {
+                    "exact" | "rational" => FLOAT_MODE.with(|float_mode| {
+                        *float_mode.borrow_mut() = FloatMode::Exact;
                         let message = loaded
                             .general_color
                             .paint("You toggled the float mode to :");
@@ -464,8 +485,8 @@ fn main() {
                         let message3 = loaded.general_color.paint("Example: 1.5=3/2");
                         println!("{} {}\n{}", message, message2, message3);
                     }),
-                    "science" | "scientific" => FLOAT_MODE.with(|fm| {
-                        *fm.borrow_mut() = FloatMode::Science;
+                    "science" | "scientific" => FLOAT_MODE.with(|float_mode| {
+                        *float_mode.borrow_mut() = FloatMode::Science;
                         let message = loaded
                             .general_color
                             .paint("You toggled the float mode to :");
@@ -473,8 +494,8 @@ fn main() {
                         let message3 = loaded.general_color.paint("Example: 1500.1=1.5001*10³");
                         println!("{} {}\n{}", message, message2, message3);
                     }),
-                    _ => FLOAT_MODE.with(|fm| {
-                        *fm.borrow_mut() = FloatMode::Normal;
+                    _ => FLOAT_MODE.with(|float_mode| {
+                        *float_mode.borrow_mut() = FloatMode::Normal;
                         let message = loaded
                             .general_color
                             .paint("You toggled the float mode to :");
@@ -484,15 +505,15 @@ fn main() {
                     }),
                 }
             }
-            str => {
-                if str.starts_with("config") {
-                    let (s, q) = handle_config(&line, config.clone());
-                    match q {
-                        Some(q) => {
-                            config = q.clone();
-                            loaded = load_config(q);
-                            FLOAT_MODE.with(|fm| {
-                                *fm.borrow_mut() = loaded.float_mode;
+            verb => {
+                if verb.starts_with("config") {
+                    let (res, cfg) = handle_config(&line, config.clone());
+                    match cfg {
+                        Some(cfg) => {
+                            config = cfg.clone();
+                            loaded = load_config(cfg);
+                            FLOAT_MODE.with(|float_mode| {
+                                *float_mode.borrow_mut() = loaded.float_mode;
                             });
                             text = &loaded.prompt;
                             interface
@@ -503,26 +524,26 @@ fn main() {
                                     suffix = style.suffix()
                                 ))
                                 .unwrap();
-                            print!("{}", loaded.general_color.paint(s));
+                            print!("{}", loaded.general_color.paint(res));
                         }
                         _ => {
-                            let m = loaded.general_color.paint(s);
-                            print!("{m}");
+                            let message = loaded.general_color.paint(res);
+                            print!("{message}");
                         }
                     }
                 } else {
-                    let a = lex(str.to_string());
-                    let parser: &mut CalcParser = &mut parsing::parser::init_calc_parser(&a);
-                    let p = parser.parse();
+                    let lexed = lex(verb.to_string());
+                    let parser: &mut CalcParser = &mut parsing::parser::init_calc_parser(&lexed);
+                    let parsed = parser.parse();
                     if verbose {
-                        println!("Lexing of line: {str}");
-                        println!("{:?}", &a);
-                        println!("Parsing of line: {str}");
-                        println!("{:#?}", p);
+                        println!("Lexing of line: {verb}");
+                        println!("{:?}", &lexed);
+                        println!("Parsing of line: {verb}");
+                        println!("{:#?}", parsed);
                         println!()
                     }
 
-                    let result = interpret(&p, &mut ram, &mut functions);
+                    let result = interpret(&parsed, &mut ram, &mut functions);
 
                     if verbose {
                         println!("{:#?}", &result);
@@ -582,63 +603,63 @@ impl<Term: Terminal> Completer<Term> for CalcCompleter {
 
         match words.next() {
             None => {
-                let mut co = Vec::new();
+                let mut code_completion = Vec::new();
 
                 for cmd in CMD {
                     if cmd.starts_with(word) {
-                        co.push(Completion::simple(cmd.to_string()));
+                        code_completion.push(Completion::simple(cmd.to_string()));
                     }
                 }
 
-                Some(co)
+                Some(code_completion)
             }
 
             Some("toggle_float") => {
                 words.next();
                 {
-                    let mut co = Vec::new();
+                    let mut code_completion = Vec::new();
                     for cmd in TOGGLE_FLOAT_CMD {
                         if cmd.starts_with(word) {
-                            co.push(Completion::simple(cmd.to_string()));
+                            code_completion.push(Completion::simple(cmd.to_string()));
                         }
                     }
-                    Some(co)
+                    Some(code_completion)
                 }
             }
 
             Some("config") => match words.next() {
                 None => {
-                    let mut co = Vec::new();
+                    let mut code_completion = Vec::new();
 
                     for cmd in CONFIG_CMD {
                         if cmd.starts_with(word) {
-                            co.push(Completion::simple(cmd.to_string()))
+                            code_completion.push(Completion::simple(cmd.to_string()))
                         }
                     }
 
-                    Some(co)
+                    Some(code_completion)
                 }
                 Some("set") => match words.next() {
                     None => {
-                        let mut co: Vec<Completion> = Vec::new();
+                        let mut code_completion: Vec<Completion> = Vec::new();
 
                         for cmd in SET_CMD {
                             if cmd.starts_with(word) {
-                                co.push(Completion::simple(cmd.to_string()))
+                                code_completion.push(Completion::simple(cmd.to_string()))
                             }
                         }
 
-                        Some(co)
+                        Some(code_completion)
                     }
-                    Some(c) => {
-                        if SET_CMD.contains(&c) {
-                            let mut co = Vec::new();
+                    Some(verb) => {
+                        if SET_CMD.contains(&verb) {
+                            let mut code_completion = Vec::new();
                             for cmd in CMD_COLOR {
                                 if cmd.starts_with(word) {
-                                    co.push(Completion::simple(cmd.to_string()))
+                                    code_completion.push(Completion::simple(cmd.to_string()))
                                 }
                             }
-                            Some(co)
+                            Some(code_completion)
                         } else {
                             None
                         }
