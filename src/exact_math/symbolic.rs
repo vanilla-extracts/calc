@@ -1,6 +1,10 @@
 use crate::parsing::ast::Parameters;
 use crate::parsing::ast::Parameters::*;
 
+/// # Size
+/// Compute the depth of a parameter
+/// Takes a reference to a parameter
+/// Returns the recursive depth.
 pub fn size(p: &Parameters) -> i32 {
     match p {
         Null
