@@ -2,11 +2,14 @@ use std::{f64, fmt::Display};
 
 use crate::parsing::ast::int_to_superscript_string;
 
+/// # Science Float
+/// A float in scientific notation is a floating point value and an integer exponent.
 pub struct ScienceFloat {
     exponent: i32,
     value: f64, //value * 10^exponent
 }
 
+/// Implementation of the Display trait for the ScienceFloat struct.
 impl Display for ScienceFloat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.exponent {
@@ -21,6 +24,9 @@ impl Display for ScienceFloat {
     }
 }
 
+/// # FromFloat
+/// Takes a floating point number
+/// Returns the scientific representation of that float.
 pub fn from_float(f: f64) -> ScienceFloat {
     let multiple;
     let working_value;
