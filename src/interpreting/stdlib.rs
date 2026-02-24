@@ -1814,6 +1814,15 @@ pub fn inverse_matrix(p: &[Parameters], ram: &Ram) -> Parameters {
 }
 
 /// # Differenciation
+/// Differentiates a function (be it user-defined or std).
+/// Takes a reference to the list of arguments
+/// Takes a reference to the Ram
+/// Takes a reference to the user-defined functions
+/// Returns the differentiated function
+///
+/// Requires: at least one argument
+/// - First argument is the function to differentiate
+/// - Second argument if defined is the variable to differentiate (for example f(x,y) dy)
 pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
     let color = match load() {
         Ok(cfg) => load_config(cfg).general_color,
@@ -2012,6 +2021,22 @@ pub fn diff(p: &[Parameters], ram: &Ram, function: &Functions) -> Parameters {
     }
 }
 
+/// # Plot (GNUPlot/Terminal)
+/// Plots a function using gnuplot (or the terminal)
+/// Takes a reference to the list of arguments
+/// Takes a reference to the RAM
+/// Takes a reference to the user-defined functions
+/// Takes a bool defining whether we use gnuplot (false) or the terminal (true) as the backend
+/// Plots and returns the null parameter
+///
+/// Requirements: at least one argument
+/// - First argument is the function to plot
+/// - The following arguments are:
+/// > plot(f,title,xlabel,ylabel): plots f with the title and label for the x and y axis
+/// > plot(f,mode): plots f with mode=LINE|LINEMARKS|MARKS(default)
+/// > plot(f,title,xlabel,ylabel,mode): the two previous ones
+/// > plot(f,start,end,step,mode): plots f between start and end (on the x axis), with delta_x as step and mode as previously defined
+/// > plot(f,start,end,step,title,xlabel,ylabel,mode): combines everything
 pub fn plot_fn(p: &[Parameters], ram: &Ram, functions: &Functions, terminal: bool) -> Parameters {
     let color = match load() {
         Ok(cfg) => load_config(cfg).general_color,
