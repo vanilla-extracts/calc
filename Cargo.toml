@@ -3,7 +3,7 @@ resolver = "2"
 members = ["crates/mini-calc", "crates/calc-lib"]
 
 [workspace.package]
-version = "4.0.4-alpha"
+version = "4.0.4"
 license = "GPL-3.0-or-later"
 description = "A Fully-Featured Configurable (mini) Rust Calculator"
 homepage = "https://calc.charlotte-thomas.me"
