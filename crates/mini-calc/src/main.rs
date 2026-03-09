@@ -1,4 +1,3 @@
-use std::cell::RefCell;
 use std::collections::HashMap;
 use std::env::{self, Args};
 use std::f64::consts::{E, PI};
@@ -7,31 +6,23 @@ use std::str::SplitWhitespace;
 use std::sync::Arc;
 
 use ansi_term::Color;
-use configuration::loader::Config;
-use exact_math::float_mode::FloatMode;
-use linefeed::{Completer, Completion, Interface, ReadResult, Terminal};
-
-use crate::configuration::loader::{
+use atty::Stream;
+use calc_lib::configuration::loader::Config;
+use calc_lib::configuration::loader::{
     load, load_config, write_config, write_default_config, Greeting, Loaded, Prompt,
 };
-use crate::interpreting::interpreter::interpret;
-use crate::lexing::lexer::lex;
-use crate::parsing::ast::{Ast, Parameters};
-use crate::parsing::parser::{init_calc_parser, CalcParser};
-use atty::Stream;
+use calc_lib::exact_math::float_mode::FloatMode;
+use calc_lib::lexing::lexer::lex;
+use calc_lib::parsing::ast::{Ast, Parameters};
+use calc_lib::parsing::parser::{init_calc_parser, CalcParser};
+use calc_lib::FLOAT_MODE;
+use calc_lib::VERSION;
+use interpreting::interpreter::interpret;
+use linefeed::{Completer, Completion, Interface, ReadResult, Terminal};
 use std::io::BufRead;
 use std::{fs, io};
 
-mod configuration;
-mod exact_math;
-mod functions;
 mod interpreting;
-mod lexing;
-mod parsing;
-mod utils;
-
-thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
-static VERSION: &str = "v4.0.3";
 
 /// # ShowConfig
 /// Displays to the user the current content of the configuration file
@@ -449,7 +440,8 @@ fn main() {
                     }
                 };
                 let lexed = lex(code.clone());
-                let parser: &mut CalcParser = &mut parsing::parser::init_calc_parser(&lexed);
+                let parser: &mut CalcParser =
+                    &mut calc_lib::parsing::parser::init_calc_parser(&lexed);
                 let parsed = parser.parse();
                 if verbose {
                     println!("Lexing of line: {}", &code);
@@ -533,7 +525,8 @@ fn main() {
                     }
                 } else {
                     let lexed = lex(verb.to_string());
-                    let parser: &mut CalcParser = &mut parsing::parser::init_calc_parser(&lexed);
+                    let parser: &mut CalcParser =
+                        &mut calc_lib::parsing::parser::init_calc_parser(&lexed);
                     let parsed = parser.parse();
                     if verbose {
                         println!("Lexing of line: {verb}");

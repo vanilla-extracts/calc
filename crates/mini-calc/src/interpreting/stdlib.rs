@@ -4,20 +4,20 @@ use std::slice::from_ref;
 
 use gnuplot::{AxesCommon, Figure};
 
-use crate::configuration::loader::{load, load_config, Config};
-use crate::functions::divide::divide;
-use crate::functions::minus::minus;
 use crate::interpreting::interpreter::interpret;
-use crate::parsing::ast::{self};
-use crate::parsing::ast::{
+use calc_lib::configuration::loader::{load, load_config, Config};
+use calc_lib::functions::divide::divide;
+use calc_lib::functions::minus::minus;
+use calc_lib::parsing::ast::{self};
+use calc_lib::parsing::ast::{
     Ast,
     Parameters::{self, *},
 };
-use crate::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
-use crate::utils::plot_utils::computes_lines;
+use calc_lib::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
+use calc_lib::utils::plot_utils::computes_lines;
 
-use crate::functions::add::add as other_add;
-use crate::functions::mult::mult;
+use calc_lib::functions::add::add as other_add;
+use calc_lib::functions::mult::mult;
 
 type Ram<'a> = Option<&'a mut ast::Ram>;
 type Functions<'a> = Option<&'a mut ast::Functions>;

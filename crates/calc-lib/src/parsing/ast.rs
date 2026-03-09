@@ -617,19 +617,20 @@ impl Parameters {
     }
 }
 
+impl Ast {
+    pub fn new(p: Parameters) -> Self {
+        Ast::Node {
+            value: p,
+            left: Box::from(Ast::Nil),
+            right: Box::from(Ast::Nil),
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use crate::parsing::ast::{Ast, Parameters};
 
-    impl Ast {
-        pub fn new(p: Parameters) -> Self {
-            Ast::Node {
-                value: p,
-                left: Box::from(Ast::Nil),
-                right: Box::from(Ast::Nil),
-            }
-        }
-    }
     #[test]
     pub fn test_new() {
         let expected = Ast::Node {
