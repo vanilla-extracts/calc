@@ -1,3 +1,6 @@
+# Version 4.0.5 : Fuzzing
+New test and fuzzing yay
+
 # Version 4.0.4 : Restructuration
 Hey!
 The code is now structured as follow:
