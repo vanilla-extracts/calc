@@ -174,8 +174,8 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
 mod test {
     use std::collections::HashMap;
 
+    use crate::interpreting::interpreter::interpret;
     use calc_lib::exact_math::rationals::Rationals;
-    use calc_lib::interpreting::interpreter::interpret;
     use calc_lib::parsing::ast::{Ast, Parameters};
 
     #[test]
