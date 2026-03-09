@@ -1,3 +1,24 @@
 [workspace]
 resolver = "2"
 members = ["crates/mini-calc", "crates/calc-lib"]
+
+[workspace.package]
+version = "4.0.4-alpha"
+license = "GPL-3.0-or-later"
+description = "A Fully-Featured Configurable (mini) Rust Calculator"
+homepage = "https://calc.charlotte-thomas.me"
+repository = "https://github.com/vanilla-extract/calc"
+readme = "README.md"
+edition = "2021"
+exclude = [
+    "docs/*",
+    "manual/*",
+    "manual.pdf"
+]
+
+[dependencies]
+calc-lib = { path = "crates/calc-lib", version = "4.0.4-alpha" }
+
+[profile.dist]
+inherits = "release"
+lto = "thin"
