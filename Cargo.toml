@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/mini-calc", "crates/calc-lib"]
+members = ["crates/mini-calc", "crates/mini-calc-lib"]
 
 [workspace.package]
 version = "4.0.4"
@@ -17,7 +17,7 @@ exclude = [
 ]
 
 [workspace.dependencies]
-calc-lib = { path = "crates/calc-lib", version = "4.0.4-alpha" }
+mini-calc-lib = { path = "crates/mini-calc-lib", version = "4.0.4-alpha" }
 
 [profile.dist]
 inherits = "release"

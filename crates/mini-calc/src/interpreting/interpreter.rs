@@ -1,14 +1,14 @@
 use crate::interpreting::stdlib::exec;
-use calc_lib::exact_math::float_mode::FloatMode;
-use calc_lib::exact_math::rationals::Rationals;
-use calc_lib::functions::add::add;
-use calc_lib::functions::divide::divide;
-use calc_lib::functions::expo::expo;
-use calc_lib::functions::function::*;
-use calc_lib::functions::minus::minus;
-use calc_lib::functions::mult::mult;
-use calc_lib::parsing::ast::{Ast, Functions, Parameters, Ram};
-use calc_lib::FLOAT_MODE;
+use mini_calc_lib::exact_math::float_mode::FloatMode;
+use mini_calc_lib::exact_math::rationals::Rationals;
+use mini_calc_lib::functions::add::add;
+use mini_calc_lib::functions::divide::divide;
+use mini_calc_lib::functions::expo::expo;
+use mini_calc_lib::functions::function::*;
+use mini_calc_lib::functions::minus::minus;
+use mini_calc_lib::functions::mult::mult;
+use mini_calc_lib::parsing::ast::{Ast, Functions, Parameters, Ram};
+use mini_calc_lib::FLOAT_MODE;
 
 /// # Interpreter
 /// Interprets the Ast, and gives the result
@@ -175,8 +175,8 @@ mod test {
     use std::collections::HashMap;
 
     use crate::interpreting::interpreter::interpret;
-    use calc_lib::exact_math::rationals::Rationals;
-    use calc_lib::parsing::ast::{Ast, Parameters};
+    use mini_calc_lib::exact_math::rationals::Rationals;
+    use mini_calc_lib::parsing::ast::{Ast, Parameters};
 
     #[test]
     fn test_interpreter_int() {
@@ -252,8 +252,10 @@ mod test {
     fn test_interpreter_divide_operation() {
         let mut ram: HashMap<String, Parameters> = HashMap::new();
         let mut function: HashMap<String, (Vec<Ast>, Ast)> = HashMap::new();
-        let expected =
-            Parameters::Rational(calc_lib::exact_math::rationals::Rationals { under: 1, over: 1 });
+        let expected = Parameters::Rational(mini_calc_lib::exact_math::rationals::Rationals {
+            under: 1,
+            over: 1,
+        });
         let ast = Ast::Node {
             value: Parameters::DivideOperation,
             left: Box::from(Ast::new(Parameters::Int(1))),

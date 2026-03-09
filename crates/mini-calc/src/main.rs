@@ -7,18 +7,18 @@ use std::sync::Arc;
 
 use ansi_term::Color;
 use atty::Stream;
-use calc_lib::configuration::loader::Config;
-use calc_lib::configuration::loader::{
-    load, load_config, write_config, write_default_config, Greeting, Loaded, Prompt,
-};
-use calc_lib::exact_math::float_mode::FloatMode;
-use calc_lib::lexing::lexer::lex;
-use calc_lib::parsing::ast::{Ast, Parameters};
-use calc_lib::parsing::parser::{init_calc_parser, CalcParser};
-use calc_lib::FLOAT_MODE;
-use calc_lib::VERSION;
 use interpreting::interpreter::interpret;
 use linefeed::{Completer, Completion, Interface, ReadResult, Terminal};
+use mini_calc_lib::configuration::loader::Config;
+use mini_calc_lib::configuration::loader::{
+    load, load_config, write_config, write_default_config, Greeting, Loaded, Prompt,
+};
+use mini_calc_lib::exact_math::float_mode::FloatMode;
+use mini_calc_lib::lexing::lexer::lex;
+use mini_calc_lib::parsing::ast::{Ast, Parameters};
+use mini_calc_lib::parsing::parser::{init_calc_parser, CalcParser};
+use mini_calc_lib::FLOAT_MODE;
+use mini_calc_lib::VERSION;
 use std::io::BufRead;
 use std::{fs, io};
 
@@ -441,7 +441,7 @@ fn main() {
                 };
                 let lexed = lex(code.clone());
                 let parser: &mut CalcParser =
-                    &mut calc_lib::parsing::parser::init_calc_parser(&lexed);
+                    &mut mini_calc_lib::parsing::parser::init_calc_parser(&lexed);
                 let parsed = parser.parse();
                 if verbose {
                     println!("Lexing of line: {}", &code);
@@ -526,7 +526,7 @@ fn main() {
                 } else {
                     let lexed = lex(verb.to_string());
                     let parser: &mut CalcParser =
-                        &mut calc_lib::parsing::parser::init_calc_parser(&lexed);
+                        &mut mini_calc_lib::parsing::parser::init_calc_parser(&lexed);
                     let parsed = parser.parse();
                     if verbose {
                         println!("Lexing of line: {verb}");
