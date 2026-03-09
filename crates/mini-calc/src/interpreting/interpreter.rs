@@ -1,14 +1,14 @@
-use crate::exact_math::float_mode::FloatMode;
-use crate::exact_math::rationals::Rationals;
-use crate::functions::add::add;
-use crate::functions::divide::divide;
-use crate::functions::expo::expo;
-use crate::functions::function::*;
-use crate::functions::minus::minus;
-use crate::functions::mult::mult;
 use crate::interpreting::stdlib::exec;
-use crate::parsing::ast::{Ast, Functions, Parameters, Ram};
-use crate::FLOAT_MODE;
+use calc_lib::exact_math::float_mode::FloatMode;
+use calc_lib::exact_math::rationals::Rationals;
+use calc_lib::functions::add::add;
+use calc_lib::functions::divide::divide;
+use calc_lib::functions::expo::expo;
+use calc_lib::functions::function::*;
+use calc_lib::functions::minus::minus;
+use calc_lib::functions::mult::mult;
+use calc_lib::parsing::ast::{Ast, Functions, Parameters, Ram};
+use calc_lib::FLOAT_MODE;
 
 /// # Interpreter
 /// Interprets the Ast, and gives the result
@@ -174,9 +174,9 @@ pub fn interpret(ast: &Ast, mut ram: &mut Ram, mut function: &mut Functions) -> 
 mod test {
     use std::collections::HashMap;
 
-    use crate::exact_math::rationals::Rationals;
-    use crate::interpreting::interpreter::interpret;
-    use crate::parsing::ast::{Ast, Parameters};
+    use calc_lib::exact_math::rationals::Rationals;
+    use calc_lib::interpreting::interpreter::interpret;
+    use calc_lib::parsing::ast::{Ast, Parameters};
 
     #[test]
     fn test_interpreter_int() {
@@ -253,7 +253,7 @@ mod test {
         let mut ram: HashMap<String, Parameters> = HashMap::new();
         let mut function: HashMap<String, (Vec<Ast>, Ast)> = HashMap::new();
         let expected =
-            Parameters::Rational(crate::exact_math::rationals::Rationals { under: 1, over: 1 });
+            Parameters::Rational(calc_lib::exact_math::rationals::Rationals { under: 1, over: 1 });
         let ast = Ast::Node {
             value: Parameters::DivideOperation,
             left: Box::from(Ast::new(Parameters::Int(1))),
