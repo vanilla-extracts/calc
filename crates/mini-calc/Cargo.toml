@@ -1,0 +1,41 @@
+[package]
+name = "mini-calc"
+version = "4.0.4-alpha"
+license = "GPL-3.0-or-later"
+description = "A Fully-Featured Configurable (mini) Rust Calculator"
+homepage = "https://calc.charlotte-thomas.me"
+repository = "https://github.com/vanilla-extract/calc"
+readme = "README.md"
+edition = "2021"
+exclude = [
+    "docs/*",
+    "manual/*",
+    "manual.pdf"
+]
+
+
+[dependencies]
+ansi_term = "0.12.1"
+linefeed = "0.6"
+confy = "0.5.1"
+gnuplot = "0.0.39"
+serde = { version = "1.0.192", features = ["derive"] }
+atty = "0.2"
+
+
+
+[package.metadata.deb]
+name = "mini-calc"
+maintainer = "Charlotte Thomas"
+copyright = "GPLv3"
+license-file = "LICENSE"
+
+[package.metadata.generate-rpm]
+name = "mini-calc"
+license = "GPLv3"
+assets = [{source="target/release/mini-calc", dest="/usr/bin/mini-calc", mode = "755"}]
+
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
