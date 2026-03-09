@@ -5,19 +5,19 @@ use std::slice::from_ref;
 use gnuplot::{AxesCommon, Figure};
 
 use crate::interpreting::interpreter::interpret;
-use calc_lib::configuration::loader::{load, load_config, Config};
-use calc_lib::functions::divide::divide;
-use calc_lib::functions::minus::minus;
-use calc_lib::parsing::ast::{self};
-use calc_lib::parsing::ast::{
+use mini_calc_lib::configuration::loader::{load, load_config, Config};
+use mini_calc_lib::functions::divide::divide;
+use mini_calc_lib::functions::minus::minus;
+use mini_calc_lib::parsing::ast::{self};
+use mini_calc_lib::parsing::ast::{
     Ast,
     Parameters::{self, *},
 };
-use calc_lib::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
-use calc_lib::utils::plot_utils::computes_lines;
+use mini_calc_lib::utils::matrix_utils::{lup_decompose, lup_determinant, lup_invert, transpose};
+use mini_calc_lib::utils::plot_utils::computes_lines;
 
-use calc_lib::functions::add::add as other_add;
-use calc_lib::functions::mult::mult;
+use mini_calc_lib::functions::add::add as other_add;
+use mini_calc_lib::functions::mult::mult;
 
 type Ram<'a> = Option<&'a mut ast::Ram>;
 type Functions<'a> = Option<&'a mut ast::Functions>;

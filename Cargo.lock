@@ -70,15 +70,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
-name = "calc-lib"
-version = "4.0.4"
-dependencies = [
- "ansi_term",
- "confy",
- "serde",
-]
-
-[[package]]
 name = "cfg-if"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -232,10 +223,19 @@ version = "4.0.4"
 dependencies = [
  "ansi_term",
  "atty",
- "calc-lib",
  "confy",
  "gnuplot",
  "linefeed",
+ "mini-calc-lib",
+ "serde",
+]
+
+[[package]]
+name = "mini-calc-lib"
+version = "4.0.4"
+dependencies = [
+ "ansi_term",
+ "confy",
  "serde",
 ]
 

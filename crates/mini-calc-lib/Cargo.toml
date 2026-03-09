@@ -1,5 +1,5 @@
 [package]
-name = "calc-lib"
+name = "mini-calc-lib"
 version = { workspace = true }
 license = { workspace = true }
 description = { workspace = true }
