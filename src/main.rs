@@ -31,7 +31,7 @@ mod parsing;
 mod utils;
 
 thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
-static VERSION: &str = "v4.0.3";
+static VERSION: &str = "v4.0.4-alpha";
 
 /// # ShowConfig
 /// Displays to the user the current content of the configuration file
