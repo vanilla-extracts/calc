@@ -7,8 +7,8 @@ use std::str::SplitWhitespace;
 use std::sync::Arc;
 
 use ansi_term::Color;
+use calc_lib::exact_math::float_mode::FloatMode;
 use configuration::loader::Config;
-use exact_math::float_mode::FloatMode;
 use linefeed::{Completer, Completion, Interface, ReadResult, Terminal};
 
 use crate::configuration::loader::{
@@ -22,16 +22,7 @@ use atty::Stream;
 use std::io::BufRead;
 use std::{fs, io};
 
-mod configuration;
-mod exact_math;
-mod functions;
 mod interpreting;
-mod lexing;
-mod parsing;
-mod utils;
-
-thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
-static VERSION: &str = "v4.0.4-alpha";
 
 /// # ShowConfig
 /// Displays to the user the current content of the configuration file

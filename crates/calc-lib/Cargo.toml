@@ -10,3 +10,5 @@ edition = { workspace = true }
 
 [dependencies]
 serde = { version = "1.0.192", features = ["derive"] }
+confy = "0.5.1"
+ansi_term = "0.12.1"

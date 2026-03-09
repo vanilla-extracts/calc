@@ -11,8 +11,8 @@ edition = { workspace = true }
 [dependencies]
 ansi_term = "0.12.1"
 linefeed = "0.6"
-confy = "0.5.1"
 gnuplot = "0.0.39"
+confy = "0.5.1"
 serde = { version = "1.0.192", features = ["derive"] }
 atty = "0.2"
 calc-lib = {workspace = true}

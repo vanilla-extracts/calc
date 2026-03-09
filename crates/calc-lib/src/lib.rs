@@ -1,14 +1,12 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+use std::cell::RefCell;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+use crate::exact_math::float_mode::FloatMode;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+mod configuration;
+mod exact_math;
+mod functions;
+mod lexing;
+mod parsing;
+mod utils;
+static VERSION: &str = "v4.0.4-alpha";
+thread_local! {static FLOAT_MODE: RefCell<FloatMode> = const {RefCell::new(FloatMode::Exact)}}
