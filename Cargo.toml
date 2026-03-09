@@ -16,7 +16,7 @@ exclude = [
     "manual.pdf"
 ]
 
-[dependencies]
+[workspace.dependencies]
 calc-lib = { path = "crates/calc-lib", version = "4.0.4-alpha" }
 
 [profile.dist]
