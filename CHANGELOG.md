@@ -1,3 +1,10 @@
+# Version 4.0.4 : Restructuration
+Hey!
+The code is now structured as follow:
+
+In the crate [calc-lib](crates/calc-lib) is all the code which is not directly running the binary
+In the crate [mini-calc](crates/mini-calc) is the binary, using the aforementioned library
+
 # Version 4.0.3 : Documentation
 This version is a very minor update, no new features are planned, but the code readability will be improved drastically. As well
 as the maintainability of the code.
