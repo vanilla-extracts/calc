@@ -86,7 +86,8 @@ Visit #calc to see all the install page
   "Main developer/Maintener",
   link("https://www.charlotte-thomas.me", [#set text(red); Personal Page]),
 
-  "Léana 江", "Help, cleanup", link("https://earth2077.fr", [#set text(red); Website/Blog]),
+  "Léana", "Help, cleanup", link("https://confusedcompiler.org", [#set text(red); Website/Blog]),
+  "Sigmaficient", "Nixify", link("https://sigmanificient.github.io/", [#set text(red); Website/Blog])
 )
 
 #pagebreak(weak: true)
